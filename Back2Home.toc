@@ -1,0 +1,36 @@
+## Interface: 100206
+## Title: Back2Home by |cFF78B064readi2play|r 
+## Notes: Use a random hearthstone toy from out of your toybox whenever you want to return to your home base.
+## IconTexture: Interface\AddOns\Back2Home\media\b2h_logo.tga
+## Version: 0.5.1
+## Author: |cFF78B064readi2play|r
+## SavedVariables: Back2HomeDB
+## AddonCompartmentFunc: Back2Home_Options
+
+## LoadOnDemand: 0
+
+# localization
+locales/deDE.lua
+locales/enUS.lua
+locales/frFR.lua
+
+# core files
+core.lua
+
+# config and panels
+config/config.lua
+config/factories/button.lua
+config/factories/checkbox.lua
+config/factories/editbox.lua
+config/factories/icon.lua
+config/factories/panel.lua
+config/factories/radio.lua
+config/factories/slider.lua
+config/panels/info.lua
+config/panels/toys.lua
+config/panels/anchoring.lua
+config/panels/keybindings.lua
+config/panels/others.lua
+
+# modules
+modules/button.lua
