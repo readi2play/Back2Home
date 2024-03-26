@@ -24,14 +24,28 @@ local function CreateButton()
 
   -- METHODS ---
   --[[ This function updates the button's icon, tooltip and cooldown ]] --
-  function B2H.HSButton:Update()
+  function B2H.HSButton:Update(shuffle)
+    -- if the character is infight, just return early to prevent the addon throwing a bunch of errors
+    -- secure buttons are not allowed to change in fight therefore we have to prevent this by all meaning  
+    if InCombatLockdown() then return end
+
+    if shuffle then
+      b2h.owned = B2H:FilterTable(B2H.db.toys, function(toy) return toy.active end);
+      b2h.id = B2H.HSButton:Shuffle(#b2h.owned)
+    end
+
+    -- fall back to default Hearthstone ItemID, if no respective toy is collected yet
+    if not b2h.id and B2H.db.fallback.active then
+      b2h.id = B2H.db.fallback.id
+    end
+
     if not b2h.id then
       B2H.HSButton.icon:SetTexture(nil)
       B2H.HSButton:Disable()
       return
     end
-    _, b2h.name, b2h.icon = C_ToyBox.GetToyInfo(b2h.id)
     B2H.HSButton:Enable()
+
     local function GetFallbackItemBagSlot()
       for i = 0, NUM_BAG_SLOTS do
         for j = 1, C_Container.GetContainerNumSlots(i) do
@@ -45,8 +59,11 @@ local function CreateButton()
 
     -- set the button's icon to the information returned by the GetToyInfo function
     if b2h.id == B2H.db.fallback.id then
+      b2h.name = GetItemInfo(b2h.id)
+      b2h.icon = select(10, GetItemInfo(b2h.id))
       B2H.HSButton.tooltip:SetBagItem(GetFallbackItemBagSlot())
     else
+      _, b2h.name, b2h.icon = C_ToyBox.GetToyInfo(b2h.id)    
       B2H.HSButton.tooltip:SetToyByItemID(b2h.id)
     end
 
@@ -58,32 +75,12 @@ local function CreateButton()
     B2H.HSButton.cooldown:SetCooldown(start, duration)
   end
   --[[ Retrieve a new random toy itemID ]] --
-  function B2H.HSButton:Shuffle()
-    -- if the character is infight, just return early to prevent the addon throwing a bunch of errors
-    -- secure buttons are not allowed to change in fight therefore we have to prevent this by all meaning  
-    if InCombatLockdown() then return end
-    local owned = B2H:FilterTable(B2H.db.toys, function(toy)
-      return toy.active
-    end);
-    -- retrieve random id or fall back to default hearthstone's itemId if no hearthstone toy is collected yet 
-    local rndIdx = #owned
-    if rndIdx > 0 then
-      b2h.id = owned[math.random(rndIdx)].id
-    elseif B2H.db.fallback.active then
-      b2h.id = B2H.db.fallback.id
-    else
-      b2h.id = nil
-      B2H.HSButton:Update()
-      return
+  function B2H.HSButton:Shuffle(rndIdx)
+    -- retrieve random id
+    if rndIdx and rndIdx > 0 then
+      return b2h.owned[math.random(rndIdx)].id
     end
-    if b2h.id == B2H.db.fallback.id then
-      b2h.name = GetItemInfo(b2h.id)
-      b2h.icon = select(10, GetItemInfo(b2h.id))
-    else
-      _, b2h.name, b2h.icon = C_ToyBox.GetToyInfo(b2h.id)
-    end
-
-    B2H.HSButton:Update()
+    return nil
   end
 
   function B2H.HSButton:RePosition()
@@ -98,7 +95,7 @@ local function CreateButton()
     B2H.HSButton.mask:SetSize(btnSize * 0.8, btnSize * 0.8)
   end
 
-  B2H.HSButton:Shuffle()
+  B2H.HSButton:Update()
   --------------------------------------------------------------------------------
   -- KEY BINDINGS
   --------------------------------------------------------------------------------
@@ -112,7 +109,7 @@ local function CreateButton()
   if b2h.id then
     B2H.HSButton:SetAttribute("macrotext", "/use item:" .. b2h.id)
   end
-  B2H.HSButton:SetAttribute("macrotext2", "/run Back2HomeButton:Shuffle()")
+  B2H.HSButton:SetAttribute("macrotext2", "/run Back2HomeButton:Update(true)")
 
   -- cooldown positioning
   B2H.HSButton.cooldown:SetAllPoints(B2H.HSButton.icon)
@@ -141,7 +138,7 @@ function B2H:InitializeButton()
   -- BUTTON CREATION
   --------------------------------------------------------------------------------
   B2H.HSButton = B2H.HSButton or CreateButton()
-  B2H.HSButton:Shuffle()
+  B2H.HSButton:Update(true)
 
   --------------------------------------------------------------------------------
   -- EVENT HANDLERS
@@ -172,10 +169,7 @@ function B2H:InitializeButton()
   end
   -- shuffle and update the button due to several events
   function BtnOnEvent(evt, addon)
-    -- if B2H.HSButton.tooltip:IsShown() then
-    --   B2H.HSButton.tooltip:Hide()
-    -- end
-    B2H.HSButton:Shuffle()
+    B2H.HSButton:Update(true)
   end
 
   -- set event scripts

@@ -73,7 +73,7 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   else
     b2h.id = b2h.restore
   end
-  B2H.HSButton:Update()
+  B2H.HSButton:Update(false)
 end
 
 --------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ SlashCmdList.B2HB = function(msg, editBox)
   local shuffleKeywords = {"shuffle", "random", "update", "mix"}
   local configKeywords = {"config", "options", "settings"}
   if B2H:IsInList(msg, shuffleKeywords) then
-    B2H.HSButton:Shuffle()
+    B2H.HSButton:Update(true)
   elseif B2H:IsInList(msg, configKeywords) then
     _G[AddonName .. '_Options']()
   else
