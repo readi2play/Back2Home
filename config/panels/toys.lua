@@ -34,30 +34,33 @@ function B2H:FillToysPanel(panel, toysContainer)
     else
       anchor_to_element = _G[AddonName .. "CheckButton_" .. self.db.toys[i - b2h.columns].id]
     end
-    _G[AddonName .. "CheckButton_" .. current.id] = self:Checkbox("toys", toysContainer, current.id, label, "TOPLEFT", anchor_to_element, anchor_to, x, y, (current.active and owned),
+    _G[AddonName .. "CheckButton_" .. current.id] = self:Checkbox("toys", toysContainer, current.id, label, "TOPLEFT", anchor_to_element, anchor_to, x, y, (owned),
     -- UPDATE DATABASE - calllback function
     function ()
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
       B2H.db.toys[i].active = cb:GetChecked()
-      B2H.HSButton:Shuffle()
+      B2H.HSButton:Update(true)
     end,
     -- RESET TO DEFAULT - calllback function
       function()
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
-      cb:SetChecked(B2H.defaults.toys[i].active)
-      B2H.HSButton:Shuffle()
+      if B2H.defaults.toys[i].active and not cb:GetChecked() then
+        cb:Click()
+      end
     end,
     -- SELECT ALL - calllback function
     function()
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
-      cb:SetChecked(true)
-      B2H.HSButton:Shuffle()
+      if not cb:GetChecked() then
+        cb:Click()
+      end
     end,
     -- UNSELECT ALL - calllback function
-      function()
+    function()
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
-      cb:SetChecked(false)
-      B2H.HSButton:Shuffle()
+      if cb:GetChecked() then
+        cb:Click()
+      end
     end)
   end
 
@@ -74,23 +77,24 @@ function B2H:FillToysPanel(panel, toysContainer)
   function()
     local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
     B2H.db.fallback.active = cb:GetChecked()
+    B2H.HSButton:Update(true)
   end,
   -- RESET TO DEFAULT - calllback function
   function()
     local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
-    cb:SetChecked(B2H.defaults.fallback.active)
+    if (B2H.defaults.fallback.active and not cb:GetChecked()) then
+      cb:Click()
+    end
   end,
   -- SELECT ALL - calllback function
   function()
-    local cb = _G[AddonName .. "CheckButton_" .. current.id]
-    cb:SetChecked(true)
-    B2H.HSButton:Shuffle()
+    local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
+    if not cb:GetChecked() then cb:Click() end
   end,
   -- UNSELECT ALL - calllback function
   function()
     local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
-    cb:SetChecked(false)
-    B2H.HSButton:Shuffle()
+    if cb:GetChecked() then cb:Click() end
   end)
 
   local btn_Reset = B2H:Button(panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", toysContainer, "BOTTOMLEFT", 0, 20, function()
