@@ -5,7 +5,7 @@ local AddonName, b2h = ...
 --------------------------------------------------------------------------------
 -- Simple factory function for EditBoxes
 --------------------------------------------------------------------------------
-function B2H:EditBox(option, value, region, width, height, parent, x, y, updateFunc, ...)
+function B2H:EditBox(type, option, value, region, width, height, parent, x, y, resetFunc)
   local eb = CreateFrame("EditBox", AddonName .. "EditBox_parent_" .. option, region, "InputBoxTemplate")
   eb:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", x, y)
   eb:SetFrameStrata("DIALOG")
@@ -32,10 +32,6 @@ function B2H:EditBox(option, value, region, width, height, parent, x, y, updateF
 
     self.db.parent[option] = value
     B2H.HSButton:RePosition()
-
-    if updateFunc then
-      updateFunc(value)
-    end
   end
 
   eb:SetScript("OnEditFocusGained", function(self)
@@ -53,7 +49,10 @@ function B2H:EditBox(option, value, region, width, height, parent, x, y, updateF
     eb:SetCursorPosition(0)
     eb:ClearFocus()
   end)
-  EventRegistry:RegisterCallback("B2H.OnResetFrames", function()
+
+  resetFunc = resetFunc or function () return end
+
+  EventRegistry:RegisterCallback("B2H."..type..".OnReset", function()
     local val = self.defaults.parent[option]
     self.db.parent[option] = val
     eb:SetText(val)

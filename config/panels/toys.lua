@@ -97,13 +97,13 @@ function B2H:FillToysPanel(panel, toysContainer)
     if cb:GetChecked() then cb:Click() end
   end)
 
-  local btn_Reset = B2H:Button(panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", toysContainer, "BOTTOMLEFT", 0, 20, function()
+  local btn_Reset = B2H:Button("toys", panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", toysContainer, "BOTTOMLEFT", 0, 20, function()
     _G[AddonName .. "DB"].toys = CopyTable(self.defaults.toys)
-    self.db = _G[AddonName .. "DB"]
-    EventRegistry:TriggerEvent("B2H.OnReset")
+    _G[AddonName .. "DB"].fallback = CopyTable(self.defaults.fallback)
+    EventRegistry:TriggerEvent("B2H.toys.OnReset")
   end)
 
-  local btn_UnselectAll = B2H:Button(panel, "UIPanelButtonTemplate", B2H:l10n("unselectAllBtnLbl"), nil, nil, nil, true, "TOPLEFT", btn_Reset, "TOPRIGHT", 20, 0, function()
-    EventRegistry:TriggerEvent("B2H.OnUnselectAll")
+  local btn_UnselectAll = B2H:Button("toys", panel, "UIPanelButtonTemplate", B2H:l10n("unselectAllBtnLbl"), nil, nil, nil, true, "TOPLEFT", btn_Reset, "TOPRIGHT", 20, 0, function()
+    EventRegistry:TriggerEvent("B2H.toys.OnUnselectAll")
   end)
 end

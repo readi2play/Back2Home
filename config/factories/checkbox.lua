@@ -34,13 +34,9 @@ function B2H:Checkbox(type, parent, option, label, anchor, region, anchor_to, x,
     updateFunc()
   end)
 
-  if type == "toys" then
-    EventRegistry:RegisterCallback("B2H.OnReset", resetFunc)
-    EventRegistry:RegisterCallback("B2H.OnUnselectAll", unselectAllFunc)
-  elseif type == "debugging" then
-    EventRegistry:RegisterCallback("B2H.Debug.OnReset", resetFunc)
-    EventRegistry:RegisterCallback("B2H.Debug.OnSelectAll", selectAllFunc)
-  end
+  EventRegistry:RegisterCallback("B2H."..type..".OnReset", resetFunc)
+  EventRegistry:RegisterCallback("B2H."..type..".OnUnselectAll", unselectAllFunc)
+  EventRegistry:RegisterCallback("B2H."..type..".OnSelectAll", selectAllFunc)
 
   return cb
 end

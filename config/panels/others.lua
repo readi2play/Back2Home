@@ -84,14 +84,13 @@ function B2H:FillOthersSettingsPanel(panel, othersContainer)
 
     end
 
-    local btn_Reset = B2H:Button(panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", othersContainer, "BOTTOMLEFT", 0, 20, function()
+    local btn_Reset = B2H:Button("debugging", panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", othersContainer, "BOTTOMLEFT", 0, 20, function()
       _G[AddonName .. "DB"].others = CopyTable(self.defaults.others)
-      self.db = _G[AddonName .. "DB"]
-      EventRegistry:TriggerEvent("B2H.Debug.OnReset")
+      EventRegistry:TriggerEvent("B2H.debugging.OnReset")
     end)
   
-    local btn_UnselectAll = B2H:Button(panel, "UIPanelButtonTemplate", B2H:l10n("selectAllBtnLbl"), nil, nil, nil, true, "TOPLEFT", btn_Reset, "TOPRIGHT", 20, 0, function()
-      EventRegistry:TriggerEvent("B2H.Debug.OnSelectAll")
+    local btn_UnselectAll = B2H:Button("debugging", panel, "UIPanelButtonTemplate", B2H:l10n("selectAllBtnLbl"), nil, nil, nil, true, "TOPLEFT", btn_Reset, "TOPRIGHT", 20, 0, function()
+      EventRegistry:TriggerEvent("B2H.debugging.OnSelectAll")
     end)  
   end
 end

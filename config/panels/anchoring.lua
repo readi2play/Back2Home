@@ -72,7 +72,7 @@ function B2H:FillAnchoringPanel(panel, anchoringContainer)
       parent_anchor = "BOTTOMLEFT"
     end
     _G[AddonName .. "RadioButton_button_anchor_" .. value] =
-      self:RadioButton(anchoringContainer, "button_anchor", value, self.db.parent.button_anchor == value, "TOPLEFT", parent, parent_anchor, x, y)
+      self:RadioButton("anchoring", anchoringContainer, "button_anchor", value, self.db.parent.button_anchor == value, "TOPLEFT", parent, parent_anchor, x, y)
   end
 
   local parent_anchorWrapper = CreateFrame("Frame", nil)
@@ -101,7 +101,7 @@ function B2H:FillAnchoringPanel(panel, anchoringContainer)
       parent_anchor = "BOTTOMLEFT"
     end
     _G[AddonName .. "RadioButton_parent_anchor_" .. value] =
-      self:RadioButton(anchoringContainer, "parent_anchor", value, self.db.parent.parent_anchor == value, "TOPLEFT", parent, parent_anchor, x, y)
+      self:RadioButton("anchoring", anchoringContainer, "parent_anchor", value, self.db.parent.parent_anchor == value, "TOPLEFT", parent, parent_anchor, x, y)
   end
 
   -- define the position fields
@@ -116,13 +116,13 @@ function B2H:FillAnchoringPanel(panel, anchoringContainer)
   positionX_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", 0, -5)
   positionX_sectionTitle:SetText(B2H:setTextColor(B2H:l10n("offsetX"), "b2h_light"))
 
-  _G[AddonName .. "EditBox_parent_pos_x"] = self:EditBox("position_x", self.db.parent.position_x or self.defaults.parent.position_x, anchoringContainer, posColWidth, 32, positionX_sectionTitle, 0, 0)
+  _G[AddonName .. "EditBox_parent_pos_x"] = self:EditBox("anchoring", "position_x", self.db.parent.position_x or self.defaults.parent.position_x, anchoringContainer, posColWidth, 32, positionX_sectionTitle, 0, 0)
 
   local positionY_sectionTitle = anchoringContainer:CreateFontString("ARTWORK", nil, "GameFontHighlight")
   positionY_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", posColWidth + 20, -5)
   positionY_sectionTitle:SetText(B2H:setTextColor(B2H:l10n("offsetY"), "b2h_light"))
 
-  _G[AddonName .. "EditBox_parent_pos_y"] = self:EditBox("position_y", self.db.parent.position_y or self.defaults.parent.position_y, anchoringContainer, posColWidth, 32, positionY_sectionTitle, 0, 0)
+  _G[AddonName .. "EditBox_parent_pos_y"] = self:EditBox("anchoring", "position_y", self.db.parent.position_y or self.defaults.parent.position_y, anchoringContainer, posColWidth, 32, positionY_sectionTitle, 0, 0)
 
   -- define the parent related fields
   local parentFrame_sectionTitle = anchoringContainer:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
@@ -133,19 +133,19 @@ function B2H:FillAnchoringPanel(panel, anchoringContainer)
   parentFrame_nameTitle:SetPoint("TOPLEFT", parentFrame_sectionTitle, "BOTTOMLEFT", 0, -5)
   parentFrame_nameTitle:SetText(B2H:setTextColor(B2H:l10n("parentFrameName"), "b2h_light"))
 
-  _G[AddonName .. "EditBox_parent_frame"] = self:EditBox("frame", self.db.parent.frame or self.defaults.parent.frame, anchoringContainer, b2h.columnWidth, 32, parentFrame_nameTitle, 0, 0)
+  _G[AddonName .. "EditBox_parent_frame"] = self:EditBox("anchoring", "frame", self.db.parent.frame or self.defaults.parent.frame, anchoringContainer, b2h.columnWidth, 32, parentFrame_nameTitle, 0, 0)
 
-  local btn_Reset = B2H:Button(panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", anchoringContainer, "BOTTOMLEFT", 0, 20, function()
+  local btn_Reset = B2H:Button("anchoring", panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", anchoringContainer, "BOTTOMLEFT", 0, 20, function()
     _G[AddonName .. "DB"].parent = CopyTable(self.defaults.parent)
     B2H.HSButton:RePosition()
-    EventRegistry:TriggerEvent("B2H.OnResetFrames")
+    EventRegistry:TriggerEvent("B2H.anchoring.OnReset")
   end)
 
   local buttonSizeTitle = anchoringContainer:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   buttonSizeTitle:SetPoint("TOPLEFT", _G[AddonName .. "EditBox_parent_pos_x"], "BOTTOMLEFT", 0, -20)
   buttonSizeTitle:SetText(B2H:setTextColor(B2H:l10n("buttonSizeSliderHeadline"), "b2h"))
 
-  _G[AddonName.."Slider_button_size"] = B2H:Slider(anchoringContainer, "button_size", 16, 64, 8, self.db.parent.button_size or self.defaults.parent.button_size, b2h.columnWidth - 20, "TOPLEFT", buttonSizeTitle, "BOTTOMLEFT", 0, -20, function (self)
+  _G[AddonName.."Slider_button_size"] = B2H:Slider("anchoring", anchoringContainer, "button_size", 16, 64, 8, self.db.parent.button_size or self.defaults.parent.button_size, b2h.columnWidth - 20, "TOPLEFT", buttonSizeTitle, "BOTTOMLEFT", 0, -20, function (self)
     B2H.db.parent.button_size = self:GetValue()
     _G[self.name.."Text"]:SetText(self:GetValue())
     B2H.HSButton:Resize()
