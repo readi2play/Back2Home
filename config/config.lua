@@ -129,7 +129,7 @@ function B2H:InitializeOptions()
   -- sub panel: Keybinding Settings
   InterfaceOptions_AddCategory( B2H:CreateConfigPanel("keybindings", false, B2H:l10n("keybindingSettingsPanelTitle"), B2H.FillKeybindingsPanel) )
   -- sub panel: General Settings
-  -- InterfaceOptions_AddCategory( B2H:CreateConfigPanel("other", false, B2H:l10n("otherSettingsPanelTitle"), B2H.FillOthersSettingsPanel) )
+  InterfaceOptions_AddCategory( B2H:CreateConfigPanel("other", false, B2H:l10n("otherSettingsPanelTitle"), B2H.FillOthersSettingsPanel) )
 end
 -- a bit more efficient to register/unregister the event when it fires a lot
 function B2H:UpdateEvent(value, event)

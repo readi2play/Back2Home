@@ -4,6 +4,7 @@ b2h.L = b2h.L or {}
 b2h.L.frFR = {
   -- generic strings
   ["resetBtnLbl"] = "Réinitialiser",
+  ["clearAllBtnLbl"] = "Tout effacer",
   ["unselectAllBtnLbl"] = "Tout déselectionner",
   ["selectAllBtnLbl"] = "Tout selectionner",
   ["button"] = "Bouton",

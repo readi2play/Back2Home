@@ -5,7 +5,7 @@ local AddonName, b2h = ...
 --------------------------------------------------------------------------------
 -- simple factory function for slider creation
 --------------------------------------------------------------------------------
-function B2H:Slider(region, name, min, max, step, val, size, anchor, parent, p_anchor, x, y, updateFunc, resetFunc)
+function B2H:Slider(type, region, name, min, max, step, val, size, anchor, parent, p_anchor, x, y, updateFunc, resetFunc)
   local slider = CreateFrame("Slider", name, region, "OptionsSliderTemplate")
   slider.name = name
   slider:SetPoint(anchor, parent, p_anchor, x, y)
@@ -23,7 +23,7 @@ function B2H:Slider(region, name, min, max, step, val, size, anchor, parent, p_a
   _G[slider.name.."Text"]:SetPoint("TOP", slider, "BOTTOM", 0, -10)
 
   slider:SetScript("OnValueChanged", updateFunc)
-  EventRegistry:RegisterCallback("B2H.OnResetFrames", resetFunc)
+  EventRegistry:RegisterCallback("B2H."..type..".OnReset", resetFunc)
 
   return slider
 end

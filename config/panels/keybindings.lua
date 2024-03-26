@@ -12,6 +12,7 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
     table.insert(keywords, keyword)
     local idx = B2H:FindIndex(self.db.keybindings.items, function(k) return k == keyword end)
     local name = select(2,C_ToyBox.GetToyInfo(item.id))
+    local label = B2H:setTextColor(NOT_BOUND, "disabled")
     local enable = PlayerHasToy(item.id)
     local additionalText = ""
     local anchor = "TOPLEFT"
@@ -19,6 +20,10 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
     local anchor_to = "BOTTOMLEFT"
     local x = 0
     local y = 0
+
+    if item.key ~= "" then
+      label = item.key
+    end
 
     if not enable then additionalText = B2H:l10n("toyNotCollected") end
 
@@ -61,7 +66,8 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
     )
 
     -- Button
-    _G[keyword.."SectionButton"] = B2H:Button(_G[keyword.."Section"], "UIMenuButtonStretchTemplate", item.key, b2h.columnWidth, 24, B2H:setTextColor(additionalText, "error"), enable, "TOPLEFT", _G[keyword.."SectionSubtext"], "BOTTOMLEFT", 0, -20, function(self)
+    _G[keyword.."SectionButton"] = B2H:Button("keybindings", _G[keyword.."Section"], "UIMenuButtonStretchTemplate", label, b2h.columnWidth, 24, B2H:setTextColor(additionalText, "error"), enable, "TOPLEFT", _G[keyword.."SectionSubtext"], "BOTTOMLEFT", 0, -20,
+    function(self)
       function self:OnEvent(evt, ...)
         self[evt](self, evt, ...)
       end
@@ -80,9 +86,15 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
           self:Update(key, true)
         end
       end
+    end,
+    function()
+      _G[keyword.."SectionButton"]:Update(B2H.db.keybindings.items[keyword].key, true)
+    end,
+    function()
+      _G[keyword.."SectionButton"]:Update("", false)
     end)
     _G[keyword.."SectionButton"].Update = function(self, key, check)
-      B2H:Debug(B2H.db.others.debugging.keybindings, "self: ",self:GetName(), "key: ",key, "check: ",check)
+      B2H:Debug(B2H.db.others.debugging.keybindings, "key: ",key, "check: ",check)
       if check then self:CheckForDuplicateBinding(key) end
       -- update the button label and write to the SavedVariables
       if key == "" then
@@ -100,7 +112,7 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
       end
     end
     _G[keyword.."SectionButton"].CheckForDuplicateBinding = function(self, key)
-      B2H:Debug(B2H.db.others.debugging.keybindings, "self: ",self:GetName(), "key: ",key)
+      B2H:Debug(B2H.db.others.debugging.keybindings, "key: ",key)
       for kword, item in pairs(B2H.db.keybindings.items) do
         B2H:Debug(B2H.db.others.debugging.keybindings, "item.key: ",item.key, "kword: ",kword, "keyword: ",keyword)
         if item.key == key and kword ~= keyword then
@@ -108,6 +120,13 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
         end
       end
     end
+    local btn_Reset = B2H:Button("keybindings", panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", keybindingsContainer, "BOTTOMLEFT", 0, 20, function()
+      _G[AddonName .. "DB"].keybindings = CopyTable(self.defaults.keybindings)
+      EventRegistry:TriggerEvent("B2H.keybindings.OnReset")
+    end)
+    local btn_ClearAll = B2H:Button("keybindings", panel, "UIPanelButtonTemplate", B2H:l10n("clearAllBtnLbl"), nil, nil, nil, true, "TOPLEFT", btn_Reset, "TOPRIGHT", 20, 0, function()
+      EventRegistry:TriggerEvent("B2H.keybindings.OnClearAll")
+    end)
   end
   return 
 end

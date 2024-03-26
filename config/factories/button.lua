@@ -5,7 +5,7 @@ local AddonName, b2h = ...
 --------------------------------------------------------------------------------
 -- simple factory function for button creation,
 --------------------------------------------------------------------------------
-function B2H:Button(region, template, label, width, height, text, enabled, anchor, parent, p_anchor, x, y, clickCallback)
+function B2H:Button(type, region, template, label, width, height, text, enabled, anchor, parent, p_anchor, x, y, clickCallback, resetFunc, clearAllFunc)
   template = template or "UIPanelButtonTemplate"
   local btn = CreateFrame("Button", nil, region, template)
   btn:SetPoint(anchor, parent, p_anchor, x, y)
@@ -26,5 +26,11 @@ function B2H:Button(region, template, label, width, height, text, enabled, ancho
     btn:Disable()
     additionalButtonText:Show()
   end
+
+  resetFunc = resetFunc or function () return end
+  clearAllFunc = clearAllFunc or function () return end
+
+  EventRegistry:RegisterCallback("B2H."..type..".OnReset", resetFunc)
+  EventRegistry:RegisterCallback("B2H."..type..".OnClearAll", clearAllFunc)
   return btn
 end

@@ -5,7 +5,7 @@ local AddonName, b2h = ...
 --------------------------------------------------------------------------------
 -- Simple factory function for RadioButtons
 --------------------------------------------------------------------------------
-function B2H:RadioButton(region, option, value, setCon, anchor, parent, parent_anchor, x, y, checkFunc, updateFunc, resetFunc)
+function B2H:RadioButton(type, region, option, value, setCon, anchor, parent, parent_anchor, x, y, checkFunc, updateFunc, resetFunc)
   local rb = CreateFrame("CheckButton", nil, region, "UIRadioButtonTemplate ")
   rb.option = option
   rb.value = value
@@ -73,8 +73,10 @@ function B2H:RadioButton(region, option, value, setCon, anchor, parent, parent_a
     self.texture:SetTexture(B2H.T.b2h_radio_button_pushed)
     UpdateDB(self.value)
   end)
-
-  EventRegistry:RegisterCallback("B2H.OnResetFrames", function()
+  checkFunc = checkFunc or function () return end
+  updateFunc = updateFunc or function () return end
+  resetFunc = resetFunc or function () return end
+  EventRegistry:RegisterCallback("B2H."..type..".OnReset", function()
     local val = self.defaults.parent[option]
     if val == rb.value then rb:Click() end
   end)
