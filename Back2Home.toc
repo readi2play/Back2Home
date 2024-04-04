@@ -5,7 +5,6 @@
 ## Version: 0.6.4
 ## Author: |cFF78B064readi2play|r
 ## SavedVariables: Back2HomeDB
-## SavedVariablesPerCharacter: Back2HomeProfile
 ## AddonCompartmentFunc: Back2Home_Options
 ## Dependencies: readiLIB
 
