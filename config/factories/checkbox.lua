@@ -15,7 +15,7 @@ function B2H:Checkbox(type, parent, option, label, anchor, region, anchor_to, x,
 
   if not enabled then
     cb:Disable()
-    cb.Text:SetText(B2H:setTextColor(label, "disabled"))
+    cb.Text:SetText(B2H:setTextColor(label, "grey"))
   else
     cb.Text:SetText(B2H:setTextColor(label, "white"))
   end

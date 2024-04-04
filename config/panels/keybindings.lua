@@ -2,10 +2,8 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
-local data = {
-  ["addon"] = B2H.AddonAbbr,
-  ["keyword"] = "keybindings",
-}
+local data = CopyTable(B2H.data)
+data.keyword = "keybindings"
 --------------------------------------------------------------------------------
 -- CREATE KEYBINDINGS PANEL CONTENT
 --------------------------------------------------------------------------------
@@ -16,7 +14,7 @@ function B2H:FillKeybindingsPanel(panel, container)
     table.insert(keywords, keyword)
     local idx = B2H:FindIndex(self.db[data.keyword].items, function(k) return k == keyword end)
     local name = select(2,C_ToyBox.GetToyInfo(item.id))
-    local label = B2H:setTextColor(NOT_BOUND, "disabled")
+    local label = B2H:setTextColor(NOT_BOUND, "grey")
     local enable = PlayerHasToy(item.id)
     local additionalText = B2H:l10n("toyNotCollected")  
     local anchor = "TOPLEFT"
@@ -67,7 +65,7 @@ function B2H:FillKeybindingsPanel(panel, container)
 
     -- Button
     local opts = {
-      ["name"] = AddonName..READI.Helper.string:Capizalize(data.keyword)..READI.Helper.string:Capizalize(keyword).."Button",
+      ["name"] = AddonName..READI.Helper.string.Capitalize(data.keyword)..READI.Helper.string.Capitalize(keyword).."Button",
       ["region"] = _G[keyword.."Section"],
       ["template"] = "UIMenuButtonStretchTemplate",
       ["anchor"] =  "TOPLEFT",
@@ -110,7 +108,7 @@ function B2H:FillKeybindingsPanel(panel, container)
       if check then self:CheckForDuplicateBinding(key) end
       -- update the button label and write to the SavedVariables
       if key == "" then
-        self:SetText(B2H:setTextColor(NOT_BOUND, "disabled"))
+        self:SetText(B2H:setTextColor(NOT_BOUND, "grey"))
       else
         self:SetText(key)
       end
@@ -134,7 +132,7 @@ function B2H:FillKeybindingsPanel(panel, container)
     end
     local btn_Reset = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string:Capizalize(data.keyword).."ResetButton",
+        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ResetButton",
         region = panel,
         label = B2H:l10n("resetBtnLbl"),
         anchor = "BOTTOMLEFT",
@@ -147,7 +145,7 @@ function B2H:FillKeybindingsPanel(panel, container)
     )
     local btn_ClearAll = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string:Capizalize(data.keyword).."ClearAllButton",
+        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ClearAllButton",
         region = panel,
         label = B2H:l10n("clearAllBtnLbl"),
         parent = btn_Reset,

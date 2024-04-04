@@ -2,10 +2,9 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
-local data = {
-  ["addon"] = B2H.AddonAbbr,
-  ["keyword"] = "others"
-}
+local data = CopyTable(B2H.data)
+data.keyword = "others"
+
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
@@ -14,6 +13,7 @@ function B2H:FillOthersSettingsPanel(panel, container)
 
   for category, tbl in pairs(self.db.others) do
     local c_idx = B2H:FindIndex(categories, function(kw) return kw == category end)
+    local c_name = READI.Helper.string:Capitalize(category)
     local c_anchor = "TOPLEFT"
     local c_region = container
     local c_anchor_to = "BOTTOMLEFT"
@@ -47,88 +47,93 @@ function B2H:FillOthersSettingsPanel(panel, container)
     for option, active in pairs(tbl) do
       local idx = B2H:FindIndex(options, function(o) return o == option end)
       local anchor = "TOPLEFT"
-      local region = _G[category.."SectionTitle"]
-      local anchor_to = "BOTTOMLEFT"
+      local parent = _G[category.."SectionTitle"]
+      local p_anchor = "BOTTOMLEFT"
       local x = 0
       local y = 0
 
       if idx == 1 then
         y = -10
       elseif idx > 1 and idx <= b2h.columns then
-        region = _G[category.."Option_"..options[idx - 1]]
-        anchor_to = "TOPLEFT"
+        parent = _G[category.."Option_"..options[idx - 1]]
+        p_anchor = "TOPLEFT"
         x = b2h.columnWidth + 20
       else
-        region = _G[category.."Option_"..options[idx - b2h.columns]]
+        parent = _G[category.."Option_"..options[idx - b2h.columns]]
       end
 
-      _G[category.."Option_"..option] = B2H:Checkbox(data.keyword, container, option, B2H:l10n(option..B2H:CapitalizeString(category)), anchor, region, anchor_to, x, y, true,
-      -- UPDATE DATABASE - calllback function
-      function()
-        local cb = _G[category.."Option_"..option]
-        print(category, option, B2H.db.others[category][option], cb:GetChecked())
-        B2H.db.others[category][option] = cb:GetChecked()
-        print(category, option, B2H.db.others[category][option], cb:GetChecked())
-      end,
-      -- RESET TO DEFAULT - calllback function
-      function(evt)
-        local cb = _G[category.."Option_"..option]
-        if (B2H.defaults.others[category][option] and not cb:GetChecked()) or
-           (not B2H.defaults.others[category][option] and cb:GetChecked()) then
-          cb:Click("LeftButton", 1)
-        end
-      end,
-      -- SELECT ALL - calllback function
-      function(evt)
-        local cb = _G[category.."Option_"..option]
-        if not cb:GetChecked() then
-          cb:Click("LeftButton", 1)
-        end
-      end,
-      -- UNSELECT ALL - calllback function
-      function(evt)
-        local cb = _G[category.."Option_"..option]
-        if cb:GetChecked() then
-          cb:Click("LeftButton", 1)
-        end
-      end)
+      print(category, READI.Helper.string:Capitalize(category))
+      local opts = {
+        ["name"] = AddonName.."CheckBox"..c_name.."_"..option,
+        ["region"] = container,
+        ["label"] = B2H:l10n(option..c_name),
+        ["anchor"] = anchor,
+        ["parent"] = parent,
+        ["p_anchor"] = p_anchor,
+        ["offsetX"] = x,
+        ["offsetY"] = y,
+        ["onClick"] = function()
+          local cb = _G[category.."Option_"..option]
+          B2H.db.others[category][option] = cb:GetChecked()
+        end,
+        ["onReset"] = function()
+          local cb = _G[category.."Option_"..option]
+          if (B2H.defaults.others[category][option] and not cb:GetChecked()) or
+             (not B2H.defaults.others[category][option] and cb:GetChecked()) then
+            cb:Click("LeftButton", 1)
+          end
+        end,
+        ["onClear"] = function()
+          local cb = _G[category.."Option_"..option]
+          if cb:GetChecked() then cb:Click("LeftButton", 1) end
+        end,
+        ["onSelectAll"] = function()
+          local cb = _G[category.."Option_"..option]
+          if not cb:GetChecked() then cb:Click("LeftButton", 1) end
+        end,
+      }
+      _G[category.."Option_"..option] = READI:CheckBox(data, opts)
+      _G[category.."Option_"..option]:SetState()
+      _G[category.."Option_"..option]:SetChecked(B2H.db.others[category][option])
     end
 
     local btn_Reset = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string:Capizalize(data.keyword).."ResetButton",
+        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ResetButton",
         region = panel,
         label = B2H:l10n("resetBtnLbl"),
+        anchor = "BOTTOMLEFT",
         parent = container,
         offsetY = 20,
         onClick = function()
-          EventRegistry:TriggerEvent("B2H.others.OnReset")
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnReset"))
         end
       }
     )
+    print(btn_Reset:GetName())
     local btn_UnselectAll = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string:Capizalize(data.keyword).."UnselectAllButton",
+        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."UnselectAllButton",
         region = panel,
         label = B2H:l10n("unselectAllBtnLbl"),
         parent = btn_Reset,
         p_anchor = "TOPRIGHT",
         offsetX = 20,
         onClick = function()
-          EventRegistry:TriggerEvent(data.addon.."."..data.keyword..".OnUnselectAll")
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnClear"))
         end
       }
     )
     local btn_SelectAll = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string:Capizalize(data.keyword).."SelectAllButton",
+        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."SelectAllButton",
         region = panel,
         label = B2H:l10n("selectAllBtnLbl"),
         parent = btn_UnselectAll,
         p_anchor = "TOPRIGHT",
         offsetX = 20,
         onClick = function()
-          EventRegistry:TriggerEvent(data.addon.."."..data.keyword..".OnSelectAll")
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnSelectAll"))
         end
       }
     )

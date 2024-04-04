@@ -2,10 +2,8 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
-local data = {
-  ["addon"] = B2H.AddonAbbr,
-  ["keyword"] = "toys"
-}
+local data = CopyTable(B2H.data)
+data.keyword = "toys"
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
@@ -119,7 +117,7 @@ function B2H:FillToysPanel(panel, container)
 
   local btn_Reset = READI:Button(data,
     {
-      name = AddonName..READI.Helper.string:Capizalize(data.keyword).."ResetButton",
+      name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ResetButton",
       region = panel,
       label = B2H:l10n("resetBtnLbl"),
       anchor = "BOTTOMLEFT",
@@ -133,7 +131,7 @@ function B2H:FillToysPanel(panel, container)
 
   local btn_UnselectAll = READI:Button(data,
     {
-      name = AddonName..READI.Helper.string:Capizalize(data.keyword).."UnselectAllButton",
+      name = AddonName..READI.Helper.string.Capitalize(data.keyword).."UnselectAllButton",
       region = panel,
       label = B2H:l10n("unselectAllBtnLbl"),
       parent = btn_Reset,

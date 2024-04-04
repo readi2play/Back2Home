@@ -3,8 +3,9 @@ local AddonName, b2h = ...
 -- ADDON MAIN FRAME AND LOCALIZATION TABLE
 --------------------------------------------------------------------------------
 B2H = CreateFrame("Frame")
-
-B2H.AddonAbbr = "B2H"
+B2H.data = {
+  ["addon"] = "B2H",
+}
 B2H.Locale = GetLocale()
 B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
@@ -80,20 +81,12 @@ end
 --------------------------------------------------------------------------------
 -- COLOR SCHEME
 --------------------------------------------------------------------------------
-local colors = {
-  ["white"] = "|cFFF9F9F9",
-  ["disabled"] = "|cFF6B6B6B",
-  ["b2h"] = "|cFF00FAD4",
-  ["b2h_light"] = "|cFF9DFFF1",
-  ["readi"] = "|cFF78B064",
-  ["error"] = "|cFFCB2222",
-  ["warning"] = "|cFFCB882B",
-}
+B2H.Colors = CopyTable(READI.Colors)
+B2H.Colors.b2h = "00FAD4"
+B2H.Colors.b2h_light = "9DFFF1"
 
 function B2H:setTextColor(str, color)
-  if not str then return "" end
-  local txtColor = colors[color] or colors.white
-  return format("%s%s|r", txtColor, str)
+  return READI.Helper.color:Get(color, B2H.Colors, str)
 end
 --------------------------------------------------------------------------------
 -- HELPER FUNCTIONS
