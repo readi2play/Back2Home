@@ -62,7 +62,6 @@ function B2H:FillOthersSettingsPanel(panel, container)
         parent = _G[category.."Option_"..options[idx - b2h.columns]]
       end
 
-      print(category, READI.Helper.string:Capitalize(category))
       local opts = {
         ["name"] = AddonName.."CheckBox"..c_name.."_"..option,
         ["region"] = container,
@@ -110,7 +109,6 @@ function B2H:FillOthersSettingsPanel(panel, container)
         end
       }
     )
-    print(btn_Reset:GetName())
     local btn_UnselectAll = READI:Button(data,
       {
         name = AddonName..READI.Helper.string.Capitalize(data.keyword).."UnselectAllButton",
