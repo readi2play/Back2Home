@@ -10,6 +10,7 @@ b2h.L.frFR = {
   ["button"] = "Bouton",
   ["toyNotCollected"] = "Vous n'avez pas encore récupéré ce jouet.",
   ["debugging"] = "Debugging",
+  ["notifications"] = "Notifications",
   -- config panel titles
   ["toysAndFallbackPanelTitle"] = "Jouets et solutions de secours",
   ["frameSettingsPanelTitle"] = "Paramètres du cadre",
@@ -58,4 +59,7 @@ b2h.L.frFR = {
   ["toysDebugging"] = "Activer les rapports de débogage pour les jouets",
   ["positioningDebugging"] = "Activer les rapports de débogage pour le positionnement",
   ["keybindingsDebugging"] = "Activer les rapports de débogage pour les raccourcis clavier",
+  -- notification
+  ["toysNotifications"] = "Activer les notifications de chat pour les nouveaux jouets gagnés",
+  ["toyAddedNotification"] = "a été ajouté à votre coffre à jouets et activé dans la config. Visitez /home config si vous souhaitez désactiver ce jouet.",
 }

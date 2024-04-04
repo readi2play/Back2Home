@@ -4,6 +4,7 @@ local AddonName, b2h = ...
 --------------------------------------------------------------------------------
 B2H = CreateFrame("Frame")
 
+B2H.AddonAbbr = "B2H"
 B2H.Locale = GetLocale()
 B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}

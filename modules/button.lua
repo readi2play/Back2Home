@@ -4,14 +4,9 @@ local AddonName, b2h = ...
 -- CREATE BACK2HOME BUTTON
 --------------------------------------------------------------------------------
 local function CreateButton()
-  local btnSize = B2H.db.parent.button_size or B2H.defaults.parent.button_size
   -- button creation
   B2H.HSButton = B2H.HSButton or CreateFrame("Button", AddonName .. "Button", UIParent, "SecureActionButtonTemplate")
-  B2H.HSButton:SetSize(btnSize, btnSize)
-  B2H.HSButton:SetFrameStrata("TOOLTIP")
   B2H.HSButton:SetFrameLevel(100)
-  B2H.HSButton:SetPoint(B2H.db.parent.button_anchor, _G[B2H.db.parent.frame], B2H.db.parent.parent_anchor,
-    B2H.db.parent.position_x, B2H.db.parent.position_y)
   B2H.HSButton:SetHighlightTexture("common-roundhighlight", "ADD")
   B2H.HSButton:EnableKeyboard()
   
@@ -91,19 +86,23 @@ local function CreateButton()
     return nil
   end
 
-  function B2H.HSButton:RePosition()
+  function B2H.HSButton:SetPosition()
     B2H.HSButton:ClearAllPoints()
     B2H.HSButton:SetPoint(B2H.db.parent.button_anchor, _G[B2H.db.parent.frame], B2H.db.parent.parent_anchor,
       B2H.db.parent.position_x, B2H.db.parent.position_y)
   end
 
-  function B2H.HSButton:Resize()
-    local btnSize = B2H.db.parent.button_size or B2H.defaults.parent.button_size
+  function B2H.HSButton:ScaleButton()
+    local btnSize = B2H.db.parent.button_size
     B2H.HSButton:SetSize(btnSize, btnSize)
     B2H.HSButton.mask:SetSize(btnSize * 0.8, btnSize * 0.8)
   end
 
-  B2H.HSButton:Update()
+  function B2H.HSButton:SetStrata()
+    local btnStrata = B2H.db.parent.button_strata
+    if btnStrata == "PARENT" then return end
+    B2H.HSButton:SetFrameStrata(btnStrata)
+  end
   --------------------------------------------------------------------------------
   -- KEY BINDINGS
   --------------------------------------------------------------------------------
@@ -134,7 +133,6 @@ local function CreateButton()
   -- mask texture positioning
   B2H.HSButton.mask:SetPoint("CENTER", B2H.HSButton.icon, "CENTER", -0.2, -0.2)
   B2H.HSButton.mask:SetTexture(B2H.T.BLZ_TempPortraitAlphaMask, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-  B2H.HSButton.mask:SetSize(btnSize * 0.8, btnSize * 0.8)
   B2H.HSButton.icon:AddMaskTexture(B2H.HSButton.mask)
 
   b2h.isLogin = false
@@ -146,6 +144,9 @@ function B2H:InitializeButton()
   -- BUTTON CREATION
   --------------------------------------------------------------------------------
   B2H.HSButton = B2H.HSButton or CreateButton()
+  B2H.HSButton:ScaleButton()
+  B2H.HSButton:SetPosition()
+  B2H.HSButton:SetStrata()
   B2H.HSButton:Update(true)
 
   --------------------------------------------------------------------------------
@@ -177,6 +178,9 @@ function B2H:InitializeButton()
   end
   -- shuffle and update the button due to several events
   function BtnOnEvent(evt, addon)
+    if evt == "NEW_TOY_ADDED" then
+      EventRegistry:TriggerEvent("B2H.TOYS_UPDATED")      
+    end
     B2H.HSButton:Update(true)
   end
 
@@ -186,4 +190,3 @@ function B2H:InitializeButton()
   B2H.HSButton:SetScript("OnLeave", BtnOnLeave)
 
 end
-b2h.isLogin = isLogin

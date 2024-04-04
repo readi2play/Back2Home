@@ -19,14 +19,14 @@ function B2H:Checkbox(type, parent, option, label, anchor, region, anchor_to, x,
   else
     cb.Text:SetText(B2H:setTextColor(label, "white"))
   end
-
+  
   if type == "toys" then
     if not idx then
       cb:SetChecked(enabled and self.db.fallback.active)
     else
       cb:SetChecked(enabled and self.db[type][idx].active)
     end
-  elseif type == "debugging" then
+  elseif READI.Helper.table:Contains(type, READI.Helper.table:Keys(self.db.others)) then
     cb:SetChecked(self.db.others[type][option])
   end
 

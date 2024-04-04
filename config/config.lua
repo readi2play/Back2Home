@@ -93,6 +93,7 @@ function B2H:GenerateDefaultSettings()
       ["position_x"] = -20,
       ["position_y"] = 10,
       ["button_size"] = 32,
+      ["button_strata"] = "PARENT",
     },
     ["keybindings"] = {
       ["items"] = {
@@ -112,7 +113,10 @@ function B2H:GenerateDefaultSettings()
         ["toys"] = false,
         ["positioning"] = false,
         ["keybindings"] = false,
-      }
+      },
+      ["notifications"] = {
+        ["toys"] = true,
+      },
     },
   }  
 end

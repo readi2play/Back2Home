@@ -31,7 +31,7 @@ function B2H:EditBox(type, option, value, region, width, height, parent, x, y, r
     if not value then return end
 
     self.db.parent[option] = value
-    B2H.HSButton:RePosition()
+    B2H.HSButton:SetPosition()
   end
 
   eb:SetScript("OnEditFocusGained", function(self)

@@ -32,7 +32,7 @@ function B2H:RadioButton(type, region, option, value, setCon, anchor, parent, pa
 
   local function UpdateDB(val)
     self.db.parent[option] = val
-    B2H.HSButton:RePosition()
+    B2H.HSButton:SetPosition()
   end
 
   local function OnEnter(self)

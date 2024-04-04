@@ -10,6 +10,7 @@ b2h.L.deDE = {
   ["button"] = "Button",
   ["toyNotCollected"] = "Du hast dieses Spielzeug noch nicht gesammelt.",
   ["debugging"] = "Debugging",
+  ["notifications"] = "Benachrichtigungen",
   -- config panel titles
   ["toysAndFallbackPanelTitle"] = "Toys & Fallback",
   ["frameSettingsPanelTitle"] = "Frame-Einstellungen",
@@ -58,4 +59,7 @@ b2h.L.deDE = {
   ["toysDebugging"] = "Debugging-Reports für Spielzeuge aktivieren",
   ["positioningDebugging"] = "Debugging-Reports für Positionierung aktivieren",
   ["keybindingsDebugging"] = "Debugging-Reports für Keybindings aktivieren",
+  -- notification
+  ["toysNotifications"] = "Aktiviere Chat-Benachrichtugungen für neu erhaltene Spielzeuge",
+  ["toyAddedNotification"] = "wurde Ihrer Spielzeugsammlung hinzugefügt und in den Einstellungen aktiviert. Geben Sie /home config ein wenn sie dieses Spielzeug deaktivieren möchten.",
 }

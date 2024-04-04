@@ -10,6 +10,7 @@ b2h.L.enUS = {
   ["button"] = "Button",
   ["toyNotCollected"] = "You don't have this toy collected yet.",
   ["debugging"] = "Debugging",
+  ["notifications"] = "Notifications",
   -- config panel titles
   ["toysAndFallbackPanelTitle"] = "Toys & Fallback",
   ["frameSettingsPanelTitle"] = "Frame Settings",
@@ -58,4 +59,7 @@ b2h.L.enUS = {
   ["toysDebugging"] = "Enable debugging reports for toys",
   ["positioningDebugging"] = "Enable debugging reports for positioning",
   ["keybindingsDebugging"] = "Enable debugging reports for keybindings",
+  -- notification
+  ["toysNotifications"] = "Enable chat notifications for new earned toys",
+  ["toyAddedNotification"] = "has been added to your ToyBox and activated in the config. See /home config if you want to deactivate this toy.",
 }

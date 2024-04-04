@@ -2,30 +2,30 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
+local data = {
+  ["addon"] = B2H.AddonAbbr,
+  ["keyword"] = "keybindings",
+}
 --------------------------------------------------------------------------------
 -- CREATE KEYBINDINGS PANEL CONTENT
 --------------------------------------------------------------------------------
-function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
+function B2H:FillKeybindingsPanel(panel, container)
   local keywords = {}
 
-  for keyword, item in pairs(self.db.keybindings.items) do
+  for keyword, item in pairs(self.db[data.keyword].items) do
     table.insert(keywords, keyword)
-    local idx = B2H:FindIndex(self.db.keybindings.items, function(k) return k == keyword end)
+    local idx = B2H:FindIndex(self.db[data.keyword].items, function(k) return k == keyword end)
     local name = select(2,C_ToyBox.GetToyInfo(item.id))
     local label = B2H:setTextColor(NOT_BOUND, "disabled")
     local enable = PlayerHasToy(item.id)
-    local additionalText = ""
+    local additionalText = B2H:l10n("toyNotCollected")  
     local anchor = "TOPLEFT"
-    local region = keybindingsContainer
+    local region = container
     local anchor_to = "BOTTOMLEFT"
     local x = 0
     local y = 0
 
-    if item.key ~= "" then
-      label = item.key
-    end
-
-    if not enable then additionalText = B2H:l10n("toyNotCollected") end
+    if item.key ~= "" then label = item.key end
 
     if idx == 1 then
       anchor_to = "TOPLEFT"
@@ -38,7 +38,7 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
       region = _G[keywords[idx - 2].."Section"]
     end
 
-    _G[keyword.."Section"] = CreateFrame("Frame", nil, keybindingsContainer)
+    _G[keyword.."Section"] = CreateFrame("Frame", nil, container)
     _G[keyword.."Section"]:SetPoint(anchor, region, anchor_to, x,y)
     _G[keyword.."Section"]:SetWidth(b2h.columnWidth - 20)
     _G[keyword.."Section"]:SetHeight(1)
@@ -59,42 +59,54 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
     _G[keyword.."SectionSubtext"]:SetWidth(b2h.columnWidth)
     _G[keyword.."SectionSubtext"]:SetWordWrap(true)
     _G[keyword.."SectionSubtext"]:SetText(
-      B2H:setTextColor(B2H:l10n("keybindingSectionSubtext1"), "b2h_light").." "..
+      B2H:setTextColor(B2H:l10n(data.keyword.."SectionSubtext1"), "b2h_light").." "..
       B2H:setTextColor(name).." "..
-      B2H:setTextColor(B2H:l10n("keybindingSectionSubtext2"), "b2h_light").." "..
+      B2H:setTextColor(B2H:l10n(data.keyword.."SectionSubtext2"), "b2h_light").." "..
       B2H:setTextColor(AddonName, "b2h").."."
     )
 
     -- Button
-    _G[keyword.."SectionButton"] = B2H:Button("keybindings", _G[keyword.."Section"], "UIMenuButtonStretchTemplate", label, b2h.columnWidth, 24, B2H:setTextColor(additionalText, "error"), enable, "TOPLEFT", _G[keyword.."SectionSubtext"], "BOTTOMLEFT", 0, -20,
-    function(self)
-      function self:OnEvent(evt, ...)
-        self[evt](self, evt, ...)
-      end
-      
-      self:SetScript("OnEvent", self.OnEvent)
-
-      self:RegisterEvent("MODIFIER_STATE_CHANGED")
-      self:SetHighlightLocked(true)
-      -- check if the button is already waiting for a user input and remove that script if present
-      function self:MODIFIER_STATE_CHANGED(evt, key, down)
-        B2H:Debug(B2H.db.others.debugging.keybindings, "Event: ", evt, "Key: ", key, "Down: ", down)
-        -- return early to prevent non-modifier keys to be used as keybindings for the Back2Home button
-        -- this will leave the user being able to try another key
-        if down == 0 then
-          if not B2H:IsInList(key, B2H.KeysToBind) then return end
-          self:Update(key, true)
+    local opts = {
+      ["name"] = AddonName..READI.Helper.string:Capizalize(data.keyword)..READI.Helper.string:Capizalize(keyword).."Button",
+      ["region"] = _G[keyword.."Section"],
+      ["template"] = "UIMenuButtonStretchTemplate",
+      ["anchor"] =  "TOPLEFT",
+      ["parent"] =  _G[keyword.."SectionSubtext"],
+      ["offsetX"] = 0,      
+      ["offsetY"] = -20,
+      ["label"] = label,
+      ["text"] = B2H:setTextColor(additionalText, "error"),
+      ["condition"] = not enable,
+      ["enabled"] = enable,
+      ["width"] = b2h.columnWidth,
+      ["height"] = 24,
+      ["onClick"] = function(self)
+        function self:OnEvent(evt, ...)
+          self[evt](self, evt, ...)
         end
-      end
-    end,
-    function()
-      _G[keyword.."SectionButton"]:Update(B2H.db.keybindings.items[keyword].key, true)
-    end,
-    function()
-      _G[keyword.."SectionButton"]:Update("", false)
-    end)
+        
+        self:SetScript("OnEvent", self.OnEvent)
+  
+        self:RegisterEvent("MODIFIER_STATE_CHANGED")
+        self:SetHighlightLocked(true)
+        -- check if the button is already waiting for a user input and remove that script if present
+        function self:MODIFIER_STATE_CHANGED(evt, key, down)
+          B2H:Debug(B2H.db.others.debugging[data.keyword], "Event: ", evt, "Key: ", key, "Down: ", down)
+          -- return early to prevent non-modifier keys to be used as keybindings for the Back2Home button
+          -- this will leave the user being able to try another key
+          if down == 0 then
+            if not B2H:IsInList(key, B2H.KeysToBind) then return end
+            self:Update(key, true)
+          end
+        end
+      end,
+      ["onReset"] = function() _G[keyword.."SectionButton"]:Update(B2H.defaults[data.keyword].items[keyword].key, true) end,
+      ["onClear"] = function() _G[keyword.."SectionButton"]:Update("", true) end
+    }
+
+    _G[keyword.."SectionButton"] = READI:Button(data, opts)
     _G[keyword.."SectionButton"].Update = function(self, key, check)
-      B2H:Debug(B2H.db.others.debugging.keybindings, "key: ",key, "check: ",check)
+      B2H:Debug(B2H.db.others.debugging[data.keyword], "key: ",key, "check: ",check)
       if check then self:CheckForDuplicateBinding(key) end
       -- update the button label and write to the SavedVariables
       if key == "" then
@@ -102,7 +114,7 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
       else
         self:SetText(key)
       end
-      B2H.db.keybindings.items[keyword].key = key
+      B2H.db[data.keyword].items[keyword].key = key
       B2H:InitializeKeyBindings()
 
       self:SetHighlightLocked(false)
@@ -112,21 +124,40 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
       end
     end
     _G[keyword.."SectionButton"].CheckForDuplicateBinding = function(self, key)
-      B2H:Debug(B2H.db.others.debugging.keybindings, "key: ",key)
-      for kword, item in pairs(B2H.db.keybindings.items) do
-        B2H:Debug(B2H.db.others.debugging.keybindings, "item.key: ",item.key, "kword: ",kword, "keyword: ",keyword)
+      B2H:Debug(B2H.db.others.debugging[data.keyword], "key: ",key)
+      for kword, item in pairs(B2H.db[data.keyword].items) do
+        B2H:Debug(B2H.db.others.debugging[data.keyword], "item.key: ",item.key, "kword: ",kword, "keyword: ",keyword)
         if item.key == key and kword ~= keyword then
           _G[kword.."SectionButton"]:Update("", false)
         end
       end
     end
-    local btn_Reset = B2H:Button("keybindings", panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", keybindingsContainer, "BOTTOMLEFT", 0, 20, function()
-      _G[AddonName .. "DB"].keybindings = CopyTable(self.defaults.keybindings)
-      EventRegistry:TriggerEvent("B2H.keybindings.OnReset")
-    end)
-    local btn_ClearAll = B2H:Button("keybindings", panel, "UIPanelButtonTemplate", B2H:l10n("clearAllBtnLbl"), nil, nil, nil, true, "TOPLEFT", btn_Reset, "TOPRIGHT", 20, 0, function()
-      EventRegistry:TriggerEvent("B2H.keybindings.OnClearAll")
-    end)
+    local btn_Reset = READI:Button(data,
+      {
+        name = AddonName..READI.Helper.string:Capizalize(data.keyword).."ResetButton",
+        region = panel,
+        label = B2H:l10n("resetBtnLbl"),
+        anchor = "BOTTOMLEFT",
+        parent = container,
+        offsetY = 20,
+        onClick = function()
+          EventRegistry:TriggerEvent(data.addon.."."..data.keyword..".OnReset")
+        end
+      }
+    )
+    local btn_ClearAll = READI:Button(data,
+      {
+        name = AddonName..READI.Helper.string:Capizalize(data.keyword).."ClearAllButton",
+        region = panel,
+        label = B2H:l10n("clearAllBtnLbl"),
+        parent = btn_Reset,
+        p_anchor = "TOPRIGHT",
+        offsetX = 20,
+        onClick = function()
+          EventRegistry:TriggerEvent(data.addon.."."..data.keyword..".OnClear")
+        end
+      }
+    )
   end
   return 
 end
