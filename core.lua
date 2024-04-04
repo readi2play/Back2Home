@@ -4,6 +4,7 @@ local AddonName, b2h = ...
 --------------------------------------------------------------------------------
 B2H = CreateFrame("Frame")
 
+B2H.AddonAbbr = "B2H"
 B2H.Locale = GetLocale()
 B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
@@ -27,7 +28,7 @@ B2H.T = {
 EventRegistry:RegisterCallback("B2H.PLAYABLE", function(evt, isLogin, isReload)
   if not isLogin and not isReload then return end
   B2H:GenerateDefaultSettings()
-  _G[AddonName .. "DB"] = (_G[AddonName .. "DB"] or CopyTable(B2H.defaults))
+  _G[AddonName .. "DB"] = READI.Helper.table:Merge({}, B2H.defaults, _G[AddonName .. "DB"])
   B2H.db = _G[AddonName .. "DB"]
   B2H:InitializeOptions()
   B2H:InitializeButton()
