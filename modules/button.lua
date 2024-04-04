@@ -24,21 +24,15 @@ local function CreateButton()
     -- secure buttons are not allowed to change in fight therefore we have to prevent this by all meaning  
     if InCombatLockdown() then return end
 
-    B2H:Debug(B2H.db.others.debugging.general, "shuffle", shuffle )
-
     if shuffle then
       b2h.owned = B2H:FilterTable(B2H.db.toys, function(toy) return toy.active end);
       b2h.id = B2H.HSButton:Shuffle(#b2h.owned)
     end
 
-    B2H:Debug(B2H.db.others.debugging.general, "b2h.id", b2h.id )
-
     -- fall back to default Hearthstone ItemID, if no respective toy is collected yet
     if not b2h.id and B2H.db.fallback.active then
       b2h.id = B2H.db.fallback.id
     end
-
-    B2H:Debug(B2H.db.others.debugging.general, "b2h.id", b2h.id )
 
     if not b2h.id then
       B2H.HSButton.icon:SetTexture(nil)
@@ -67,8 +61,6 @@ local function CreateButton()
       _, b2h.name, b2h.icon = C_ToyBox.GetToyInfo(b2h.id)    
       B2H.HSButton.tooltip:SetToyByItemID(b2h.id)
     end
-
-    B2H:Debug(B2H.db.others.debugging.general, "b2h.id", b2h.id, "b2h.name", b2h.name, "b2h.icon", b2h.icon )
 
     B2H.HSButton.icon:SetTexture(b2h.icon)
 

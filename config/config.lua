@@ -109,7 +109,6 @@ function B2H:GenerateDefaultSettings()
     },
     ["others"] = {
       ["debugging"] = {
-        ["general"] = false,
         ["toys"] = false,
         ["positioning"] = false,
         ["keybindings"] = false,

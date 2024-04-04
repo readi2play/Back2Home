@@ -39,7 +39,7 @@ function B2H:FillOthersSettingsPanel(panel, container)
     _G[category.."SectionTitle"]:SetText(B2H:setTextColor(B2H:l10n(category), "b2h"))
     
     local options = READI.Helper.table:Keys(tbl)
-    local rows = #options / b2h.columns
+    local rows = ceil(#options / b2h.columns)
     if rows < 1 then rows = 1 end
 
     _G[category.."Section"]:SetHeight(26 * rows + 30 + _G[category.."SectionTitle"]:GetHeight())

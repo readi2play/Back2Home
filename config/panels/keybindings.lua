@@ -58,7 +58,7 @@ function B2H:FillKeybindingsPanel(panel, container)
     _G[keyword.."SectionSubtext"]:SetWordWrap(true)
     _G[keyword.."SectionSubtext"]:SetText(
       B2H:setTextColor(B2H:l10n(data.keyword.."SectionSubtext1"), "b2h_light").." "..
-      B2H:setTextColor(name).." "..
+      B2H:setTextColor(name, "white").." "..
       B2H:setTextColor(B2H:l10n(data.keyword.."SectionSubtext2"), "b2h_light").." "..
       B2H:setTextColor(AddonName, "b2h").."."
     )

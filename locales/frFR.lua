@@ -51,8 +51,8 @@ b2h.L.frFR = {
   ["parentFrameName"] = "Entrez le nom du cadre parent",
   ["buttonSizeSliderHeadline"] = "Taille du bouton",
   -- keybinding panel strings
-  ["keybindingSectionSubtext1"] = "Sélectionnez une touche de modification pour utiliser facilement votre",
-  ["keybindingSectionSubtext2"] = "via",
+  ["keybindingsSectionSubtext1"] = "Sélectionnez une touche de modification pour utiliser facilement votre",
+  ["keybindingsSectionSubtext2"] = "via",
   -- debugging
   ["allDebugging"] = "Activer tous les rapports de débogage",
   ["generalDebugging"] = "Activer les rapports de débogage généraux",

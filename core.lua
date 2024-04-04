@@ -66,12 +66,10 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   if down > 0 then
     local isNotBoundItem = B2H:Find(B2H.db.keybindings.items, function(k,v) return v.id == b2h.id end) == nil
     local boundItem = B2H:Find(B2H.db.keybindings.items, function(k,v) return v.key == key end)
-    B2H:Debug(self.db.others.debugging.general, "Key: ", key)
     if isNotBoundItem then
       b2h.restore = b2h.id
     end
     b2h.id = boundItem.id
-    B2H:Debug(self.db.others.debugging.general, "ID: ", b2h.id)
   else
     b2h.id = b2h.restore
   end

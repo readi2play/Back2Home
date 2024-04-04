@@ -51,8 +51,8 @@ b2h.L.enUS = {
   ["parentFrameName"] = "Enter the name of the parent frame",
   ["buttonSizeSliderHeadline"] = "Button Size",
   -- keybinding panel strings
-  ["keybindingSectionSubtext1"] = "Select a modifier key to easily use your",
-  ["keybindingSectionSubtext2"] = "via",
+  ["keybindingsSectionSubtext1"] = "Select a modifier key to easily use your",
+  ["keybindingsSectionSubtext2"] = "via",
   -- debugging
   ["allDebugging"] = "Enable all debugging reports",
   ["generalDebugging"] = "Enable general debugging reports",

@@ -51,8 +51,8 @@ b2h.L.deDE = {
   ["parentFrameName"] = "Gib den Namen des Parent Frames an",
   ["buttonSizeSliderHeadline"] = "Button-Größe",
   -- keybinding panel strings
-  ["keybindingSectionSubtext1"] = "Wähle eine Modifier-Taste und nutze deinen",
-  ["keybindingSectionSubtext2"] = "einfach mit",
+  ["keybindingsSectionSubtext1"] = "Wähle eine Modifier-Taste und nutze deinen",
+  ["keybindingsSectionSubtext2"] = "einfach mit",
   -- debugging
   ["allDebugging"] = "Alle Debugging-Reports aktivieren",
   ["generalDebugging"] = "Allgemeine Debugging-Reports aktivieren",
