@@ -37,7 +37,8 @@ b2h.L.deDE = {
   -- toys & fallback panel strings
   ["toysHeadline"] = "Verwendete Ruhestein-Spielzeuge",
   ["toysSubHeadline"] = "(Die Checkboxen für noch nicht gesammelte Spielzeuge sind automatisch deaktiviert.)",
-  ["fallbackText"] = "Dieses Item wird als Fallback verwendet, wenn keine Ruhestein-Spielzeuge gesammelt (oder in der Liste oben ausgewählt) wurden.",
+  ["fallbackHeadline"] = "Fallback",
+  ["fallbackText"] = "Verwende den normalen Ruhestein, wenn kein Spielzeug gesammelt (oder in der Liste oben ausgewählt) wurde.",
   -- frame anchoring panel strings
   ["btnAnchor1"] = "Wähle den Ankerpunkt des",
   ["btnAnchor2"] = "Buttons zur Positionierung am unten stehenden Frame.",
@@ -50,6 +51,7 @@ b2h.L.deDE = {
   ["parentFrameHeadline"] = "Parent Frame",
   ["parentFrameName"] = "Gib den Namen des Parent Frames an",
   ["buttonSizeSliderHeadline"] = "Button-Größe",
+  ["buttonStrataDropdownHeadline"] = "Button UI-Layer",
   -- keybinding panel strings
   ["keybindingsSectionSubtext1"] = "Wähle eine Modifier-Taste und nutze deinen",
   ["keybindingsSectionSubtext2"] = "einfach mit",

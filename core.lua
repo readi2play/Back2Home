@@ -9,6 +9,7 @@ B2H.data = {
 B2H.Locale = GetLocale()
 B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
+
 b2h.L = b2h.L
 --[[
   Create a simple texture mapping table

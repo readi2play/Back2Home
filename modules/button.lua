@@ -92,8 +92,12 @@ local function CreateButton()
 
   function B2H.HSButton:SetStrata()
     local btnStrata = B2H.db.parent.button_strata
-    if btnStrata == "PARENT" then return end
-    B2H.HSButton:SetFrameStrata(btnStrata)
+    if btnStrata == "PARENT" then
+      local parent = B2H.HSButton:GetParent() 
+      B2H.HSButton:SetFrameStrata(parent:GetFrameStrata())
+    else
+      B2H.HSButton:SetFrameStrata(btnStrata)
+    end
   end
   --------------------------------------------------------------------------------
   -- KEY BINDINGS

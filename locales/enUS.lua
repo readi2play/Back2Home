@@ -37,7 +37,8 @@ b2h.L.enUS = {
   -- toys & fallback panel strings
   ["toysHeadline"] = "Included Hearthstone Toys",
   ["toysSubHeadline"] = "(The Checkboxes for not yet collected toys are disabled)",
-  ["fallbackText"] = "This item will be used as a fallback if no Hearthstone Toys are collected or selected",
+  ["fallbackHeadline"] = "Fallback",
+  ["fallbackText"] = "Use default Hearthstone if no Hearthstone Toys are collected or selected above",
   -- frame anchoring panel strings
   ["btnAnchor1"] = "Select the anchor point of the",
   ["btnAnchor2"] = "Button that should be aligned to its parent frame.",
@@ -50,6 +51,7 @@ b2h.L.enUS = {
   ["parentFrameHeadline"] = "Parent frame",
   ["parentFrameName"] = "Enter the name of the parent frame",
   ["buttonSizeSliderHeadline"] = "Button Size",
+  ["buttonStrataDropdownHeadline"] = "Button Strata",
   -- keybinding panel strings
   ["keybindingsSectionSubtext1"] = "Select a modifier key to easily use your",
   ["keybindingsSectionSubtext2"] = "via",

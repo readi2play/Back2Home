@@ -37,7 +37,8 @@ b2h.L.frFR = {
   -- toys & fallback panel strings
   ["toysHeadline"] = "Jouets Hearthstone inclus",
   ["toysSubHeadline"] = "(Les cases à cocher pour les jouets non encore collectés sont désactivées)",
-  ["fallbackText"] = "Cet objet sera utilisé comme solution de secours si aucun jouet Hearthstone n'est collecté ou sélectionné.",
+  ["fallbackHeadline"] = "Solution de secours",
+  ["fallbackText"] = "Utiliser Hearthstone par défaut si aucun jouet Hearthstone n'est collecté ou sélectionné ci-dessus",
   -- frame anchoring panel strings
   ["btnAnchor1"] = "Sélectionnez le point d'ancrage du bouton",
   ["btnAnchor2"] = "qui doit être aligné sur son cadre parent.",
@@ -50,6 +51,7 @@ b2h.L.frFR = {
   ["parentFrameHeadline"] = "Cadre parent",
   ["parentFrameName"] = "Entrez le nom du cadre parent",
   ["buttonSizeSliderHeadline"] = "Taille du bouton",
+  ["buttonStrataDropdownHeadline"] = "Strates de l'interface utilisateur des boutons",
   -- keybinding panel strings
   ["keybindingsSectionSubtext1"] = "Sélectionnez une touche de modification pour utiliser facilement votre",
   ["keybindingsSectionSubtext2"] = "via",

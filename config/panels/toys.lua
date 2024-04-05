@@ -8,7 +8,6 @@ data.keyword = "toys"
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
 function B2H:FillToysPanel(panel, container)
-
   local toys_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   toys_sectionTitle:SetPoint("TOPLEFT", container, 0, -60)
   toys_sectionTitle:SetText(B2H:setTextColor(B2H:l10n("toysHeadline"), "b2h"))
@@ -17,57 +16,54 @@ function B2H:FillToysPanel(panel, container)
   toys_sectionSubTitle:SetPoint("TOPLEFT", toys_sectionTitle, 0, -20)
   toys_sectionSubTitle:SetText(B2H:setTextColor(B2H:l10n("toysSubHeadline"), "b2h_light"))
 
-  local numRows = #self.db.toys / b2h.columns
-  local lastToy = self.db.toys[#self.db.toys]
+  local numRows = #B2H.db.toys / b2h.columns
+  local lastToy = B2H.db.toys[#B2H.db.toys]
 
-  for i = 1, #self.db.toys do
-    local current = self.db.toys[i]
-    local owned = PlayerHasToy(current.id)
-    local label = select(2, C_ToyBox.GetToyInfo(current.id))
+  for i = 1, #B2H.db.toys do
+    local current = B2H.db.toys[i]
     local link = C_ToyBox.GetToyLink(current.id)
-    local anchor_to_element = toys_sectionSubTitle
-    local anchor_to = "BOTTOMLEFT"
-    local y = 0
-    local x = 0
+
+    local opts = {
+      name = AddonName .. "CheckButton_" .. current.id,
+      region = container,
+      owned = PlayerHasToy(current.id),
+      label = select(2, C_ToyBox.GetToyInfo(current.id)),
+      parent = toys_sectionSubTitle,
+      p_anchor = "BOTTOMLEFT",
+      offsetY = 0,
+      offsetX = 0,
+    }
     if i == 1 then
-      y = -10
+      opts.offsetY = -10
     elseif i > 1 and i <= b2h.columns then
-      anchor_to = "TOPLEFT"
-      anchor_to_element = _G[AddonName .. "CheckButton_" .. self.db.toys[i - 1].id]
-      x = b2h.columnWidth + 20
+      opts.p_anchor = "TOPLEFT"
+      opts.parent = _G[AddonName .. "CheckButton_" .. B2H.db.toys[i - 1].id]
+      opts.offsetX = b2h.columnWidth + 20
     else
-      anchor_to_element = _G[AddonName .. "CheckButton_" .. self.db.toys[i - b2h.columns].id]
+      opts.parent = _G[AddonName .. "CheckButton_" .. B2H.db.toys[i - b2h.columns].id]
     end
-    _G[AddonName .. "CheckButton_" .. current.id] = self:Checkbox(data.keyword, container, current.id, label, "TOPLEFT", anchor_to_element, anchor_to, x, y, owned,
-    -- UPDATE DATABASE - calllback function
-    function ()
+    opts.onClick = function()
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
       B2H.db.toys[i].active = cb:GetChecked()
       B2H.HSButton:Update(true)
-    end,
-    -- RESET TO DEFAULT - calllback function
-    function()
+    end
+    opts.onReset = function()
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
-      if B2H.defaults.toys[i].active and not cb:GetChecked() then
-        cb:Click()
-      end
-    end,
-    -- SELECT ALL - calllback function
-    function()
+      if B2H.defaults.toys[i].active and not cb:GetChecked() then cb:Click() end
+    end
+    opts.onClear = function()
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
-      if not cb:GetChecked() then
-        cb:Click()
-      end
-    end,
-    -- UNSELECT ALL - calllback function
-    function()
+      if cb:GetChecked() then cb:Click() end
+    end
+    opts.onSelectAll = function()
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
-      if cb:GetChecked() then
-        cb:Click()
-      end
-    end)
-    
-    _G[AddonName .. "CheckButton_" .. current.id].Update = function(evt)
+      if not cb:GetChecked() then cb:Click() end
+    end
+    _G[AddonName .. "CheckButton_" .. current.id] = READI:CheckBox(data, opts)
+    _G[AddonName .. "CheckButton_" .. current.id]:SetState(opts.owned)
+    _G[AddonName .. "CheckButton_" .. current.id]:SetChecked(opts.owned and B2H.db.toys[i].active)
+
+    _G[AddonName .. "CheckButton_" .. current.id].onNewToy = function(evt)
       local owned = PlayerHasToy(current.id) or B2H.IsTesting
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
       if owned and not cb:IsEnabled() then
@@ -77,43 +73,46 @@ function B2H:FillToysPanel(panel, container)
       end
     end
 
-    EventRegistry:RegisterCallback("B2H.TOYS_UPDATED", _G[AddonName .. "CheckButton_" .. current.id].Update)
+    EventRegistry:RegisterCallback("B2H.TOYS_UPDATED", _G[AddonName .. "CheckButton_" .. current.id].onNewToy)
     
   end
 
-  local fallback_sectionSubTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
+  local fallback_sectionSubTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   fallback_sectionSubTitle:SetPoint("TOPLEFT", _G[AddonName .. "CheckButton_" .. lastToy.id], "BOTTOMLEFT", 0, -20)
   fallback_sectionSubTitle:SetJustifyH("LEFT")
   fallback_sectionSubTitle:SetJustifyV("TOP")
   fallback_sectionSubTitle:SetWordWrap(true)
   fallback_sectionSubTitle:SetWidth(b2h.windowWidth - 20)
-  fallback_sectionSubTitle:SetText(B2H:setTextColor(B2H:l10n("fallbackText"), "b2h_light"))
+  fallback_sectionSubTitle:SetText(B2H:setTextColor(B2H:l10n("fallbackHeadline"), "b2h"))
 
-  _G[AddonName .. "CheckButton_" .. self.db.fallback.id] = self:Checkbox(data.keyword, container, self.db.fallback.id, GetItemInfo(self.db.fallback.id), "TOPLEFT", fallback_sectionSubTitle, "BOTTOMLEFT", 0, -10, true,
-    -- UPDATE DATABASE - calllback function
-    function()
+  _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id] = READI:CheckBox(data, {
+    name = AddonName .. "CheckButton_" .. B2H.db.fallback.id,
+    region = container,
+    label = B2H:l10n("fallbackText"),
+    parent = fallback_sectionSubTitle,
+    offsetY = -10,
+    onClick = function()
       local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
       B2H.db.fallback.active = cb:GetChecked()
-      B2H.HSButton:Update(true)
-    end,
-    -- RESET TO DEFAULT - calllback function
-    function()
-      local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
-      if (B2H.defaults.fallback.active and not cb:GetChecked()) then
-        cb:Click()
+      if not b2h.id or b2h.id == B2H.db.fallback.id then
+        B2H.HSButton:Update(true)
       end
     end,
-    -- SELECT ALL - calllback function
-    function()
+    onReset = function()
       local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
-      if not cb:GetChecked() then cb:Click() end
+      if B2H.defaults.fallback.active and not cb:GetChecked() then cb:Click() end
     end,
-    -- UNSELECT ALL - calllback function
-    function()
+    onClear = function()
       local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
       if cb:GetChecked() then cb:Click() end
+    end,
+    onSelectAll = function()
+      local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
+      if not cb:GetChecked() then cb:Click() end
     end
-  )
+  })
+  _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]:SetState()
+  _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]:SetChecked(B2H.db.fallback.active)
 
   local btn_Reset = READI:Button(data,
     {
@@ -138,7 +137,7 @@ function B2H:FillToysPanel(panel, container)
       p_anchor = "TOPRIGHT",
       offsetX = 20,
       onClick = function()
-        EventRegistry:TriggerEvent(data.addon.."."..data.keyword..".OnUnselectAll")
+        EventRegistry:TriggerEvent(data.addon.."."..data.keyword..".OnClear")
       end
     }
   )
