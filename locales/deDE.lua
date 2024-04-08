@@ -1,67 +1,127 @@
 local _, b2h = ...
 
-b2h.L = b2h.L or {}
-b2h.L.deDE = {
-  -- generic strings
-  ["resetBtnLbl"] = "Zurücksetzen",
-  ["clearAllBtnLbl"] = "Alle entfernen",
-  ["unselectAllBtnLbl"] = "Nichts auswählen",
-  ["selectAllBtnLbl"] = "Alles auswählen",
-  ["button"] = "Button",
-  ["toyNotCollected"] = "Du hast dieses Spielzeug noch nicht gesammelt.",
-  ["debugging"] = "Debugging",
-  ["notifications"] = "Benachrichtigungen",
-  -- config panel titles
-  ["toysAndFallbackPanelTitle"] = "Toys & Fallback",
-  ["frameSettingsPanelTitle"] = "Frame-Einstellungen",
-  ["keybindingSettingsPanelTitle"] = "Tastenbelegung",
-  ["otherSettingsPanelTitle"] = "Sonstige Einstelllungen",
-  -- reporting strings
-  ["reportInit"] = "Button wird initialisiert ...",
-  ["reportTooltip"] = "Tooltips werden geschrieben ...",
-  ["reportIcon"] = "Icon wird gemalt ...",
-  ["reportButton"] = "Button-Action wird aktualisiert ...",
-  ["reportShuffle"] = "Sammle Daten ...",
-  -- info panel strings
-  ["infoAddonVersion"] = "Version:",
-  ["infoAddonAuthor"] = "Autor:",
-  ["infoTextHeadline"] = "Chatkommandos",
-  ["infoText1"] = "Mische deine Ruhestein-Spielzeuge. Entweder durch Rechtsklick auf den",
-  ["infoText2"] = "Button oder, indem du eines der folgenden Chatkommandos verwendest:",
-  ["infoText3"] = "oder",
-  ["infoText4"] = "Öffne das Options-Fenster, um festzulegen, welche Ruhestein-Spielzeuge vom",
-  ["infoText5"] = "Button verwendet werden sollen, an welchem Frame der Button angehängt werden und ob das normale Ruhestein Item als Fallback verwendet werden soll, wenn noch keine Ruhestein-Spielzeuge gesammelt wurden.",
-  ["infoText6"] = "Danke dass du",
-  ["infoText7"] = "verwendest und bleib gesund",
-  ["infoText8"] = "Mit freundlichem Gruß",
-  -- toys & fallback panel strings
-  ["toysHeadline"] = "Verwendete Ruhestein-Spielzeuge",
-  ["toysSubHeadline"] = "(Die Checkboxen für noch nicht gesammelte Spielzeuge sind automatisch deaktiviert.)",
-  ["fallbackHeadline"] = "Fallback",
-  ["fallbackText"] = "Verwende den normalen Ruhestein, wenn kein Spielzeug gesammelt (oder in der Liste oben ausgewählt) wurde.",
-  -- frame anchoring panel strings
-  ["btnAnchor1"] = "Wähle den Ankerpunkt des",
-  ["btnAnchor2"] = "Buttons zur Positionierung am unten stehenden Frame.",
-  ["parentAnchorHeadline"] = "Ankerpunkt Parent Frame",
-  ["parentAnchor1"] = "Wähle den Ankerpunkt des Frames an dem der",
-  ["parentAnchor2"] = "Button ausgerichtet werden soll.",
-  ["offsetHeadline"] = "Versatz",
-  ["offsetX"] = "X-Achse",
-  ["offsetY"] = "Y-Achse",
-  ["parentFrameHeadline"] = "Parent Frame",
-  ["parentFrameName"] = "Gib den Namen des Parent Frames an",
-  ["buttonSizeSliderHeadline"] = "Button-Größe",
-  ["buttonStrataDropdownHeadline"] = "Button UI-Layer",
-  -- keybinding panel strings
-  ["keybindingsSectionSubtext1"] = "Wähle eine Modifier-Taste und nutze deinen",
-  ["keybindingsSectionSubtext2"] = "einfach mit",
-  -- debugging
-  ["allDebugging"] = "Alle Debugging-Reports aktivieren",
-  ["generalDebugging"] = "Allgemeine Debugging-Reports aktivieren",
-  ["toysDebugging"] = "Debugging-Reports für Spielzeuge aktivieren",
-  ["positioningDebugging"] = "Debugging-Reports für Positionierung aktivieren",
-  ["keybindingsDebugging"] = "Debugging-Reports für Keybindings aktivieren",
-  -- notification
-  ["toysNotifications"] = "Aktiviere Chat-Benachrichtugungen für neu erhaltene Spielzeuge",
-  ["toyAddedNotification"] = "wurde Ihrer Spielzeugsammlung hinzugefügt und in den Einstellungen aktiviert. Geben Sie /home config ein wenn sie dieses Spielzeug deaktivieren möchten.",
+B2H.L = B2H.L or {}
+B2H.L.deDE = {
+  config = {
+    panels = {
+      info = {
+        version = "Version",
+        author = {
+          none = "Autoren",
+          one = "Autor",
+          some = "Autoren",
+        },
+        commands = "Chat-Befehle",
+        text = [=[
+          Mische deine Hearthstone-Spielzeuge. Entweder durch einen Rechtsklick auf die %1$s-Schaltfläche oder durch Verwendung des folgenden Schrägstrichbefehls
+                    
+            %3$s
+
+
+          Verwenden Sie den folgenden Schrägstrichbefehl, um dieses Konfigurationsfenster zu öffnen, um die vom %1$s-Button verwendeten Hearthstone-Spielzeuge anzupassen, den Rahmen, in dem der Button verankert ist, und ob der standardmäßige Hearthstone als Fallback verwendet werden soll, wenn noch keine Hearthstone-Spielzeuge gesammelt wurden.
+                    
+            %4$s
+
+
+
+
+          Vielen Dank, dass Sie %1$s nutzen und bleiben Sie gesund
+                  
+
+          Mit freundlichem Gruß
+
+          %2$s
+        ]=]
+      },
+      toys = {
+        title = "Toys & Fallback",
+        headline = "Enthaltene Hearthstone-Spielzeuge",
+        subline = "(Die Checkboxen für noch nicht gesammelte Spielzeuge sind deaktiviert)",
+        fallback = {
+          headline = "Fallback",
+          label = "Standard-Ruhestein verwenden, wenn noch keine Ruhestein-Spielzeuge gesammelt oder oben ausgewählt wurden",
+        },
+      },
+      anchoring = {
+        title = "Frame-Einstellungen",
+        headline = "",
+        anchors = {
+          button ={
+            headline = "%s-Button",
+            subline = "Wähle den Ankerpunkt des %s-Buttons aus, der an seinem übergeordneten Frame ausgerichtet werden soll."
+          },
+          parent = {
+            headline = "Anker des übergeordneten Frames",
+            subline = "Wählen Sie den Ankerpunkt des übergeordneten Frames aus, an dem der %s-Button verankert werden soll."
+          }
+        },
+        offset = {
+          headline = "Versatz",
+          x = "X-Achse",
+          y = "Y-Achse",
+        },
+        parent = {
+          headline = "Übergeordneter Frame",
+          subline = "Gib den Namen des übergeordneten Frames ein",
+        },
+        button = {
+          size = {
+            headline = "Größe des Buttons"
+          },
+          strata = {
+            headline = "UI-Layer des Buttons"
+          },
+        },
+      },
+      keybindings = {
+        title = "Tastenbelegungen",
+        headline = "Tastenbelegungen",
+        section = "Wähle eine Modifier Taste aus, um deinen %s einfach über %s zu verwenden."
+      },
+      reporting = {
+        title = "Debugging & Reporting",
+        headline = "",
+        sections = {
+          debugging = "Debugging",
+          notifications = "Benachrichtigungen",
+        },
+        debugging = {
+          all = "Alle Debugging-Berichte aktivieren",
+          general = "Allgemeine Debugging-Berichte aktivieren",
+          toys = "Debugging-Berichte für Spielzeug aktivieren",
+          positioning = "Debugging-Berichte für die Positionierung aktivieren",
+          keybindings = "Debugging-Berichte für Tastenbelegungen aktivieren",
+          profiles = "Debugging-Berichte für Profile aktivieren"
+        },
+        notifications = {
+          toys = "Chat-Benachrichtigungen für neu erhaltene Spielzeuge aktivieren"
+        }
+      },
+      profiles = {
+        title = "Profile",
+        headline = "Profile",
+      }
+    }
+
+  },
+  reporting = {
+    general = {
+      init = "Button initialisieren ...",
+      tooltip = "Tooltips schreiben ...",
+      icon = "Icons malen ...",
+      action = "Buttonfunktionalität aktualisieren ...",
+      shuffle = "Sammle Daten zusammen ..."
+    },
+    debugging = {},
+    information = {
+      toys = {
+        notCollected = "Sie haben dieses Spielzeug noch nicht gesammelt."
+      }
+    },
+    notifications = {
+      toys = {
+        new = "%s wurde zu Ihrer ToyBox hinzugefügt und in der Konfiguration aktiviert. Sehen Sie sich die /home-Konfiguration an, wenn Sie dieses Spielzeug deaktivieren möchten."
+      }
+    },
+  },
 }

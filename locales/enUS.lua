@@ -1,67 +1,127 @@
 local _, b2h = ...
 
-b2h.L = b2h.L or {}
-b2h.L.enUS = {
-  -- generic strings
-  ["resetBtnLbl"] = "Reset",
-  ["clearAllBtnLbl"] = "Clear all",
-  ["unselectAllBtnLbl"] = "Unselect all",
-  ["selectAllBtnLbl"] = "Select all",
-  ["button"] = "Button",
-  ["toyNotCollected"] = "You don't have this toy collected yet.",
-  ["debugging"] = "Debugging",
-  ["notifications"] = "Notifications",
-  -- config panel titles
-  ["toysAndFallbackPanelTitle"] = "Toys & Fallback",
-  ["frameSettingsPanelTitle"] = "Frame Settings",
-  ["keybindingSettingsPanelTitle"] = "Keybindings",
-  ["otherSettingsPanelTitle"] = "Other Settings",
-  -- reporting strings
-  ["reportInit"] = "Initialize Button ...",
-  ["reportTooltip"] = "Writing tooltip ...",
-  ["reportIcon"] = "Painting the icon ...",
-  ["reportButton"] = "Updating Button-Action ...",
-  ["reportShuffle"] = "Gathering Data ...",
-  -- info panel strings
-  ["infoAddonVersion"] = "Version:",
-  ["infoAddonAuthor"] = "Author:",
-  ["infoTextHeadline"] = "Slash Commands",
-  ["infoText1"] = "Shuffle your Hearthstone Toys. Either via right clicking the",
-  ["infoText2"] = "Button or by using one of the following slash commands",
-  ["infoText3"] = "or",
-  ["infoText4"] = "Open this config panel, to adjust the Hearthstone Toys to be used by the",
-  ["infoText5"] = "Button, the Frame the Button is anchored to and if standard Hearthstone item should be used as a fallback if there are no Hearthstone Toys collected yet.",
-  ["infoText6"] = "Thanks for using",
-  ["infoText7"] = "and stay healthy",
-  ["infoText8"] = "yours sincerely",
-  -- toys & fallback panel strings
-  ["toysHeadline"] = "Included Hearthstone Toys",
-  ["toysSubHeadline"] = "(The Checkboxes for not yet collected toys are disabled)",
-  ["fallbackHeadline"] = "Fallback",
-  ["fallbackText"] = "Use default Hearthstone if no Hearthstone Toys are collected or selected above",
-  -- frame anchoring panel strings
-  ["btnAnchor1"] = "Select the anchor point of the",
-  ["btnAnchor2"] = "Button that should be aligned to its parent frame.",
-  ["parentAnchorHeadline"] = "Parent Frame Anchor",
-  ["parentAnchor1"] = "Select the parent frame's anchor point the",
-  ["parentAnchor2"] = "Button should be anchored to.",
-  ["offsetHeadline"] = "Position Offset",
-  ["offsetX"] = "X-Offset",
-  ["offsetY"] = "Y-Offset",
-  ["parentFrameHeadline"] = "Parent frame",
-  ["parentFrameName"] = "Enter the name of the parent frame",
-  ["buttonSizeSliderHeadline"] = "Button Size",
-  ["buttonStrataDropdownHeadline"] = "Button Strata",
-  -- keybinding panel strings
-  ["keybindingsSectionSubtext1"] = "Select a modifier key to easily use your",
-  ["keybindingsSectionSubtext2"] = "via",
-  -- debugging
-  ["allDebugging"] = "Enable all debugging reports",
-  ["generalDebugging"] = "Enable general debugging reports",
-  ["toysDebugging"] = "Enable debugging reports for toys",
-  ["positioningDebugging"] = "Enable debugging reports for positioning",
-  ["keybindingsDebugging"] = "Enable debugging reports for keybindings",
-  -- notification
-  ["toysNotifications"] = "Enable chat notifications for new earned toys",
-  ["toyAddedNotification"] = "has been added to your ToyBox and activated in the config. See /home config if you want to deactivate this toy.",
+B2H.L = B2H.L or {}
+B2H.L.enUS = {
+  config = {
+    panels = {
+      info = {
+        version = "Version",
+        author = {
+          none = "Authors",
+          one = "Author",
+          some = "Authors",
+        },
+        commands = "Slash Commands",
+        text = [=[
+          Shuffle your Hearthstone Toys. Either via right clicking the %1$s Button or by using the following slash command
+                    
+            %3$s
+
+
+          Use the following slash command to open this config panel to adjust the Hearthstone Toys used by the %1$s Button, the Frame the Button is anchored to and if the default Hearthstone should be used as a fallback if no Hearthstone Toys are collected yet.
+                    
+            %4$s
+
+
+
+
+          Thanks for using %1$s and stay healthy
+                    
+
+          yours sincerely
+
+          %2$s
+        ]=]
+      },
+      toys = {
+        title = "Toys & Fallback",
+        headline = "Included Hearthstone Toys",
+        subline = "(The Checkboxes for not yet collected toys are disabled)",
+        fallback = {
+          headline = "Fallback",
+          label = "Use default Hearthstone if no Hearthstone Toys are collected or selected above",
+        },
+      },
+      anchoring = {
+        title = "Frame Settings",
+        headline = "",
+        anchors = {
+          button ={
+            headline = "%s Button",
+            subline = "Select the anchor point of the %s Button that should be aligned to its parent frame."
+          },
+          parent = {
+            headline = "Parent Frame Anchor",
+            subline = "Select the parent frame's anchor point the %s Button should be anchored to."
+          }
+        },
+        offset = {
+          headline = "Position Offset",
+          x = "X-Offset",
+          y = "Y-Offset",
+        },
+        parent = {
+          headline = "Parent Frame",
+          subline = "Enter the name of the parent frame",
+        },
+        button = {
+          size = {
+            headline = "Button Size"
+          },
+          strata = {
+            headline = "Button Strata"
+          },
+        },
+      },
+      keybindings = {
+        title = "Keybindings",
+        headline = "Keybindings",
+        section = "Select a modifier key to easily use your %s via %s."
+      },
+      reporting = {
+        title = "Debugging & Reporting",
+        headline = "",
+        sections = {
+          debugging = "Debugging",
+          notifications = "Notifications",
+        },
+        debugging = {
+          all = "Enable all debugging reports",
+          general = "Enable general debugging reports",
+          toys = "Enable debugging reports for toys",
+          positioning = "Enable debugging reports for positioning",
+          keybindings = "Enable debugging reports for keybindings",
+          profiles = "Enable debugging reports for profiles"
+        },
+        notifications = {
+          toys = "Enable chat notifications for new earned toys"
+        }
+      },
+      profiles = {
+        title = "Profiles",
+        headline = "Profiles",
+      }
+    }
+
+  },
+  reporting = {
+    general = {
+      init = "Initialize Button ...",
+      tooltip = "Writing tooltips ...",
+      icon = "Painting icons ...",
+      action = "Updating button action ...",
+      shuffle = "Gathering data ..."
+    },
+    debugging = {},
+    information = {
+      toys = {
+        notCollected = "You don't have this toy collected yet."
+      }
+    },
+    notifications = {
+      toys = {
+        new = "%s has been added to your ToyBox and activated in the config. See /home config if you want to deactivate this toy."
+      }
+    },
+  },
 }

@@ -7,14 +7,14 @@ data.keyword = "toys"
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
-function B2H:FillToysPanel(panel, container)
+function B2H:FillToysPanel(panel, container, anchorline)
   local toys_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-  toys_sectionTitle:SetPoint("TOPLEFT", container, 0, -60)
-  toys_sectionTitle:SetText(B2H:setTextColor(B2H:l10n("toysHeadline"), "b2h"))
+  toys_sectionTitle:SetPoint("TOPLEFT", anchorline, 0, -20)
+  toys_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.toys.headline", "B2H.L"), "b2h"))
 
   local toys_sectionSubTitle = container:CreateFontString("ARTWORK", nil, "GameFontNormal")
   toys_sectionSubTitle:SetPoint("TOPLEFT", toys_sectionTitle, 0, -20)
-  toys_sectionSubTitle:SetText(B2H:setTextColor(B2H:l10n("toysSubHeadline"), "b2h_light"))
+  toys_sectionSubTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.toys.subline", "B2H.L"), "b2h_light"))
 
   local numRows = #B2H.db.toys / b2h.columns
   local lastToy = B2H.db.toys[#B2H.db.toys]
@@ -69,7 +69,7 @@ function B2H:FillToysPanel(panel, container)
       if owned and not cb:IsEnabled() then
         cb:Enable()
         cb:Click()
-        READI.Debug:Notify(B2H:setTextColor(AddonName, "b2h"), B2H.db.others.notifications[data.keyword], link, B2H:l10n("toyAddedNotification"))
+        READI.Debug:Notify(B2H:setTextColor(AddonName, "b2h"), B2H.db.reporting.notifications[data.keyword], link, READI:l10n("reporting.notifications.toys.new", "B2H.L"))
       end
     end
 
@@ -83,12 +83,12 @@ function B2H:FillToysPanel(panel, container)
   fallback_sectionSubTitle:SetJustifyV("TOP")
   fallback_sectionSubTitle:SetWordWrap(true)
   fallback_sectionSubTitle:SetWidth(b2h.windowWidth - 20)
-  fallback_sectionSubTitle:SetText(B2H:setTextColor(B2H:l10n("fallbackHeadline"), "b2h"))
+  fallback_sectionSubTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.toys.fallback.headline", "B2H.L"), "b2h"))
 
   _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id] = READI:CheckBox(data, {
     name = AddonName .. "CheckButton_" .. B2H.db.fallback.id,
     region = container,
-    label = B2H:l10n("fallbackText"),
+    label = READI:l10n("config.panels.toys.fallback.label", "B2H.L"),
     parent = fallback_sectionSubTitle,
     offsetY = -10,
     onClick = function()
@@ -118,7 +118,7 @@ function B2H:FillToysPanel(panel, container)
     {
       name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ResetButton",
       region = panel,
-      label = B2H:l10n("resetBtnLbl"),
+      label = READI:l10n("general.labels.buttons.reset"),
       anchor = "BOTTOMLEFT",
       parent = container,
       offsetY = 20,
@@ -132,7 +132,7 @@ function B2H:FillToysPanel(panel, container)
     {
       name = AddonName..READI.Helper.string.Capitalize(data.keyword).."UnselectAllButton",
       region = panel,
-      label = B2H:l10n("unselectAllBtnLbl"),
+      label = READI:l10n("general.labels.buttons.unselectAll"),
       parent = btn_Reset,
       p_anchor = "TOPRIGHT",
       offsetX = 20,
