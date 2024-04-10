@@ -2,107 +2,115 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
+local data = CopyTable(B2H.data)
+data.keyword = "keybindings"
 --------------------------------------------------------------------------------
 -- CREATE KEYBINDINGS PANEL CONTENT
 --------------------------------------------------------------------------------
-function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
-  local keywords = {}
+function B2H:FillKeybindingsPanel(panel, container, anchorline)
+  local itemKeys = READI.Helper.table:Keys(B2H.db[data.keyword].items)
 
-  for keyword, item in pairs(self.db.keybindings.items) do
-    table.insert(keywords, keyword)
-    local idx = B2H:FindIndex(self.db.keybindings.items, function(k) return k == keyword end)
+  for itmKey, item in pairs(B2H.db[data.keyword].items) do
+    local idx = READI.Helper.table:Get(itemKeys, function(kw) return kw == itmKey end)
     local name = select(2,C_ToyBox.GetToyInfo(item.id))
-    local label = B2H:setTextColor(NOT_BOUND, "disabled")
+    local label = B2H:setTextColor(NOT_BOUND, "grey")
     local enable = PlayerHasToy(item.id)
-    local additionalText = ""
+    local additionalText = READI:l10n("reporting.information.toys.notCollected", "B2H.L")  
     local anchor = "TOPLEFT"
-    local region = keybindingsContainer
+    local region = anchorline
     local anchor_to = "BOTTOMLEFT"
     local x = 0
     local y = 0
 
-    if item.key ~= "" then
-      label = item.key
-    end
-
-    if not enable then additionalText = B2H:l10n("toyNotCollected") end
+    if item.key ~= "" then label = item.key end
 
     if idx == 1 then
       anchor_to = "TOPLEFT"
-      y = -40
     elseif idx > 1 and idx <= b2h.columns then
       anchor_to = "TOPLEFT"
-      region = _G[keywords[idx - 1].."Section"]
+      region = _G[itemKeys[idx - 1].."Section"]
       x = b2h.columnWidth + 20
     else
-      region = _G[keywords[idx - 2].."Section"]
+      region = _G[itemKeys[idx - 2].."Section"]
     end
 
-    _G[keyword.."Section"] = CreateFrame("Frame", nil, keybindingsContainer)
-    _G[keyword.."Section"]:SetPoint(anchor, region, anchor_to, x,y)
-    _G[keyword.."Section"]:SetWidth(b2h.columnWidth - 20)
-    _G[keyword.."Section"]:SetHeight(1)
-    -- _G[keyword.."Section"].texture = _G[keyword.."Section"]:CreateTexture()
-    -- _G[keyword.."Section"].texture:SetAllPoints(_G[keyword.."Section"])
-    -- _G[keyword.."Section"].texture:SetColorTexture(0,0.98,0.83,.5)
-
+    _G[itmKey.."Section"] = CreateFrame("Frame", nil, container)
+    _G[itmKey.."Section"]:SetPoint(anchor, region, anchor_to, x,y)
+    _G[itmKey.."Section"]:SetWidth(b2h.columnWidth - 20)
+    _G[itmKey.."Section"]:SetHeight(1)
+    -- _G[itmKey.."Section"].texture = _G[itmKey.."Section"]:CreateTexture()
+    -- _G[itmKey.."Section"].texture:SetAllPoints(_G[itmKey.."Section"])
+    -- _G[itmKey.."Section"].texture:SetColorTexture(0,0.98,0.83,.5)
     -- section headline
-    _G[keyword.."SectionTitle"] = _G[keyword.."Section"]:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-    _G[keyword.."SectionTitle"]:SetPoint("TOPLEFT", _G[keyword.."Section"], "TOPLEFT", 0, -20)
-    _G[keyword.."SectionTitle"]:SetText(B2H:setTextColor(name, "b2h"))
-
+    _G[itmKey.."SectionTitle"] = _G[itmKey.."Section"]:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
+    _G[itmKey.."SectionTitle"]:SetPoint("TOPLEFT", _G[itmKey.."Section"], "TOPLEFT", 0, -20)
+    _G[itmKey.."SectionTitle"]:SetText(B2H:setTextColor(name, "b2h"))
     -- section subtext
-    _G[keyword.."SectionSubtext"] = _G[keyword.."Section"]:CreateFontString("ARTWORK", nil, "GameFontHighlight")
-    _G[keyword.."SectionSubtext"]:SetPoint("TOPLEFT", _G[keyword.."SectionTitle"], "TOPLEFT", 0, -20)
-    _G[keyword.."SectionSubtext"]:SetJustifyH("LEFT")
-    _G[keyword.."SectionSubtext"]:SetJustifyV("TOP")
-    _G[keyword.."SectionSubtext"]:SetWidth(b2h.columnWidth)
-    _G[keyword.."SectionSubtext"]:SetWordWrap(true)
-    _G[keyword.."SectionSubtext"]:SetText(
-      B2H:setTextColor(B2H:l10n("keybindingSectionSubtext1"), "b2h_light").." "..
-      B2H:setTextColor(name).." "..
-      B2H:setTextColor(B2H:l10n("keybindingSectionSubtext2"), "b2h_light").." "..
-      B2H:setTextColor(AddonName, "b2h").."."
+    _G[itmKey.."SectionSubtext"] = _G[itmKey.."Section"]:CreateFontString("ARTWORK", nil, "GameFontHighlight")
+    _G[itmKey.."SectionSubtext"]:SetPoint("TOPLEFT", _G[itmKey.."SectionTitle"], "TOPLEFT", 0, -20)
+    _G[itmKey.."SectionSubtext"]:SetJustifyH("LEFT")
+    _G[itmKey.."SectionSubtext"]:SetJustifyV("TOP")
+    _G[itmKey.."SectionSubtext"]:SetWidth(b2h.columnWidth)
+    _G[itmKey.."SectionSubtext"]:SetWordWrap(true)
+    _G[itmKey.."SectionSubtext"]:SetText(
+      B2H:setTextColor(
+        format(
+          READI:l10n("config.panels.keybindings.section", "B2H.L"),
+          B2H:setTextColor(name, "white"),
+          B2H:setTextColor(AddonName, "b2h")
+        ),
+        "b2h_light"
+      )
     )
-
     -- Button
-    _G[keyword.."SectionButton"] = B2H:Button("keybindings", _G[keyword.."Section"], "UIMenuButtonStretchTemplate", label, b2h.columnWidth, 24, B2H:setTextColor(additionalText, "error"), enable, "TOPLEFT", _G[keyword.."SectionSubtext"], "BOTTOMLEFT", 0, -20,
-    function(self)
-      function self:OnEvent(evt, ...)
-        self[evt](self, evt, ...)
-      end
-      
-      self:SetScript("OnEvent", self.OnEvent)
-
-      self:RegisterEvent("MODIFIER_STATE_CHANGED")
-      self:SetHighlightLocked(true)
-      -- check if the button is already waiting for a user input and remove that script if present
-      function self:MODIFIER_STATE_CHANGED(evt, key, down)
-        B2H:Debug(B2H.db.others.debugging.keybindings, "Event: ", evt, "Key: ", key, "Down: ", down)
-        -- return early to prevent non-modifier keys to be used as keybindings for the Back2Home button
-        -- this will leave the user being able to try another key
-        if down == 0 then
-          if not B2H:IsInList(key, B2H.KeysToBind) then return end
-          self:Update(key, true)
+    local opts = {
+      ["name"] = AddonName..READI.Helper.string.Capitalize(data.keyword)..READI.Helper.string.Capitalize(itmKey).."Button",
+      ["region"] = _G[itmKey.."Section"],
+      ["template"] = "UIMenuButtonStretchTemplate",
+      ["anchor"] =  "TOPLEFT",
+      ["parent"] =  _G[itmKey.."SectionSubtext"],
+      ["offsetX"] = 0,      
+      ["offsetY"] = -20,
+      ["label"] = label,
+      ["text"] = B2H:setTextColor(additionalText, "error"),
+      ["condition"] = not enable,
+      ["enabled"] = enable,
+      ["width"] = b2h.columnWidth,
+      ["height"] = 24,
+      ["onClick"] = function(self)
+        function self:OnEvent(evt, ...)
+          self[evt](self, evt, ...)
         end
-      end
-    end,
-    function()
-      _G[keyword.."SectionButton"]:Update(B2H.db.keybindings.items[keyword].key, true)
-    end,
-    function()
-      _G[keyword.."SectionButton"]:Update("", false)
-    end)
-    _G[keyword.."SectionButton"].Update = function(self, key, check)
-      B2H:Debug(B2H.db.others.debugging.keybindings, "key: ",key, "check: ",check)
+        
+        self:SetScript("OnEvent", self.OnEvent)
+  
+        self:RegisterEvent("MODIFIER_STATE_CHANGED")
+        self:SetHighlightLocked(true)
+        -- check if the button is already waiting for a user input and remove that script if present
+        function self:MODIFIER_STATE_CHANGED(evt, key, down)
+          B2H:Debug(B2H.db.reporting.debugging[data.keyword], "Event: ", evt, "Key: ", key, "Down: ", down)
+          -- return early to prevent non-modifier keys to be used as keybindings for the Back2Home button
+          -- this will leave the user being able to try another key
+          if down == 0 then
+            if not B2H:IsInList(key, B2H.KeysToBind) then return end
+            self:Update(key, true)
+          end
+        end
+      end,
+      ["onReset"] = function() _G[itmKey.."SectionButton"]:Update(B2H.defaults[data.keyword].items[itmKey].key, true) end,
+      ["onClear"] = function() _G[itmKey.."SectionButton"]:Update("", true) end
+    }
+    _G[itmKey.."SectionButton"] = READI:Button(data, opts)
+    _G[itmKey.."SectionButton"].Update = function(self, key, check)
+      B2H:Debug(B2H.db.reporting.debugging[data.keyword], "key: ",key, "check: ",check)
       if check then self:CheckForDuplicateBinding(key) end
       -- update the button label and write to the SavedVariables
       if key == "" then
-        self:SetText(B2H:setTextColor(NOT_BOUND, "disabled"))
+        self:SetText(B2H:setTextColor(NOT_BOUND, "grey"))
       else
         self:SetText(key)
       end
-      B2H.db.keybindings.items[keyword].key = key
+      B2H.db[data.keyword].items[itmKey].key = key
       B2H:InitializeKeyBindings()
 
       self:SetHighlightLocked(false)
@@ -111,22 +119,41 @@ function B2H:FillKeybindingsPanel(panel, keybindingsContainer)
         self:SetScript("OnEvent", nil)
       end
     end
-    _G[keyword.."SectionButton"].CheckForDuplicateBinding = function(self, key)
-      B2H:Debug(B2H.db.others.debugging.keybindings, "key: ",key)
-      for kword, item in pairs(B2H.db.keybindings.items) do
-        B2H:Debug(B2H.db.others.debugging.keybindings, "item.key: ",item.key, "kword: ",kword, "keyword: ",keyword)
-        if item.key == key and kword ~= keyword then
+    _G[itmKey.."SectionButton"].CheckForDuplicateBinding = function(self, key)
+      B2H:Debug(B2H.db.reporting.debugging[data.keyword], "key: ",key)
+      for kword, item in pairs(B2H.db[data.keyword].items) do
+        B2H:Debug(B2H.db.reporting.debugging[data.keyword], "item.key: ",item.key, "kword: ",kword, "keyword: ",itmKey)
+        if item.key == key and kword ~= itmKey then
           _G[kword.."SectionButton"]:Update("", false)
         end
       end
     end
-    local btn_Reset = B2H:Button("keybindings", panel, "UIPanelButtonTemplate", B2H:l10n("resetBtnLbl"), nil, nil, nil, true, "BOTTOMLEFT", keybindingsContainer, "BOTTOMLEFT", 0, 20, function()
-      _G[AddonName .. "DB"].keybindings = CopyTable(self.defaults.keybindings)
-      EventRegistry:TriggerEvent("B2H.keybindings.OnReset")
-    end)
-    local btn_ClearAll = B2H:Button("keybindings", panel, "UIPanelButtonTemplate", B2H:l10n("clearAllBtnLbl"), nil, nil, nil, true, "TOPLEFT", btn_Reset, "TOPRIGHT", 20, 0, function()
-      EventRegistry:TriggerEvent("B2H.keybindings.OnClearAll")
-    end)
+    local btn_Reset = READI:Button(data,
+      {
+        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ResetButton",
+        region = panel,
+        label = READI:l10n("general.labels.buttons.reset"),
+        anchor = "BOTTOMLEFT",
+        parent = container,
+        offsetY = 20,
+        onClick = function()
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnReset"))
+        end
+      }
+    )
+    local btn_ClearAll = READI:Button(data,
+      {
+        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ClearAllButton",
+        region = panel,
+        label = READI:l10n("general.labels.buttons.unselectAll"),
+        parent = btn_Reset,
+        p_anchor = "TOPRIGHT",
+        offsetX = 20,
+        onClick = function()
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnClear"))
+        end
+      }
+    )
   end
   return 
 end

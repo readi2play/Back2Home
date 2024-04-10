@@ -2,13 +2,18 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
+local configKeys = {"info", "toys", "anchoring", "keybindings", "reporting"}
+local data = CopyTable(B2H.data)
+data.keyword = "config"
+B2H.config = {}
+
 b2h.windowWidth = SettingsPanel.Container:GetWidth()
 b2h.columns = 2
 b2h.columnWidth = b2h.windowWidth / b2h.columns - 20
 --------------------------------------------------------------------------------
 -- DEFAULT SETTINGS
 --------------------------------------------------------------------------------
-function B2H:GenerateDefaultSettings()
+function B2H:InitializeDefaultSettings()
   B2H.defaults = {
     ["toys"] = {
       {
@@ -93,6 +98,7 @@ function B2H:GenerateDefaultSettings()
       ["position_x"] = -20,
       ["position_y"] = 10,
       ["button_size"] = 32,
+      ["button_strata"] = "PARENT",
     },
     ["keybindings"] = {
       ["items"] = {
@@ -106,36 +112,55 @@ function B2H:GenerateDefaultSettings()
         },
       }
     },
-    ["others"] = {
+    ["reporting"] = {
       ["debugging"] = {
-        ["general"] = false,
         ["toys"] = false,
         ["positioning"] = false,
         ["keybindings"] = false,
-      }
+        ["profiles"] = false,
+      },
+      ["notifications"] = {
+        ["toys"] = true,
+      },
     },
   }  
 end
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
-function B2H:InitializeOptions()
-  -- main panel
-  InterfaceOptions_AddCategory( B2H:CreateConfigPanel("info", true, AddonName, B2H.FillInfoPanel) )
-  -- sub panel: Toys & Fallback
-  InterfaceOptions_AddCategory( B2H:CreateConfigPanel("toys", false, B2H:l10n("toysAndFallbackPanelTitle"), B2H.FillToysPanel) )
-  -- sub panel: Frame Settings
-  InterfaceOptions_AddCategory( B2H:CreateConfigPanel("anchoring", false, B2H:l10n("frameSettingsPanelTitle"), B2H.FillAnchoringPanel) )
-  -- sub panel: Keybinding Settings
-  InterfaceOptions_AddCategory( B2H:CreateConfigPanel("keybindings", false, B2H:l10n("keybindingSettingsPanelTitle"), B2H.FillKeybindingsPanel) )
-  -- sub panel: General Settings
-  InterfaceOptions_AddCategory( B2H:CreateConfigPanel("other", false, B2H:l10n("otherSettingsPanelTitle"), B2H.FillOthersSettingsPanel) )
+function B2H:SetupConfig()
+  for i,key in ipairs(configKeys) do
+    B2H.config[key] = B2H.config[key] or {}
+    local panelName = READI:l10n(format("config.panels.%s.title", key), "B2H.L")
+    local parentPanel = nil
+    local titleText = READI:l10n(format("config.panels.%s.title", key), "B2H.L")
+
+    if key == "info" then
+      panelName = AddonName
+      titleText = AddonName
+    else
+      parentPanel = AddonName
+    end
+
+    B2H.config[key].panel, B2H.config[key].container, B2H.config[key].anchorline = READI:OptionPanel(data, {
+      name = panelName,
+      parent = parentPanel,
+      title = {
+        text = titleText,
+        color = "b2h"
+      }
+    })
+    InterfaceOptions_AddCategory(B2H.config[key].panel)
+  end
 end
--- a bit more efficient to register/unregister the event when it fires a lot
-function B2H:UpdateEvent(value, event)
-  if value then
-    self:RegisterEvent(event)
-  else
-    self:UnregisterEvent(event)
+--------------------------------------------------------------------------------
+-- OPTIONS PANEL INITIALIZATION
+--------------------------------------------------------------------------------
+function B2H:InitializeOptions()
+  for i,key in ipairs(configKeys) do
+    local callbackKey = format("Fill%sPanel", READI.Helper.string.Capitalize(key))
+    if B2H[callbackKey] then
+      B2H[callbackKey](self, B2H.config[key].panel, B2H.config[key].container, B2H.config[key].anchorline)
+    end
   end
 end

@@ -4,37 +4,40 @@ local AddonName, b2h = ...
 --------------------------------------------------------------------------------
 B2H = CreateFrame("Frame")
 
+B2H.Colors = CopyTable(READI.Colors)
+B2H.Colors.b2h = "00FAD4"
+B2H.Colors.b2h_light = "9DFFF1"
+
+B2H.data = {
+  ["addon"] = "Back2Home",
+  ["prefix"] = "B2H",
+  ["colors"] = B2H.Colors
+}
 B2H.Locale = GetLocale()
 B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
-b2h.L = b2h.L
---[[
-  Create a simple texture mapping table
-  ATTENTION: to avoid errors resulting in not displaying the texture make sure you didn't
-  use a normal forward slash (/) as path separator but two backslashes (\) instead
-]]--
-B2H.T = {
-  ["BLZ_TempPortraitAlphaMask"] = "Interface\\CharacterFrame\\TempPortraitAlphaMask",
-  ["b2h_hearthstone_button_inactive"] = "Interface\\Addons\\Back2Home\\media\\b2h_disabled.tga",
-  ["b2h_radio_button_normal"] = "Interface\\Addons\\Back2Home\\media\\b2h_anchor_button_normal.tga",
-  ["b2h_radio_button_highlight"] = "Interface\\Addons\\Back2Home\\media\\b2h_anchor_button_highlight.tga",
-  ["b2h_radio_button_pushed"] = "Interface\\Addons\\Back2Home\\media\\b2h_anchor_button_pushed.tga",
-}
+
+B2H.L = B2H.L
 --------------------------------------------------------------------------------
 -- EVENT HANDLERS
 --------------------------------------------------------------------------------
+
 -- Custom Events
+
 EventRegistry:RegisterCallback("B2H.PLAYABLE", function(evt, isLogin, isReload)
-  if not isLogin and not isReload then return end
-  B2H:GenerateDefaultSettings()
-  _G[AddonName .. "DB"] = (_G[AddonName .. "DB"] or CopyTable(B2H.defaults))
-  B2H.db = _G[AddonName .. "DB"]
+  if not isLogin and not isReload then
+    B2H.HSButton:Update(true)
+    return
+  end
+  B2H:InitializeDefaultSettings()
+  B2H:InitializeDB()
   B2H:InitializeOptions()
   B2H:InitializeButton()
   B2H:InitializeKeyBindings()
 end)
 
 -- Native Events
+
 function B2H:OnEvent(evt, ...)
   self[evt](self, evt, ...)
 end
@@ -46,6 +49,7 @@ B2H:RegisterEvent("MODIFIER_STATE_CHANGED")
 
 function B2H:ADDON_LOADED(evt, addonName)
   if addonName == AddonName then
+    B2H:SetupConfig()
     self:UnregisterEvent(evt)
   end
 end
@@ -64,12 +68,11 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   if down > 0 then
     local isNotBoundItem = B2H:Find(B2H.db.keybindings.items, function(k,v) return v.id == b2h.id end) == nil
     local boundItem = B2H:Find(B2H.db.keybindings.items, function(k,v) return v.key == key end)
-    B2H:Debug(self.db.others.debugging.general, "Key: ", key)
+    if not PlayerHasToy(boundItem.id) then return end
     if isNotBoundItem then
       b2h.restore = b2h.id
     end
     b2h.id = boundItem.id
-    B2H:Debug(self.db.others.debugging.general, "ID: ", b2h.id)
   else
     b2h.id = b2h.restore
   end
@@ -79,26 +82,15 @@ end
 --------------------------------------------------------------------------------
 -- COLOR SCHEME
 --------------------------------------------------------------------------------
-local colors = {
-  ["white"] = "|cFFF9F9F9",
-  ["disabled"] = "|cFF6B6B6B",
-  ["b2h"] = "|cFF00FAD4",
-  ["b2h_light"] = "|cFF9DFFF1",
-  ["readi"] = "|cFF78B064",
-  ["error"] = "|cFFCB2222",
-  ["warning"] = "|cFFCB882B",
-}
 
 function B2H:setTextColor(str, color)
-  if not str then return "" end
-  local txtColor = colors[color] or colors.white
-  return format("%s%s|r", txtColor, str)
+  return READI.Helper.color:Get(color, B2H.Colors, str)
 end
 --------------------------------------------------------------------------------
 -- HELPER FUNCTIONS
 --------------------------------------------------------------------------------
+
 -- simple debugging print function
---------------------------------------------------------------------------------
 function B2H:Debug(con, ...)
   if not con then return end
   print("------------------------------------------")
@@ -108,23 +100,20 @@ end
 --------------------------------------------------------------------------------
 -- simple capitalizing function to convert the first character of a given string
 -- to uppercase
---------------------------------------------------------------------------------
 function B2H:CapitalizeString(str)
   return (str:gsub("^%l", string.upper))
 end
 --------------------------------------------------------------------------------
 -- simple localization function
---------------------------------------------------------------------------------
 function B2H:l10n(key)
-  if b2h.L[B2H.Locale] and b2h.L[B2H.Locale][key] then
-    return b2h.L[B2H.Locale][key]
+  if B2H.L[B2H.Locale] and B2H.L[B2H.Locale][key] then
+    return B2H.L[B2H.Locale][key]
   else
-    return b2h.L.enUS[key] or ""
+    return B2H.L.enUS[key] or ""
   end
 end
 --------------------------------------------------------------------------------
 -- simple function to search for an item within a list via a boolean callback
---------------------------------------------------------------------------------
 function B2H:Find(table, callback)
   if #table > 0 then
     for i, item in ipairs(table) do
@@ -145,7 +134,6 @@ function B2H:Find(table, callback)
 end
 --------------------------------------------------------------------------------
 -- simple function to search for an item within a list via a boolean callback
---------------------------------------------------------------------------------
 function B2H:FindIndex(table, callback)
   if #table > 0 then
     for i, item in ipairs(table) do
@@ -166,7 +154,6 @@ function B2H:FindIndex(table, callback)
 end
 --------------------------------------------------------------------------------
 -- simple function check if a given item is part of a list
---------------------------------------------------------------------------------
 function B2H:IsInList(needle, haystack)
   for i = 1, #haystack do
     if haystack[i] == needle then
@@ -177,7 +164,6 @@ function B2H:IsInList(needle, haystack)
 end
 --------------------------------------------------------------------------------
 -- simple function to split tables in chunks of given size
---------------------------------------------------------------------------------
 function B2H:ChunkTable(tbl, size)
   local i = 1
   local count = 0
@@ -193,7 +179,6 @@ function B2H:ChunkTable(tbl, size)
 end
 --------------------------------------------------------------------------------
 -- simple filter function for tables using a boolean callback
---------------------------------------------------------------------------------
 function B2H:FilterTable(t, callback)
   local out = {}
   for k, v in ipairs(t) do
@@ -204,8 +189,17 @@ function B2H:FilterTable(t, callback)
   return out
 end
 --------------------------------------------------------------------------------
--- Initialize key bindings from database
+-- Create the config DB
+function B2H:InitializeDB ()
+  if not _G[AddonName .. "DB"] or _G[AddonName .. "DB"] == {} then
+    _G[AddonName .. "DB"] = CopyTable(B2H.defaults)
+  else
+    _G[AddonName .. "DB"] = READI.Helper.table:Merge({}, B2H.defaults, _G[AddonName .. "DB"])
+  end
+  B2H.db = _G[AddonName .. "DB"]
+end
 --------------------------------------------------------------------------------
+-- Initialize key bindings from database
 function B2H:InitializeKeyBindings()
   if #B2H.BoundKeys > 0 then B2H.BoundKeys = {} end
   for k,v in pairs(B2H.db.keybindings.items) do

@@ -4,15 +4,10 @@ local AddonName, b2h = ...
 -- CREATE BACK2HOME BUTTON
 --------------------------------------------------------------------------------
 local function CreateButton()
-  local btnSize = B2H.db.parent.button_size or B2H.defaults.parent.button_size
   -- button creation
   B2H.HSButton = B2H.HSButton or CreateFrame("Button", AddonName .. "Button", UIParent, "SecureActionButtonTemplate")
-  B2H.HSButton:SetSize(btnSize, btnSize)
-  B2H.HSButton:SetFrameStrata("TOOLTIP")
   B2H.HSButton:SetFrameLevel(100)
-  B2H.HSButton:SetPoint(B2H.db.parent.button_anchor, _G[B2H.db.parent.frame], B2H.db.parent.parent_anchor,
-    B2H.db.parent.position_x, B2H.db.parent.position_y)
-  B2H.HSButton:SetHighlightTexture("common-roundhighlight", "ADD")
+  B2H.HSButton:SetHighlightTexture(B2H.T.b2h100000, "ADD")
   B2H.HSButton:EnableKeyboard()
   
   -- create children
@@ -29,21 +24,15 @@ local function CreateButton()
     -- secure buttons are not allowed to change in fight therefore we have to prevent this by all meaning  
     if InCombatLockdown() then return end
 
-    B2H:Debug(B2H.db.others.debugging.general, "shuffle", shuffle )
-
     if shuffle then
       b2h.owned = B2H:FilterTable(B2H.db.toys, function(toy) return toy.active end);
       b2h.id = B2H.HSButton:Shuffle(#b2h.owned)
     end
 
-    B2H:Debug(B2H.db.others.debugging.general, "b2h.id", b2h.id )
-
     -- fall back to default Hearthstone ItemID, if no respective toy is collected yet
     if not b2h.id and B2H.db.fallback.active then
       b2h.id = B2H.db.fallback.id
     end
-
-    B2H:Debug(B2H.db.others.debugging.general, "b2h.id", b2h.id )
 
     if not b2h.id then
       B2H.HSButton.icon:SetTexture(nil)
@@ -73,8 +62,6 @@ local function CreateButton()
       B2H.HSButton.tooltip:SetToyByItemID(b2h.id)
     end
 
-    B2H:Debug(B2H.db.others.debugging.general, "b2h.id", b2h.id, "b2h.name", b2h.name, "b2h.icon", b2h.icon )
-
     B2H.HSButton.icon:SetTexture(b2h.icon)
 
     B2H.HSButton:SetAttribute("macrotext", "/use item:" .. b2h.id)
@@ -91,19 +78,27 @@ local function CreateButton()
     return nil
   end
 
-  function B2H.HSButton:RePosition()
+  function B2H.HSButton:SetPosition()
     B2H.HSButton:ClearAllPoints()
     B2H.HSButton:SetPoint(B2H.db.parent.button_anchor, _G[B2H.db.parent.frame], B2H.db.parent.parent_anchor,
       B2H.db.parent.position_x, B2H.db.parent.position_y)
   end
 
-  function B2H.HSButton:Resize()
-    local btnSize = B2H.db.parent.button_size or B2H.defaults.parent.button_size
+  function B2H.HSButton:ScaleButton()
+    local btnSize = B2H.db.parent.button_size
     B2H.HSButton:SetSize(btnSize, btnSize)
     B2H.HSButton.mask:SetSize(btnSize * 0.8, btnSize * 0.8)
   end
 
-  B2H.HSButton:Update()
+  function B2H.HSButton:SetStrata()
+    local btnStrata = B2H.db.parent.button_strata
+    if btnStrata == "PARENT" then
+      local parent = B2H.HSButton:GetParent() 
+      B2H.HSButton:SetFrameStrata(parent:GetFrameStrata())
+    else
+      B2H.HSButton:SetFrameStrata(btnStrata)
+    end
+  end
   --------------------------------------------------------------------------------
   -- KEY BINDINGS
   --------------------------------------------------------------------------------
@@ -126,15 +121,15 @@ local function CreateButton()
 
   -- button background positioning
   B2H.HSButton.background:SetAllPoints(B2H.HSButton)
-  B2H.HSButton.background:SetTexture(B2H.T.b2h_hearthstone_button_inactive)
+  B2H.HSButton.background:SetTexture(B2H.T.b2h100001)
 
   -- icon texture positioning
   B2H.HSButton.icon:SetAllPoints(B2H.HSButton)
 
   -- mask texture positioning
   B2H.HSButton.mask:SetPoint("CENTER", B2H.HSButton.icon, "CENTER", -0.2, -0.2)
-  B2H.HSButton.mask:SetTexture(B2H.T.BLZ_TempPortraitAlphaMask, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-  B2H.HSButton.mask:SetSize(btnSize * 0.8, btnSize * 0.8)
+  -- use the texture id of the "TempPortraitAlphaMask" (130924)
+  B2H.HSButton.mask:SetTexture(130924, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
   B2H.HSButton.icon:AddMaskTexture(B2H.HSButton.mask)
 
   b2h.isLogin = false
@@ -146,6 +141,9 @@ function B2H:InitializeButton()
   -- BUTTON CREATION
   --------------------------------------------------------------------------------
   B2H.HSButton = B2H.HSButton or CreateButton()
+  B2H.HSButton:ScaleButton()
+  B2H.HSButton:SetPosition()
+  B2H.HSButton:SetStrata()
   B2H.HSButton:Update(true)
 
   --------------------------------------------------------------------------------
@@ -177,6 +175,9 @@ function B2H:InitializeButton()
   end
   -- shuffle and update the button due to several events
   function BtnOnEvent(evt, addon)
+    if evt == "NEW_TOY_ADDED" then
+      EventRegistry:TriggerEvent("B2H.TOYS_UPDATED")      
+    end
     B2H.HSButton:Update(true)
   end
 
@@ -186,4 +187,3 @@ function B2H:InitializeButton()
   B2H.HSButton:SetScript("OnLeave", BtnOnLeave)
 
 end
-b2h.isLogin = isLogin
