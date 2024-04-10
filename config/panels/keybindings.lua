@@ -137,7 +137,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
         parent = container,
         offsetY = 20,
         onClick = function()
-          EventRegistry:TriggerEvent(data.addon.."."..data.keyword..".OnReset")
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnReset"))
         end
       }
     )
@@ -150,7 +150,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
         p_anchor = "TOPRIGHT",
         offsetX = 20,
         onClick = function()
-          EventRegistry:TriggerEvent(data.addon.."."..data.keyword..".OnClear")
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnClear"))
         end
       }
     )

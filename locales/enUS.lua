@@ -120,7 +120,7 @@ B2H.L.enUS = {
     },
     notifications = {
       toys = {
-        new = "%s has been added to your ToyBox and activated in the config. See /home config if you want to deactivate this toy."
+        new = "has been added to your ToyBox and activated in the config. See %s %s if you want to deactivate this toy."
       }
     },
   },

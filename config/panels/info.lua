@@ -4,10 +4,18 @@
 local AddonName, b2h = ...
 local data = CopyTable(B2H.data)
 data.keyword = "info"
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
+
 local addon = {
   ["icon"] = GetAddOnMetadata(AddonName, "IconTexture"),
   ["version"] = GetAddOnMetadata(AddonName, "Version"),
-  ["author"] = GetAddOnMetadata(AddonName, "Author")
+  ["author"] = GetAddOnMetadata(AddonName, "Author"),
+}
+local lib = {
+  ["title"] = GetAddOnMetadata("readiLIB", "Title"), 
+  ["icon"] = GetAddOnMetadata("readiLIB", "IconTexture"),
+  ["version"] = GetAddOnMetadata("readiLIB", "Version"),
+  ["author"] = GetAddOnMetadata("readiLIB", "Author"),
 }
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL CREATION
@@ -54,4 +62,22 @@ function B2H:FillInfoPanel(panel, container, anchorline)
       format("%s %s", B2H:setTextColor("/home|b2h", "b2h"), B2H:setTextColor("config | options | settings", "white"))
     )), "b2h_light")
   )
+
+  local libLogo = READI:Icon(data, {
+    texture = lib.icon,
+    name = format("%s Logo", "readiLIB"),
+    region = container,
+    width = 16,
+    height = 16,
+  })
+
+  local libText = container:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
+  libText:SetPoint("BOTTOMRIGHT", container, "BOTTOMRIGHT", -5,5)
+  libText:SetText(B2H:setTextColor(format("%s v%s", lib.title, lib.version), "white"))
+
+  libLogo:SetPoint("RIGHT", libText, "LEFT", -5, 0)
+
+  local powered_by = container:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
+  powered_by:SetPoint("RIGHT", libLogo, "LEFT", -5,0)
+  powered_by:SetText(B2H:setTextColor("powered by:", "white"))
 end

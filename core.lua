@@ -9,7 +9,8 @@ B2H.Colors.b2h = "00FAD4"
 B2H.Colors.b2h_light = "9DFFF1"
 
 B2H.data = {
-  ["addon"] = "B2H",
+  ["addon"] = "Back2Home",
+  ["prefix"] = "B2H",
   ["colors"] = B2H.Colors
 }
 B2H.Locale = GetLocale()
@@ -17,18 +18,6 @@ B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
 
 B2H.L = B2H.L
---[[
-  Create a simple texture mapping table
-  ATTENTION: to avoid errors resulting in not displaying the texture make sure you didn't
-  use a normal forward slash (/) as path separator but two backslashes (\) instead
-]]--
-B2H.T = {
-  ["BLZ_TempPortraitAlphaMask"] = "Interface\\CharacterFrame\\TempPortraitAlphaMask",
-  ["b2h_hearthstone_button_inactive"] = "Interface\\Addons\\Back2Home\\media\\b2h_disabled.tga",
-  ["b2h_radio_button_normal"] = "Interface\\Addons\\Back2Home\\media\\b2h_anchor_button_normal.tga",
-  ["b2h_radio_button_highlight"] = "Interface\\Addons\\Back2Home\\media\\b2h_anchor_button_highlight.tga",
-  ["b2h_radio_button_pushed"] = "Interface\\Addons\\Back2Home\\media\\b2h_anchor_button_pushed.tga",
-}
 --------------------------------------------------------------------------------
 -- EVENT HANDLERS
 --------------------------------------------------------------------------------

@@ -64,12 +64,18 @@ function B2H:FillToysPanel(panel, container, anchorline)
     _G[AddonName .. "CheckButton_" .. current.id]:SetChecked(opts.owned and B2H.db.toys[i].active)
 
     _G[AddonName .. "CheckButton_" .. current.id].onNewToy = function(evt)
-      local owned = PlayerHasToy(current.id) or B2H.IsTesting
+      local owned = PlayerHasToy(current.id)
       local cb = _G[AddonName .. "CheckButton_" .. current.id]
-      if owned and not cb:IsEnabled() then
-        cb:Enable()
-        cb:Click()
-        READI.Debug:Notify(B2H:setTextColor(AddonName, "b2h"), B2H.db.reporting.notifications[data.keyword], link, READI:l10n("reporting.notifications.toys.new", "B2H.L"))
+      if B2H.IsTesting or (owned and not cb:IsEnabled()) then
+        if owned and not cb:IsEnabled() then
+          cb:Enable()
+          cb:Click()
+        end
+        READI.Debug:Notify(
+          B2H:setTextColor(AddonName, "b2h"),
+          B2H.db.reporting.notifications[data.keyword],
+          link,
+          B2H:setTextColor(format(READI:l10n("reporting.notifications.toys.new", "B2H.L"), B2H:setTextColor("/home", "b2h"), B2H:setTextColor("config", "white")), "b2h_light"))
       end
     end
 

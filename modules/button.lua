@@ -7,7 +7,7 @@ local function CreateButton()
   -- button creation
   B2H.HSButton = B2H.HSButton or CreateFrame("Button", AddonName .. "Button", UIParent, "SecureActionButtonTemplate")
   B2H.HSButton:SetFrameLevel(100)
-  B2H.HSButton:SetHighlightTexture("common-roundhighlight", "ADD")
+  B2H.HSButton:SetHighlightTexture(B2H.T.b2h100000, "ADD")
   B2H.HSButton:EnableKeyboard()
   
   -- create children
@@ -121,14 +121,15 @@ local function CreateButton()
 
   -- button background positioning
   B2H.HSButton.background:SetAllPoints(B2H.HSButton)
-  B2H.HSButton.background:SetTexture(B2H.T.b2h_hearthstone_button_inactive)
+  B2H.HSButton.background:SetTexture(B2H.T.b2h100001)
 
   -- icon texture positioning
   B2H.HSButton.icon:SetAllPoints(B2H.HSButton)
 
   -- mask texture positioning
   B2H.HSButton.mask:SetPoint("CENTER", B2H.HSButton.icon, "CENTER", -0.2, -0.2)
-  B2H.HSButton.mask:SetTexture(B2H.T.BLZ_TempPortraitAlphaMask, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+  -- use the texture id of the "TempPortraitAlphaMask" (130924)
+  B2H.HSButton.mask:SetTexture(130924, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
   B2H.HSButton.icon:AddMaskTexture(B2H.HSButton.mask)
 
   b2h.isLogin = false

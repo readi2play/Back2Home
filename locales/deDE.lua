@@ -13,19 +13,19 @@ B2H.L.deDE = {
         },
         commands = "Chat-Befehle",
         text = [=[
-          Mische deine Hearthstone-Spielzeuge. Entweder durch einen Rechtsklick auf die %1$s-Schaltfläche oder durch Verwendung des folgenden Schrägstrichbefehls
+          Mische deine Hearthstone-Spielzeuge. Entweder durch einen Rechtsklick auf die %1$s-Schaltfläche oder durch Verwendung des folgenden Chat-Befehls
                     
             %3$s
 
 
-          Verwenden Sie den folgenden Schrägstrichbefehl, um dieses Konfigurationsfenster zu öffnen, um die vom %1$s-Button verwendeten Hearthstone-Spielzeuge anzupassen, den Rahmen, in dem der Button verankert ist, und ob der standardmäßige Hearthstone als Fallback verwendet werden soll, wenn noch keine Hearthstone-Spielzeuge gesammelt wurden.
+          Verwende den folgenden Chat-Befehl, um dieses Konfigurationsfenster zu öffnen, um die vom %1$s-Button verwendeten Hearthstone-Spielzeuge anzupassen, den Rahmen, in dem der Button verankert ist, und ob der standardmäßige Hearthstone als Fallback verwendet werden soll, wenn noch keine Hearthstone-Spielzeuge gesammelt wurden.
                     
             %4$s
 
 
 
 
-          Vielen Dank, dass Sie %1$s nutzen und bleiben Sie gesund
+          Danke, dass Du %1$s verwendest und bleib gesund
                   
 
           Mit freundlichem Gruß
@@ -36,7 +36,7 @@ B2H.L.deDE = {
       toys = {
         title = "Toys & Fallback",
         headline = "Enthaltene Hearthstone-Spielzeuge",
-        subline = "(Die Checkboxen für noch nicht gesammelte Spielzeuge sind deaktiviert)",
+        subline = "(Checkboxen für noch nicht gesammelte Spielzeuge sind deaktiviert)",
         fallback = {
           headline = "Fallback",
           label = "Standard-Ruhestein verwenden, wenn noch keine Ruhestein-Spielzeuge gesammelt oder oben ausgewählt wurden",
@@ -48,11 +48,11 @@ B2H.L.deDE = {
         anchors = {
           button ={
             headline = "%s-Button",
-            subline = "Wähle den Ankerpunkt des %s-Buttons aus, der an seinem übergeordneten Frame ausgerichtet werden soll."
+            subline = "Wähle den Ankerpunkt des %s-Buttons aus, der an seinem Parent Frame ausgerichtet werden soll."
           },
           parent = {
-            headline = "Anker des übergeordneten Frames",
-            subline = "Wählen Sie den Ankerpunkt des übergeordneten Frames aus, an dem der %s-Button verankert werden soll."
+            headline = "Anker des Parent Frames",
+            subline = "Wählen Sie den Ankerpunkt des Parent Frames aus, an dem der %s-Button verankert werden soll."
           }
         },
         offset = {
@@ -61,8 +61,8 @@ B2H.L.deDE = {
           y = "Y-Achse",
         },
         parent = {
-          headline = "Übergeordneter Frame",
-          subline = "Gib den Namen des übergeordneten Frames ein",
+          headline = "Parent Frame",
+          subline = "Gib den Namen des Parent Frames ein",
         },
         button = {
           size = {
@@ -115,12 +115,12 @@ B2H.L.deDE = {
     debugging = {},
     information = {
       toys = {
-        notCollected = "Sie haben dieses Spielzeug noch nicht gesammelt."
+        notCollected = "Du hast dieses Spielzeug noch nicht gesammelt."
       }
     },
     notifications = {
       toys = {
-        new = "%s wurde zu Ihrer ToyBox hinzugefügt und in der Konfiguration aktiviert. Sehen Sie sich die /home-Konfiguration an, wenn Sie dieses Spielzeug deaktivieren möchten."
+        new = "wurde zu Deiner ToyBox hinzugefügt und in der Konfiguration aktiviert. Gib %s %s ein, wenn du dieses Spielzeug deaktivieren möchtest."
       }
     },
   },
