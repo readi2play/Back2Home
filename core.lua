@@ -13,7 +13,7 @@ B2H.data = {
   ["prefix"] = "B2H",
   ["colors"] = B2H.Colors
 }
-B2H.Locale = GetLocale()
+B2H.Locale = GAME_LOCALE or GetLocale()
 B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
 
@@ -25,10 +25,6 @@ B2H.L = B2H.L
 -- Custom Events
 
 EventRegistry:RegisterCallback("B2H.PLAYABLE", function(evt, isLogin, isReload)
-  if not isLogin and not isReload then
-    B2H.HSButton:Update(true)
-    return
-  end
   B2H:InitializeDefaultSettings()
   B2H:InitializeDB()
   B2H:InitializeOptions()
@@ -52,14 +48,16 @@ function B2H:ADDON_LOADED(evt, addonName)
     B2H:SetupConfig()
     self:UnregisterEvent(evt)
   end
+
+  B2H:InitializeDefaultSettings()
+  B2H:InitializeDB()
+  B2H:InitializeOptions()
+  B2H:InitializeButton()
+  B2H:InitializeKeyBindings()
 end
 function B2H:PLAYER_ENTERING_WORLD(evt, isLogin, isReload)
-  -- this is a simple yield functionality to get the hearthstone toy information via the C_ToyBox API class
-  C_Timer.After(0, function()
-    C_Timer.After(0, function()
-      EventRegistry:TriggerEvent("B2H.PLAYABLE", isLogin, isReload)
-    end)
-  end)
+  if not B2H.HSButton then return end
+  B2H.HSButton:Update(true)
 end
 
 function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
@@ -194,7 +192,7 @@ function B2H:InitializeDB ()
   if not _G[AddonName .. "DB"] or _G[AddonName .. "DB"] == {} then
     _G[AddonName .. "DB"] = CopyTable(B2H.defaults)
   else
-    _G[AddonName .. "DB"] = READI.Helper.table:Merge({}, B2H.defaults, _G[AddonName .. "DB"])
+    _G[AddonName .. "DB"] = READI.Helper.table:Merge(CopyTable(B2H.defaults), _G[AddonName .. "DB"])
   end
   B2H.db = _G[AddonName .. "DB"]
 end
@@ -209,6 +207,7 @@ end
 --------------------------------------------------------------------------------
 _G[AddonName .. '_Options'] = function()
   Settings.OpenToCategory(AddonName)
+  B2H:UpdateOptions()
 end
 -- enable the addon, this is defined in classic/modern
 if type(b2h.Enable) == "function" then B2H:Enable() end

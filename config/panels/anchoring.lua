@@ -130,7 +130,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     onReset = function()
       local eb = _G[AddonName .. "EditBox_parent_pos_x"]
       eb:SetText(B2H.defaults.parent.position_x)
-      EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnChange"))
+      EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
 
@@ -155,7 +155,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     onReset = function()
       local eb = _G[AddonName .. "EditBox_parent_pos_y"]
       eb:SetText(B2H.defaults.parent.position_y)
-      EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnChange"))
+      EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
 
@@ -183,7 +183,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     onReset = function()
       local eb = _G[AddonName .. "EditBox_parent_frame"]
       eb:SetText(B2H.defaults.parent.frame)
-      EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnChange"))
+      EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
   _G[AddonName.."FrameSelectorButton"] = READI:Button(data, {
@@ -282,8 +282,8 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
       parent = container,
       offsetY = 20,
       onClick = function()
+        EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnReset"))
         B2H.HSButton:SetPosition()
-        EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnReset"))
       end
     }
   )

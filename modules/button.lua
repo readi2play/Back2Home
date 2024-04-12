@@ -25,8 +25,8 @@ local function CreateButton()
     if InCombatLockdown() then return end
 
     if shuffle then
-      b2h.owned = B2H:FilterTable(B2H.db.toys, function(toy) return toy.active end);
-      b2h.id = B2H.HSButton:Shuffle(#b2h.owned)
+      b2h.owned = B2H:FilterTable(B2H.db.toys, function(toy) return toy.owned end);
+      b2h.id, b2h.name, b2h.icon = B2H.HSButton:Shuffle(#b2h.owned)
     end
 
     -- fall back to default Hearthstone ItemID, if no respective toy is collected yet
@@ -52,13 +52,12 @@ local function CreateButton()
       return 0, 0
     end
 
-    -- set the button's icon to the information returned by the GetToyInfo function
-    if b2h.id == B2H.db.fallback.id then
-      b2h.name = GetItemInfo(b2h.id)
-      b2h.icon = select(10, GetItemInfo(b2h.id))
+    -- set the button's tooltip
+    if b2h.id == B2H.db.fallback.i1d then
+      b2h.name = B2H.db.fallback.label[B2H.Locale]
+      b2h.icon = B2H.db.fallback.icon
       B2H.HSButton.tooltip:SetBagItem(GetFallbackItemBagSlot())
     else
-      _, b2h.name, b2h.icon = C_ToyBox.GetToyInfo(b2h.id)    
       B2H.HSButton.tooltip:SetToyByItemID(b2h.id)
     end
 
@@ -73,7 +72,8 @@ local function CreateButton()
   function B2H.HSButton:Shuffle(rndIdx)
     -- retrieve random id
     if rndIdx and rndIdx > 0 then
-      return b2h.owned[math.random(rndIdx)].id
+      local __idx = math.random(rndIdx)
+      return b2h.owned[__idx].id, b2h.owned[__idx].label[B2H.Locale], b2h.owned[__idx].icon
     end
     return nil
   end
@@ -154,8 +154,12 @@ function B2H:InitializeButton()
   B2H.HSButton:RegisterEvent("PLAYER_LEVEL_UP")
   B2H.HSButton:RegisterEvent("NEW_TOY_ADDED")
 
+
+  function B2H:OnEvent(evt, ...)
+    self[evt](self, evt, ...)
+  end  
   -- user moves cursor over the button
-  function BtnOnEnter(self)
+  local function OnEnter(self)
     if B2H.HSButton.tooltip then
       B2H.HSButton.tooltip:SetOwner(self, "ANCHOR_LEFT")
       B2H.HSButton.tooltip:SetToyByItemID(b2h.id)
@@ -163,27 +167,27 @@ function B2H:InitializeButton()
     end
   end
   -- user moves cursor off the button
-  function BtnOnLeave(self)
+  local function OnLeave(self)
     if B2H.HSButton.tooltip then
       B2H.HSButton.tooltip:Hide()
     end
   end
   -- user clicks the button, either with left or right mouse button
-  function BtnOnClick(self, clicked, down, ...)
+  local function OnClick(self, clicked, down, ...)
     local start, duration = GetItemCooldown(b2h.id)
     B2H.HSButton.cooldown:SetCooldown(start, duration)
   end
   -- shuffle and update the button due to several events
-  function BtnOnEvent(evt, addon)
-    if evt == "NEW_TOY_ADDED" then
-      EventRegistry:TriggerEvent("B2H.TOYS_UPDATED")      
-    end
+  B2H:RegisterEvent("NEW_TOY_ADDED")
+  function B2H:NEW_TOY_ADDED(evt)
+    EventRegistry:TriggerEvent("B2H.TOYS_UPDATED")      
     B2H.HSButton:Update(true)
   end
 
   -- set event scripts
-  B2H.HSButton:SetScript("OnEvent", BtnOnEvent)
-  B2H.HSButton:SetScript("OnEnter", BtnOnEnter)
-  B2H.HSButton:SetScript("OnLeave", BtnOnLeave)
+  B2H:SetScript("OnEvent", B2H.OnEvent)
+  B2H.HSButton:SetScript("OnEvent", OnEvent)
+  B2H.HSButton:SetScript("OnEnter", OnEnter)
+  B2H.HSButton:SetScript("OnLeave", OnLeave)
 
 end
