@@ -7,14 +7,16 @@ data.keyword = "keybindings"
 --------------------------------------------------------------------------------
 -- CREATE KEYBINDINGS PANEL CONTENT
 --------------------------------------------------------------------------------
+B2H.Keybindings = B2H.Keybindings or {}
+
 function B2H:FillKeybindingsPanel(panel, container, anchorline)
   local itemKeys = READI.Helper.table:Keys(B2H.db[data.keyword].items)
 
   for itmKey, item in pairs(B2H.db[data.keyword].items) do
     local idx = READI.Helper.table:Get(itemKeys, function(kw) return kw == itmKey end)
-    local name = select(2,C_ToyBox.GetToyInfo(item.id))
+    local name = item.label[B2H.Locale]
     local label = B2H:setTextColor(NOT_BOUND, "grey")
-    local enable = PlayerHasToy(item.id)
+    local enable = true
     local additionalText = READI:l10n("reporting.information.toys.notCollected", "B2H.L")  
     local anchor = "TOPLEFT"
     local region = anchorline
@@ -137,7 +139,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
         parent = container,
         offsetY = 20,
         onClick = function()
-          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnReset"))
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnReset"))
         end
       }
     )
@@ -150,10 +152,29 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
         p_anchor = "TOPRIGHT",
         offsetX = 20,
         onClick = function()
-          EventRegistry:TriggerEvent(format("%s.%s.%s", data.addon, data.keyword, "OnClear"))
+          EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnClear"))
         end
       }
     )
   end
   return 
+end
+
+function B2H.Keybindings:Update()
+  for i,toy in ipairs(B2H.db.keybindings.items) do
+    local btn = _G[AddonName..READI.Helper.string.Capitalize(data.keyword)..READI.Helper.string.Capitalize(toy.key).."Button"]
+    if not toy.owned then
+      toy.owned = PlayerHasToy(toy.id)
+      B2H.defaults.keybindings.items[i].owned = PlayerHasToy(toy.id)
+      
+      B2H.db.toys[i].active = toy.owned
+      B2H.defaults.toys[i].active = toy.owned
+
+      if toy.owned then
+        btn:Enable()
+      else
+        btn:Disable()
+      end
+    end
+  end
 end
