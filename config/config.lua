@@ -2,7 +2,7 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
-local configKeys = {"info", "toys", "anchoring", "keybindings", "reporting", "profiles"}
+local configKeys = {"info", "toys", "anchoring", "keybindings", "reporting"}
 local data = CopyTable(B2H.data)
 data.keyword = "config"
 B2H.config = {}
