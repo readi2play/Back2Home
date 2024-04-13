@@ -25,7 +25,7 @@ local function CreateButton()
     if InCombatLockdown() then return end
 
     if shuffle then
-      b2h.owned = B2H:FilterTable(B2H.db.toys, function(toy) return toy.owned end);
+      b2h.owned = READI.Helper.table:Filter(B2H.db.toys, function(toy) return toy.owned end);
       b2h.id, b2h.name, b2h.icon = B2H.HSButton:Shuffle(#b2h.owned)
     end
 
@@ -155,8 +155,11 @@ function B2H:InitializeButton()
   B2H.HSButton:RegisterEvent("NEW_TOY_ADDED")
 
 
-  function B2H:OnEvent(evt, ...)
-    self[evt](self, evt, ...)
+  local function OnEvent(evt, ...)
+    if self[evt] then
+      self[evt](self, evt, ...)
+    end
+    B2H.HSButton:Update(true)
   end  
   -- user moves cursor over the button
   local function OnEnter(self)
@@ -185,7 +188,6 @@ function B2H:InitializeButton()
   end
 
   -- set event scripts
-  B2H:SetScript("OnEvent", B2H.OnEvent)
   B2H.HSButton:SetScript("OnEvent", OnEvent)
   B2H.HSButton:SetScript("OnEnter", OnEnter)
   B2H.HSButton:SetScript("OnLeave", OnLeave)

@@ -373,6 +373,22 @@ function B2H:InitializeDefaultSettings()
           koKR = "하스의 돌",
           zhCN = "炉之石",
         }
+      }, {
+        active = false,
+        owned = false,
+        id = 206195,
+        icon = 1708140,
+        label = {
+          deDE = "Pfad der Naaru",
+          enUS = "Path of the Naaru",
+          esES = "Senda de los naaru",
+          frFR = "Voie des Naaru",
+          itIT = "Sentiero dei Naaru",
+          ptBR = "Caminho dos Naarus",
+          ruRU = "Путь наару",
+          koKR = "나루의 길",
+          zhCN = "纳鲁之路",
+        }
       }
     },
     fallback = {

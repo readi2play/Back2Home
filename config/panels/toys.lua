@@ -22,7 +22,6 @@ function B2H:FillToysPanel(panel, container, anchorline)
 
   for i,toy in ipairs(B2H.db.toys) do
     local link = C_ToyBox.GetToyLink(toy.id)
-
     local opts = {
       name = AddonName .. "CheckButton_" .. toy.id,
       region = container,
@@ -32,6 +31,7 @@ function B2H:FillToysPanel(panel, container, anchorline)
       offsetY = 0,
       offsetX = 0,
     }
+
     if i == 1 then
       opts.offsetY = -10
     elseif i > 1 and i <= b2h.columns then
@@ -59,6 +59,9 @@ function B2H:FillToysPanel(panel, container, anchorline)
       if not cb:GetChecked() then cb:Click() end
     end
 
+    print(format("--%d--", i))
+    print(READI.Helper.table:Dump(opts))
+    print("------------------------------")
     _G[opts.name] = READI:CheckBox(data, opts)
     _G[opts.name]:SetState(toy.owned)
     _G[opts.name]:SetChecked(toy.owned and toy.active)
@@ -84,7 +87,8 @@ function B2H:FillToysPanel(panel, container, anchorline)
   end
 
   local fallback_sectionSubTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-  fallback_sectionSubTitle:SetPoint("TOPLEFT", _G[AddonName .. "CheckButton_" .. lastToy.id], "BOTTOMLEFT", 0, -20)
+  fallback_sectionSubTitle:SetPoint("TOP", _G[AddonName .. "CheckButton_" .. lastToy.id], "BOTTOM", 0, -20)
+  fallback_sectionSubTitle:SetPoint("LEFT", anchorline, "LEFT", 0, 0)
   fallback_sectionSubTitle:SetJustifyH("LEFT")
   fallback_sectionSubTitle:SetJustifyV("TOP")
   fallback_sectionSubTitle:SetWordWrap(true)
