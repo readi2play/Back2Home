@@ -94,7 +94,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
           -- return early to prevent non-modifier keys to be used as keybindings for the Back2Home button
           -- this will leave the user being able to try another key
           if down == 0 then
-            if not B2H:IsInList(key, B2H.KeysToBind) then return end
+            if not READI.Helper.table:Contains(key, B2H.KeysToBind) then return end
             self:Update(key, true)
           end
         end

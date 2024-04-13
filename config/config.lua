@@ -52,4 +52,5 @@ end
 function B2H:UpdateOptions()
   B2H.Toys:Update()
   B2H.Keybindings:Update()
+  B2H.HSButton:Update(true)
 end
