@@ -45,7 +45,7 @@ function B2H:FillInfoPanel(panel, container, anchorline)
 
   local headline_commands = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   headline_commands:SetPoint("TOPLEFT", container, 0, -180)
-  headline_commands:SetText(B2H:setTextColor(B2H:l10n("config.panels.info.commands", "B2H.L"), "b2h"))
+  headline_commands:SetText(B2H:setTextColor(READI:l10n("config.panels.info.commands", "B2H.L"), "b2h"))
 
   local text_commands = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
   text_commands:SetPoint("TOPLEFT", headline_commands, "BOTTOMLEFT", 0, -10)
