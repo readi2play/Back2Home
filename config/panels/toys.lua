@@ -59,9 +59,6 @@ function B2H:FillToysPanel(panel, container, anchorline)
       if not cb:GetChecked() then cb:Click() end
     end
 
-    print(format("--%d--", i))
-    print(READI.Helper.table:Dump(opts))
-    print("------------------------------")
     _G[opts.name] = READI:CheckBox(data, opts)
     _G[opts.name]:SetState(toy.owned)
     _G[opts.name]:SetChecked(toy.owned and toy.active)

@@ -420,6 +420,7 @@ function B2H:InitializeDefaultSettings()
       items = {
         garrison = {
           id = 110560,
+          icon = 1041860,
           label = {
             deDE = "Garnisonsruhestein",
             enUS = "Garrison Hearthstone",
@@ -435,6 +436,7 @@ function B2H:InitializeDefaultSettings()
         },
         dalaran = {
           id = 140192,
+          icon = 1444943,
           label = {
             deDE = "Dalaranruhestein",
             enUS = "Dalaran Hearthstone",

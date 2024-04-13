@@ -13,7 +13,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
   local itemKeys = READI.Helper.table:Keys(B2H.db[data.keyword].items)
 
   for itmKey, item in pairs(B2H.db[data.keyword].items) do
-    local idx = READI.Helper.table:Get(itemKeys, function(kw) return kw == itmKey end)
+    local idx,_ = READI.Helper.table:Get(itemKeys, function(k,v) print(v,itmKey) return v == itmKey end)
     local name = item.label[B2H.Locale]
     local label = B2H:setTextColor(NOT_BOUND, "grey")
     local enable = true
@@ -90,7 +90,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
         self:SetHighlightLocked(true)
         -- check if the button is already waiting for a user input and remove that script if present
         function self:MODIFIER_STATE_CHANGED(evt, key, down)
-          B2H:Debug(B2H.db.reporting.debugging[data.keyword], "Event: ", evt, "Key: ", key, "Down: ", down)
+          READI.Debug:Debug(data.addon, B2H.db.reporting.debugging[data.keyword], "Event: ", evt, "Key: ", key, "Down: ", down)
           -- return early to prevent non-modifier keys to be used as keybindings for the Back2Home button
           -- this will leave the user being able to try another key
           if down == 0 then
@@ -104,7 +104,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
     }
     _G[itmKey.."SectionButton"] = READI:Button(data, opts)
     _G[itmKey.."SectionButton"].Update = function(self, key, check)
-      B2H:Debug(B2H.db.reporting.debugging[data.keyword], "key: ",key, "check: ",check)
+      READI.Debug:Debug(data.addon, B2H.db.reporting.debugging[data.keyword], "key: ",key, "check: ",check)
       if check then self:CheckForDuplicateBinding(key) end
       -- update the button label and write to the SavedVariables
       if key == "" then
@@ -122,9 +122,9 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
       end
     end
     _G[itmKey.."SectionButton"].CheckForDuplicateBinding = function(self, key)
-      B2H:Debug(B2H.db.reporting.debugging[data.keyword], "key: ",key)
+      READI.Debug:Debug(data.addon, B2H.db.reporting.debugging[data.keyword], "key: ",key)
       for kword, item in pairs(B2H.db[data.keyword].items) do
-        B2H:Debug(B2H.db.reporting.debugging[data.keyword], "item.key: ",item.key, "kword: ",kword, "keyword: ",itmKey)
+        READI.Debug:Debug(data.addon, B2H.db.reporting.debugging[data.keyword], "item.key: ",item.key, "kword: ",kword, "keyword: ",itmKey)
         if item.key == key and kword ~= itmKey then
           _G[kword.."SectionButton"]:Update("", false)
         end

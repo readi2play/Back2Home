@@ -12,7 +12,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
   local categories = READI.Helper.table:Keys(B2H.db.reporting)
 
   for category, tbl in pairs(B2H.db.reporting) do
-    local c_idx = READI.Helper.table:Get(categories, function(kw) return kw == category end)
+    local c_idx = READI.Helper.table:Get(categories, function(k,v) return v == category end)
     local c_name = READI.Helper.string:Capitalize(category)
     local c_anchor = "TOPLEFT"
     local c_region = anchorline
@@ -44,7 +44,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
     _G[category.."Section"]:SetHeight(26 * rows + 30 + _G[category.."SectionTitle"]:GetHeight())
     
     for option, active in pairs(tbl) do
-      local idx = READI.Helper.table:Get(options, function(o) return o == option end)
+      local idx = READI.Helper.table:Get(options, function(k,v) return v == option end)
       local anchor = "TOPLEFT"
       local parent = _G[category.."SectionTitle"]
       local p_anchor = "BOTTOMLEFT"

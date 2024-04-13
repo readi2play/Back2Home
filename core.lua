@@ -73,15 +73,20 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   if not READI.Helper.table:Contains(key, B2H.BoundKeys) then return end
 
   if down > 0 then
-    local isNotBoundItem = B2H:Find(B2H.db.keybindings.items, function(k,v) return v.id == b2h.id end) == nil
-    local boundItem = B2H:Find(B2H.db.keybindings.items, function(k,v) return v.key == key end)
+    local _,isNotBoundItem = READI.Helper.table:Get(B2H.db.keybindings.items, function(_,v) return v.id == b2h.id end)
+    local _,boundItem = READI.Helper.table:Get(B2H.db.keybindings.items, function(_,v) return v.key == key end)
     if not PlayerHasToy(boundItem.id) then return end
-    if isNotBoundItem then
-      b2h.restore = b2h.id
+    if isNotBoundItem == nil then
+      b2h.restore = {
+        id = b2h.id,
+        icon = b2h.icon
+      }
     end
     b2h.id = boundItem.id
+    b2h.icon = boundItem.icon
   else
-    b2h.id = b2h.restore
+    b2h.id = b2h.restore.id
+    b2h.icon = b2h.restore.icon
   end
   B2H.HSButton:Update(false)
 end
