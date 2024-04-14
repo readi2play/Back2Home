@@ -62,6 +62,7 @@ function B2H:FIRST_FRAME_RENDERED(evt)
 end
 
 function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
+  if InCombatLockdown() then return end
   if not READI.Helper.table:Contains(key, B2H.BoundKeys) then return end
 
   if down > 0 then
