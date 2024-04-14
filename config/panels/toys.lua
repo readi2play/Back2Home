@@ -14,7 +14,7 @@ function B2H:FillToysPanel(panel, container, anchorline)
   toys_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.toys.headline", "B2H.L"), "b2h"))
 
   local toys_sectionSubTitle = container:CreateFontString("ARTWORK", nil, "GameFontNormal")
-  toys_sectionSubTitle:SetPoint("TOPLEFT", toys_sectionTitle, 0, -20)
+  toys_sectionSubTitle:SetPoint("TOPLEFT", toys_sectionTitle, "BOTTOMLEFT", 0, -5)
   toys_sectionSubTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.toys.subline", "B2H.L"), "b2h_light"))
 
   local numRows = #B2H.db.toys / b2h.columns
@@ -83,47 +83,54 @@ function B2H:FillToysPanel(panel, container, anchorline)
     
   end
 
-  local fallback_sectionSubTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-  fallback_sectionSubTitle:SetPoint("TOP", _G[AddonName .. "CheckButton_" .. lastToy.id], "BOTTOM", 0, -20)
-  fallback_sectionSubTitle:SetPoint("LEFT", anchorline, "LEFT", 0, 0)
+  local fallback_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
+  fallback_sectionTitle:SetPoint("TOP", _G[AddonName .. "CheckButton_" .. lastToy.id], "BOTTOM", 0, -20)
+  fallback_sectionTitle:SetPoint("LEFT", anchorline, "LEFT", 0, 0)
+  fallback_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.fallbacks.headline", "B2H.L"), "b2h"))
+
+  local fallback_sectionSubTitle = container:CreateFontString("ARTWORK", nil, "GameFontNormal")
+  fallback_sectionSubTitle:SetPoint("TOPLEFT", fallback_sectionTitle, "BOTTOMLEFT", 0, -5)
   fallback_sectionSubTitle:SetJustifyH("LEFT")
   fallback_sectionSubTitle:SetJustifyV("TOP")
   fallback_sectionSubTitle:SetWordWrap(true)
   fallback_sectionSubTitle:SetWidth(b2h.windowWidth - 20)
-  fallback_sectionSubTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.toys.fallback.headline", "B2H.L"), "b2h"))
+  fallback_sectionSubTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.fallbacks.subline", "B2H.L"), "b2h_light"))
 
-  _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id] = READI:CheckBox(data, {
-    name = AddonName .. "CheckButton_" .. B2H.db.fallback.id,
-    region = container,
-    label = READI:l10n("config.panels.toys.fallback.label", "B2H.L"),
-    parent = fallback_sectionSubTitle,
-    offsetY = -10,
-    onClick = function()
-      local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
-      B2H.db.fallback.active = cb:GetChecked()
-      if not b2h.id or b2h.id == B2H.db.fallback.id then
+  for i,item in ipairs(B2H.db.fallbacks.items) do
+    _G[AddonName .. "CheckButton_" .. item.id] = READI:CheckBox(data, {
+      name = AddonName .. "CheckButton_" .. item.id,
+      region = container,
+      label = item.label[B2H.Locale],
+      parent = fallback_sectionSubTitle,
+      offsetY = -10,
+      onClick = function()
+        local cb = _G[AddonName .. "CheckButton_" .. item.id]
+        B2H.db.fallbacks.items[i].active = cb:GetChecked()
         B2H.HSButton:Update(true)
+      end,
+      onReset = function()
+        local cb = _G[AddonName .. "CheckButton_" .. item.id]
+        if B2H.defaults.fallbacks.items[i].active and not cb:GetChecked() then
+          cb:Click()
+        end
+      end,
+      onClear = function()
+        local cb = _G[AddonName .. "CheckButton_" .. item.id]
+        if cb:GetChecked() then cb:Click() end
+      end,
+      onSelectAll = function()
+        local cb = _G[AddonName .. "CheckButton_" .. item.id]
+        if not cb:GetChecked() then cb:Click() end
       end
-    end,
-    onReset = function()
-      local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
-      if B2H.defaults.fallback.active and not cb:GetChecked() then cb:Click() end
-    end,
-    onClear = function()
-      local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
-      if cb:GetChecked() then cb:Click() end
-    end,
-    onSelectAll = function()
-      local cb = _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]
-      if not cb:GetChecked() then cb:Click() end
-    end
-  })
-  _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]:SetState()
-  _G[AddonName .. "CheckButton_" .. B2H.db.fallback.id]:SetChecked(B2H.db.fallback.active)
+    })
+    _G[AddonName .. "CheckButton_" .. item.id]:SetState()
+    _G[AddonName .. "CheckButton_" .. item.id]:SetChecked(item.active)
+  end
+
 
   local btn_Reset = READI:Button(data,
     {
-      name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ResetButton",
+      name = AddonName..READI.Helper.string:Capitalize(data.keyword).."ResetButton",
       region = panel,
       label = READI:l10n("general.labels.buttons.reset"),
       anchor = "BOTTOMLEFT",
@@ -137,7 +144,7 @@ function B2H:FillToysPanel(panel, container, anchorline)
 
   local btn_UnselectAll = READI:Button(data,
     {
-      name = AddonName..READI.Helper.string.Capitalize(data.keyword).."UnselectAllButton",
+      name = AddonName..READI.Helper.string:Capitalize(data.keyword).."UnselectAllButton",
       region = panel,
       label = READI:l10n("general.labels.buttons.unselectAll"),
       parent = btn_Reset,

@@ -34,13 +34,14 @@ B2H.L.enUS = {
         ]=]
       },
       toys = {
-        title = "Toys & Fallback",
+        title = "Toybox Items",
         headline = "Included Hearthstone Toys",
         subline = "(The Checkboxes for not yet collected toys are disabled)",
-        fallback = {
-          headline = "Fallback",
-          label = "Use default Hearthstone if no Hearthstone Toys are collected or selected above",
-        },
+      },
+      fallbacks = {
+        title = "Fallback Items",
+        headline = "Available Fallback items",
+        subline = "Use one of those items as a fallback if no hearthstone toys are collected or selected.",
       },
       anchoring = {
         title = "Frame Settings",

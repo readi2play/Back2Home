@@ -13,7 +13,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
   local itemKeys = READI.Helper.table:Keys(B2H.db[data.keyword].items)
 
   for itmKey, item in pairs(B2H.db[data.keyword].items) do
-    local idx,_ = READI.Helper.table:Get(itemKeys, function(k,v) print(v,itmKey) return v == itmKey end)
+    local idx,_ = READI.Helper.table:Get(itemKeys, function(k,v) return v == itmKey end)
     local name = item.label[B2H.Locale]
     local label = B2H:setTextColor(NOT_BOUND, "grey")
     local enable = true
@@ -66,20 +66,20 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
     )
     -- Button
     local opts = {
-      ["name"] = AddonName..READI.Helper.string.Capitalize(data.keyword)..READI.Helper.string.Capitalize(itmKey).."Button",
-      ["region"] = _G[itmKey.."Section"],
-      ["template"] = "UIMenuButtonStretchTemplate",
-      ["anchor"] =  "TOPLEFT",
-      ["parent"] =  _G[itmKey.."SectionSubtext"],
-      ["offsetX"] = 0,      
-      ["offsetY"] = -20,
-      ["label"] = label,
-      ["text"] = B2H:setTextColor(additionalText, "error"),
-      ["condition"] = not enable,
-      ["enabled"] = enable,
-      ["width"] = b2h.columnWidth,
-      ["height"] = 24,
-      ["onClick"] = function(self)
+      name = AddonName..READI.Helper.string:Capitalize(data.keyword)..READI.Helper.string:Capitalize(itmKey).."Button",
+      region = _G[itmKey.."Section"],
+      template = "UIMenuButtonStretchTemplate",
+      anchor =  "TOPLEFT",
+      parent =  _G[itmKey.."SectionSubtext"],
+      offsetX = 0,      
+      offsetY = -20,
+      label = label,
+      text = B2H:setTextColor(additionalText, "error"),
+      condition = not enable,
+      enabled = enable,
+      width = b2h.columnWidth,
+      height = 24,
+      onClick = function(self)
         function self:OnEvent(evt, ...)
           self[evt](self, evt, ...)
         end
@@ -99,8 +99,8 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
           end
         end
       end,
-      ["onReset"] = function() _G[itmKey.."SectionButton"]:Update(B2H.defaults[data.keyword].items[itmKey].key, true) end,
-      ["onClear"] = function() _G[itmKey.."SectionButton"]:Update("", true) end
+      onReset = function() _G[itmKey.."SectionButton"]:Update(B2H.defaults[data.keyword].items[itmKey].key, true) end,
+      onClear = function() _G[itmKey.."SectionButton"]:Update("", true) end
     }
     _G[itmKey.."SectionButton"] = READI:Button(data, opts)
     _G[itmKey.."SectionButton"].Update = function(self, key, check)
@@ -132,7 +132,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
     end
     local btn_Reset = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ResetButton",
+        name = AddonName..READI.Helper.string:Capitalize(data.keyword).."ResetButton",
         region = panel,
         label = READI:l10n("general.labels.buttons.reset"),
         anchor = "BOTTOMLEFT",
@@ -145,7 +145,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
     )
     local btn_ClearAll = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ClearAllButton",
+        name = AddonName..READI.Helper.string:Capitalize(data.keyword).."ClearAllButton",
         region = panel,
         label = READI:l10n("general.labels.buttons.unselectAll"),
         parent = btn_Reset,
@@ -162,7 +162,7 @@ end
 
 function B2H.Keybindings:Update()
   for i,toy in ipairs(B2H.db.keybindings.items) do
-    local btn = _G[AddonName..READI.Helper.string.Capitalize(data.keyword)..READI.Helper.string.Capitalize(toy.key).."Button"]
+    local btn = _G[AddonName..READI.Helper.string:Capitalize(data.keyword)..READI.Helper.string:Capitalize(toy.key).."Button"]
     if not toy.owned then
       toy.owned = PlayerHasToy(toy.id)
       B2H.defaults.keybindings.items[i].owned = PlayerHasToy(toy.id)

@@ -19,32 +19,35 @@ local function CreateButton()
 
   -- METHODS ---
   --[[ This function updates the button's icon, tooltip and cooldown ]] --
-  function B2H.HSButton:Update(shuffle)
+  function B2H.HSButton:Update(shuffle, condition)
+    condition = condition or true
     -- if the character is infight, just return early to prevent the addon throwing a bunch of errors
     -- secure buttons are not allowed to change in fight therefore we have to prevent this by all meaning  
     if InCombatLockdown() then return end
+    local activeFallbacks = READI.Helper.table:Filter(B2H.db.fallbacks.items, function(item) return item.active end)
+    local activeToys = READI.Helper.table:Filter(B2H.db.toys, function(toy) return toy.active end )
+    local fbActive = READI.Helper.table:Filter(activeFallbacks, function(item) return item.id == b2h.id end)
 
     if shuffle then
-      b2h.owned = READI.Helper.table:Filter(B2H.db.toys, function(toy) return toy.owned end);
-      b2h.id, b2h.name, b2h.icon = B2H.HSButton:Shuffle(#b2h.owned)
-    end
-
-    -- fall back to default Hearthstone ItemID, if no respective toy is collected yet
-    if not b2h.id and B2H.db.fallback.active then
-      b2h.id = B2H.db.fallback.id
+      if not b2h.id or (#fbActive >= 1 and #activeToys < 1) then
+        b2h.id, b2h.name, b2h.icon = B2H.HSButton:Shuffle(activeFallbacks)
+      else
+        local owned = READI.Helper.table:Filter(activeToys, function(toy) return toy.owned end);
+        b2h.id, b2h.name, b2h.icon = B2H.HSButton:Shuffle(owned)
+      end
     end
 
     if not b2h.id then
       B2H.HSButton.icon:SetTexture(nil)
-      B2H.HSButton:Disable()
+      -- B2H.HSButton:Disable()
       return
     end
     B2H.HSButton:Enable()
 
-    local function GetFallbackItemBagSlot()
+    local function GetFallbackItemBagSlot(item)
       for i = 0, NUM_BAG_SLOTS do
         for j = 1, C_Container.GetContainerNumSlots(i) do
-          if C_Container.GetContainerItemID(i, j) == B2H.db.fallback.id then
+          if C_Container.GetContainerItemID(i, j) == item.id then
             return i, j
           end
         end
@@ -53,10 +56,11 @@ local function CreateButton()
     end
 
     -- set the button's tooltip
-    if b2h.id == B2H.db.fallback.i1d then
-      b2h.name = B2H.db.fallback.label[B2H.Locale]
-      b2h.icon = B2H.db.fallback.icon
-      B2H.HSButton.tooltip:SetBagItem(GetFallbackItemBagSlot())
+    local activeFallback = READI.Helper.table:Filter(B2H.db.fallbacks.items, function(item) return item.id == b2h.id end)[1]
+    if not b2h.id then
+      b2h.name = activeFallback.label[B2H.Locale]
+      b2h.icon = activeFallback.icon
+      B2H.HSButton.tooltip:SetBagItem(GetFallbackItemBagSlot(activeFallback))
     else
       B2H.HSButton.tooltip:SetToyByItemID(b2h.id)
     end
@@ -69,29 +73,30 @@ local function CreateButton()
     B2H.HSButton.cooldown:SetCooldown(start, duration)
   end
   --[[ Retrieve a new random toy itemID ]] --
-  function B2H.HSButton:Shuffle(rndIdx)
+  function B2H.HSButton:Shuffle(src)
+    local rndIdx = #src
     -- retrieve random id
     if rndIdx and rndIdx > 0 then
       local __idx = math.random(rndIdx)
-      return b2h.owned[__idx].id, b2h.owned[__idx].label[B2H.Locale], b2h.owned[__idx].icon
+      return src[__idx].id, src[__idx].label[B2H.Locale], src[__idx].icon
     end
     return nil
   end
 
   function B2H.HSButton:SetPosition()
     B2H.HSButton:ClearAllPoints()
-    B2H.HSButton:SetPoint(B2H.db.parent.button_anchor, _G[B2H.db.parent.frame], B2H.db.parent.parent_anchor,
-      B2H.db.parent.position_x, B2H.db.parent.position_y)
+    B2H.HSButton:SetPoint(B2H.db.anchoring.button_anchor, _G[B2H.db.anchoring.frame], B2H.db.anchoring.parent_anchor,
+      B2H.db.anchoring.position_x, B2H.db.anchoring.position_y)
   end
 
   function B2H.HSButton:ScaleButton()
-    local btnSize = B2H.db.parent.button_size
+    local btnSize = B2H.db.anchoring.button_size
     B2H.HSButton:SetSize(btnSize, btnSize)
     B2H.HSButton.mask:SetSize(btnSize * 0.8, btnSize * 0.8)
   end
 
   function B2H.HSButton:SetStrata()
-    local btnStrata = B2H.db.parent.button_strata
+    local btnStrata = B2H.db.anchoring.button_strata
     if btnStrata == "PARENT" then
       local parent = B2H.HSButton:GetParent() 
       B2H.HSButton:SetFrameStrata(parent:GetFrameStrata())

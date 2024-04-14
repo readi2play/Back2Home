@@ -37,10 +37,11 @@ B2H.L.deDE = {
         title = "Toys & Fallback",
         headline = "Enthaltene Hearthstone-Spielzeuge",
         subline = "(Checkboxen für noch nicht gesammelte Spielzeuge sind deaktiviert)",
-        fallback = {
-          headline = "Fallback",
-          label = "Standard-Ruhestein verwenden, wenn noch keine Ruhestein-Spielzeuge gesammelt oder oben ausgewählt wurden",
-        },
+      },
+      fallbacks = {
+        title = "Fallback Items",
+        headline = "Items",
+        subline = "Verwende eines der folgend aufgelisteten Items, falls (noch) keine Ruhestein-Spielzeuge gesammelt oder ausgewählt wurden.",
       },
       anchoring = {
         title = "Frame-Einstellungen",

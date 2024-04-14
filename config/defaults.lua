@@ -391,23 +391,27 @@ function B2H:InitializeDefaultSettings()
         }
       }
     },
-    fallback = {
-      active = true,
-      id = 6948,
-      icon = 134414,
-      label = {
-        deDE = "Ruhestein",
-        enUS = "Hearthstone",
-        esES = "Piedra de hogar",
-        frFR = "Pierre de foyer",
-        itIT = "Pietra del Ritorno",
-        ptBR = "Pedra de Regresso",
-        ruRU = "Камень возвращения",
-        koKR = "귀환석",
-        zhCN = "炉石",
+    fallbacks = {
+      items = {
+        {
+          active = true,
+          id = 6948,
+          icon = 134414,
+          label = {
+            deDE = "Ruhestein",
+            enUS = "Hearthstone",
+            esES = "Piedra de hogar",
+            frFR = "Pierre de foyer",
+            itIT = "Pietra del Ritorno",
+            ptBR = "Pedra de Regresso",
+            ruRU = "Камень возвращения",
+            koKR = "귀환석",
+            zhCN = "炉石",
+          }
+        }
       }
     },
-    parent = {
+    anchoring = {
       frame = "MainMenuBarBackpackButton",
       button_anchor = "TOPLEFT",
       parent_anchor = "TOPRIGHT",

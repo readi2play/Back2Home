@@ -24,14 +24,6 @@ B2H.L = B2H.L
 
 -- Custom Events
 
-EventRegistry:RegisterCallback("B2H.PLAYABLE", function(evt, isLogin, isReload)
-  B2H:InitializeDefaultSettings()
-  B2H:InitializeDB()
-  B2H:InitializeOptions()
-  B2H:InitializeButton()
-  B2H:InitializeKeyBindings()
-end)
-
 -- Native Events
 
 function B2H:OnEvent(evt, ...)
@@ -48,17 +40,17 @@ B2H:RegisterEvent("MODIFIER_STATE_CHANGED")
 B2H:RegisterEvent("FIRST_FRAME_RENDERED")
 
 function B2H:ADDON_LOADED(evt, addonName)
-  if addonName == AddonName then
-    B2H:SetupConfig()
-    self:UnregisterEvent(evt)
-  end
-
+  if addonName ~= AddonName then return end
+  self:UnregisterEvent(evt)  
+  
   B2H:InitializeDefaultSettings()
   B2H:InitializeDB()
+  B2H:SetupConfig()
   B2H:InitializeOptions()
   B2H:InitializeButton()
   B2H:InitializeKeyBindings()
 end
+
 function B2H:PLAYER_ENTERING_WORLD(evt, isLogin, isReload)
   B2H.registered = C_ChatInfo.RegisterAddonMessagePrefix(B2H.data.prefix)
   if not B2H.HSButton then return end
@@ -101,12 +93,14 @@ end
 --------------------------------------------------------------------------------
 -- Create the config DB
 function B2H:InitializeDB ()
-  if not _G[AddonName .. "DB"] or _G[AddonName .. "DB"] == {} then
+  if not _G[AddonName .. "DB"] or not next(_G[AddonName .. "DB"]) then
     _G[AddonName .. "DB"] = CopyTable(B2H.defaults)
   else
-    _G[AddonName .. "DB"] = READI.Helper.table:Merge(CopyTable(B2H.defaults), _G[AddonName .. "DB"])
+    _G[AddonName .. "DB"] = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[AddonName .. "DB"])
   end
   B2H.db = _G[AddonName .. "DB"]
+  -- perform a cleanup to remove no longer used keys
+  READI.Helper.table:CleanUp(B2H.defaults, B2H.db)
 end
 --------------------------------------------------------------------------------
 -- Initialize key bindings from database
@@ -130,27 +124,19 @@ SLASH_B2HB1 = "/home"
 SLASH_B2HB2 = "/b2h"
 
 local function InfoCommandHandler()
-  print("------------------------------------------")
-  print("|cFF00FAD4Back2Home|r knows two different slash commands: /home and /b2h")
-  print("Use one of the keywords 'shuffle', 'random', 'update' or 'mix' to get another random hearthstone toy")
-  print("|cFF00FAD4Example:|r /home shuffle")
-  print("|cFF00FAD4Hint:|r The same functionality can be used via right clicking the button itself")
-  print("")
-  print("Use one of the keywords 'config', 'options' or 'settings' open up the configuration panel")
-  print("|cFF00FAD4Example:|r /home config")
-  print("|cFF00FAD4Hint:|r The same panel can be accessed via ESC > Options > Addons")
-  print("")
-  print(
-    "Run one of the slash commands alongside with the keyword 'info' or an empty string to show this info text again.")
-  print("")
-  print("Thanks for using |cFF00FAD4Back2Home|r and stay healthy")
-  print("yours sincerely |cFF78B064readi2play|r")
-  print("------------------------------------------")
+  print([=[ 
+    |cFF00FAD4Shuffle:|r
+      |cFF9DFFF1/home | /b2h|r shuffle | random | update | mix
+    |cFF00FAD4Config:|r
+      |cFF9DFFF1/home | /b2h|r config | options | settings
+    |cFF00FAD4Help:|r
+      |cFF9DFFF1/home | /b2h|r help
+  ]=])
 end
 -- define the corresponding slash command handlers
 SlashCmdList.B2HB = function(msg, editBox)
   msg = string.lower(msg)
-  local infoKeywords = {"", "info"}
+  local infoKeywords = {"", "help"}
   local shuffleKeywords = {"shuffle", "random", "update", "mix"}
   local configKeywords = {"config", "options", "settings"}
   if READI.Helper.table:Contains(msg, shuffleKeywords) then

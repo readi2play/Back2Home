@@ -97,7 +97,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
 
     local btn_Reset = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."ResetButton",
+        name = AddonName..READI.Helper.string:Capitalize(data.keyword).."ResetButton",
         region = panel,
         label = READI:l10n("general.labels.buttons.reset"),
         anchor = "BOTTOMLEFT",
@@ -110,7 +110,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
     )
     local btn_UnselectAll = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."UnselectAllButton",
+        name = AddonName..READI.Helper.string:Capitalize(data.keyword).."UnselectAllButton",
         region = panel,
         label = READI:l10n("general.labels.buttons.unselectAll"),
         parent = btn_Reset,
@@ -123,7 +123,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
     )
     local btn_SelectAll = READI:Button(data,
       {
-        name = AddonName..READI.Helper.string.Capitalize(data.keyword).."SelectAllButton",
+        name = AddonName..READI.Helper.string:Capitalize(data.keyword).."SelectAllButton",
         region = panel,
         label = READI:l10n("general.labels.buttons.selectAll"),
         parent = btn_UnselectAll,
@@ -136,7 +136,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
     )
     -- local btn_Test = READI:Button(data,
     --   {
-    --     name = AddonName..READI.Helper.string.Capitalize(data.keyword).."TestButton",
+    --     name = AddonName..READI.Helper.string:Capitalize(data.keyword).."TestButton",
     --     region = panel,
     --     label = "Test",
     --     parent = btn_SelectAll,
