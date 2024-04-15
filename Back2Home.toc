@@ -27,6 +27,7 @@ config/panels/toys.lua
 config/panels/anchoring.lua
 config/panels/keybindings.lua
 config/panels/reporting.lua
+config/panels/profiles.lua
 
 # modules
 modules/button.lua

@@ -39,8 +39,8 @@ B2H.L.deDE = {
         subline = "(Checkboxen für noch nicht gesammelte Spielzeuge sind deaktiviert)",
       },
       fallbacks = {
-        title = "Fallback Items",
-        headline = "Items",
+        title = "Fallbacks",
+        headline = "Alternative Items",
         subline = "Verwende eines der folgend aufgelisteten Items, falls (noch) keine Ruhestein-Spielzeuge gesammelt oder ausgewählt wurden.",
       },
       anchoring = {
@@ -100,7 +100,7 @@ B2H.L.deDE = {
       },
       profiles = {
         title = "Profile",
-        headline = "Profile",
+        headline = "Charakter-Profile",
       }
     }
 

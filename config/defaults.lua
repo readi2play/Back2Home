@@ -467,5 +467,8 @@ function B2H:InitializeDefaultSettings()
         toys = true,
       },
     },
+    profiles = {
+      activated = false,
+    }
   }  
 end

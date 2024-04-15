@@ -100,10 +100,15 @@ B2H.L.enUS = {
       },
       profiles = {
         title = "Profiles",
-        headline = "Profiles",
-      }
-    }
-
+        headline = "Character Profiles",
+        labels = {
+          default = "Default profile",
+          activation = "Activate character specific profiles",
+          select = "Select a profile to be used for this Character",
+          copyProfile = "Copy Settings from another profile to this character",
+        },
+      },
+    },
   },
   reporting = {
     general = {

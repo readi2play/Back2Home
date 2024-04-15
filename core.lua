@@ -8,6 +8,8 @@ B2H.Colors = CopyTable(READI.Colors)
 B2H.Colors.b2h = "00FAD4"
 B2H.Colors.b2h_light = "9DFFF1"
 
+B2H.Chars = {}
+
 B2H.data = {
   ["addon"] = "Back2Home",
   ["prefix"] = "B2H",
@@ -94,12 +96,14 @@ end
 --------------------------------------------------------------------------------
 -- Create the config DB
 function B2H:InitializeDB ()
-  if not _G[AddonName .. "DB"] or not next(_G[AddonName .. "DB"]) then
-    _G[AddonName .. "DB"] = CopyTable(B2H.defaults)
+  local dbName = AddonName .. "DB"
+  if not _G[dbName] or not next(_G[dbName]) then
+    _G[dbName] = CopyTable(B2H.defaults)
   else
-    _G[AddonName .. "DB"] = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[AddonName .. "DB"])
+    if _G[dbName].profiles.activated then dbName = dbName.."Chr" end
+    _G[dbName] = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[dbName])
   end
-  B2H.db = _G[AddonName .. "DB"]
+  B2H.db = _G[dbName]
   -- perform a cleanup to remove no longer used keys
   READI.Helper.table:CleanUp(B2H.defaults, B2H.db)
 end
