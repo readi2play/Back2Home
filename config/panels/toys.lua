@@ -25,6 +25,7 @@ function B2H:FillToysPanel(panel, container, anchorline)
     local opts = {
       name = AddonName .. "CheckButton_" .. toy.id,
       region = container,
+      enabled = toy.owned,
       label = toy.label[B2H.Locale],
       parent = toys_sectionSubTitle,
       p_anchor = "BOTTOMLEFT",
@@ -60,7 +61,6 @@ function B2H:FillToysPanel(panel, container, anchorline)
     end
 
     _G[opts.name] = READI:CheckBox(data, opts)
-    _G[opts.name]:SetState(toy.owned)
     _G[opts.name]:SetChecked(toy.owned and toy.active)
 
     _G[opts.name].onNewToy = function(evt)

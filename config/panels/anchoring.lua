@@ -257,7 +257,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
       "FULLSCREEN_DIALOG",
       "TOOLTIP",
     },
-    storage = B2H.db.anchoring,
+    storage = "B2H.db.anchoring",
     option = "button_strata",
     name = AddonName.."Dropdown_button_strata",
     region = container,
@@ -270,7 +270,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
       UIDropDownMenu_SetText(_G[AddonName.."Dropdown_button_strata"], B2H.defaults.anchoring.button_strata)
       CloseDropDownMenus()    
     end,
-    onChange = function() B2H.HSButton:SetStrata() end
+    onChange = function () B2H.HSButton:SetStrata() end
   })
 
   local btn_Reset = READI:Button(data,
