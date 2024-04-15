@@ -2,7 +2,7 @@
 ## Title: Back2Home by |cFF78B064readi2play|r 
 ## Notes: Use a random hearthstone toy from out of your toybox whenever you want to return to your home base.
 ## IconTexture: Interface\AddOns\Back2Home\media\b2h_logo.tga
-## Version: 0.8.4.2
+## Version: 0.8.5
 ## Author: |cFF78B064readi2play|r
 ## SavedVariables: Back2HomeDB
 ## SavedVariablesPerCharacter: Back2HomeDBChr
