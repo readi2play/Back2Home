@@ -2,7 +2,7 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
-local configKeys = {"info", "toys", "fallbacks", "anchoring", "keybindings", "reporting", "profiles"}
+local configKeys = {"info", "toys", "fallbacks", "anchoring", "keybindings", "reporting", "profiles", "sandbox"}
 local data = CopyTable(B2H.data)
 data.keyword = "config"
 B2H.config = {}
@@ -34,6 +34,7 @@ function B2H:SetupConfig()
       B2H.config[key].panel, B2H.config[key].container, B2H.config[key].anchorline = READI:OptionPanel(data, {
         name = panelName,
         parent = parentPanel,
+        isScrollable = READI.Helper.table:Contains(keys, {"toys"}),
         title = {
           text = titleText,
           color = "b2h"

@@ -101,7 +101,11 @@ B2H.L.enUS = {
       profiles = {
         title = "Profiles",
         headline = "Profiles",
-      }
+      },
+      sandbox = {
+        title = "Sandbox",
+        headline = "Testing elements",
+      },
     }
 
   },

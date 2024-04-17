@@ -25,7 +25,6 @@ function B2H:FillToysPanel(panel, container, anchorline)
     local opts = {
       name = AddonName .. "CheckButton_" .. toy.id,
       region = container,
-      enabled = toy.owned,
       label = toy.label[B2H.Locale],
       parent = toys_sectionSubTitle,
       p_anchor = "BOTTOMLEFT",
