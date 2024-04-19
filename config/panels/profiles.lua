@@ -43,7 +43,7 @@ function B2H:FillProfilesPanel(panel, container, anchorline)
   activationDescription:SetText(B2H:setTextColor(format(READI:l10n("config.panels.profiles.description.activation", "B2H.L"), B2H:setTextColor(AddonName, "b2h")), "white"))
   activationDescription:SetJustifyH("LEFT")
   activationDescription:SetJustifyV("TOP")
-  activationDescription:SetWidth(b2h.windowWidth)
+  activationDescription:SetWidth(b2h.windowWidth - 20)
   activationDescription:SetWordWrap(true)
   local cbName = format("%s_%s_activate", AddonName, READI.Helper.string:Capitalize(data.keyword))
   local opts = {
