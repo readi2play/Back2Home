@@ -6,26 +6,51 @@ local data = CopyTable(B2H.data)
 data.keyword = "profiles"
 local charName = GetUnitName("player")
 --------------------------------------------------------------------------------
--- CREATE KEYBINDINGS PANEL CONTENT
+-- CREATE PROFILES PANEL CONTENT
 --------------------------------------------------------------------------------
 B2H.Profile = B2H.Profile or {}
+local Profiler = {
+  activeProfile = {
+    label = "",
+    description = "",
+    dropdown = nil,
+    selection = nil,
+  },
+  copyProfile = {
+    label = "",
+    description = "",
+    dropdown = nil,
+  },
+  deleteProfile = {
+    label = "",
+    description = "",
+    dropdown = nil,
+  },
+}
 
 function B2H:FillProfilesPanel(panel, container, anchorline)
   local activated = _G[AddonName.."DB"].use_profiles
   local profileList = READI.Helper.table:Keys(_G[AddonName.."DB"].chars)
   local deleteList = CopyTable(profileList)
-  table.insert(profileList, 1, {txt = "Standard", val = "global"})
+  table.insert(profileList, 1, {txt = READI:l10n("general.commons.default"), val = "global"})
 
   local profiles_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   profiles_sectionTitle:SetPoint("TOPLEFT", anchorline, 0, -20)
   profiles_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.profiles.headline", "B2H.L"), "b2h"))
 
+  local activationDescription = container:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
+  activationDescription:SetPoint("TOPLEFT", profiles_sectionTitle, "BOTTOMLEFT", 0, -10)
+  activationDescription:SetText(B2H:setTextColor(format(READI:l10n("config.panels.profiles.description.activation", "B2H.L"), B2H:setTextColor(AddonName, "b2h")), "white"))
+  activationDescription:SetJustifyH("LEFT")
+  activationDescription:SetJustifyV("TOP")
+  activationDescription:SetWidth(b2h.windowWidth)
+  activationDescription:SetWordWrap(true)
   local cbName = format("%s_%s_activate", AddonName, READI.Helper.string:Capitalize(data.keyword))
   local opts = {
     name = cbName,
     region = container,
     label = READI:l10n("config.panels.profiles.labels.activation", "B2H.L"),
-    parent = profiles_sectionTitle,
+    parent = activationDescription,
     p_anchor = "BOTTOMLEFT",
     offsetX = 0,
     offsetY = -10,
@@ -50,87 +75,109 @@ function B2H:FillProfilesPanel(panel, container, anchorline)
     wrapper:Hide()
   end
 
-  local selectProfileLabel = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormal")
-  selectProfileLabel:SetPoint("TOPLEFT", wrapper, "TOPLEFT", 0, -10)
-  selectProfileLabel:SetText(B2H:setTextColor(READI:l10n("config.panels.profiles.labels.select", "B2H.L"), "b2h_light"))
-  selectProfileLabel:SetJustifyH("LEFT")
-  selectProfileLabel:SetJustifyV("TOP")
-  selectProfileLabel:SetWidth(b2h.columnWidth)
-  selectProfileLabel:SetWordWrap(true)
-  local selectDropdown = READI:DropDown(data, {
+  --[[----------------------------------------------------------------------------
+  Active Profile section
+  ----------------------------------------------------------------------------]]--
+  Profiler.activeProfile.label = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormal")
+  Profiler.activeProfile.label:SetPoint("TOPLEFT", wrapper, "TOPLEFT", 0, -10)
+  Profiler.activeProfile.label:SetText(B2H:setTextColor(READI:l10n("config.panels.profiles.labels.select", "B2H.L"), "b2h_light"))
+  Profiler.activeProfile.label:SetJustifyH("LEFT")
+  Profiler.activeProfile.label:SetJustifyV("TOP")
+  Profiler.activeProfile.label:SetWidth(b2h.columnWidth)
+  Profiler.activeProfile.label:SetWordWrap(true)
+
+  Profiler.activeProfile.dropdown = READI:DropDown(data, {
     values = profileList,
     storage = "B2H.db",
     option = "assigned_profile",
     condition = B2H.db ~= _G[AddonName.."DB"].global,
-    name = AddonName.."Dropdown_selectedProfile",
+    name = AddonName.."Dropdown_activeProfile",
     region = wrapper,
-    parent = selectProfileLabel,
-    offsetX = -15,
+    parent = Profiler.activeProfile.label,
+    offsetX = -20,
     offsetY = -10,
     onChange = B2H.Profile.Select
   })
 
+  --[[----------------------------------------------------------------------------
+  Copy Profile section
+  ----------------------------------------------------------------------------]]--
   local copyList = CopyTable(profileList)
+  Profiler.copyProfile.label = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormal")
+  Profiler.copyProfile.label:SetPoint("TOPLEFT", Profiler.activeProfile.dropdown, "BOTTOMLEFT", 20, -100)
+  Profiler.copyProfile.label:SetText(B2H:setTextColor(READI:l10n("config.panels.profiles.labels.copyProfile", "B2H.L"), "b2h_light"))
+  Profiler.copyProfile.label:SetJustifyH("LEFT")
+  Profiler.copyProfile.label:SetJustifyV("TOP")
+  Profiler.copyProfile.label:SetWidth(b2h.columnWidth - 20)
+  Profiler.copyProfile.label:SetWordWrap(true)
 
-  local copyProfileLabel = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormal")
-  copyProfileLabel:SetPoint("TOPLEFT", wrapper, "TOPLEFT", b2h.columnWidth, -10)
-  copyProfileLabel:SetText(B2H:setTextColor(READI:l10n("config.panels.profiles.labels.copyProfile", "B2H.L"), "b2h_light"))
-  copyProfileLabel:SetJustifyH("LEFT")
-  copyProfileLabel:SetJustifyV("TOP")
-  copyProfileLabel:SetWidth(b2h.columnWidth)
-  copyProfileLabel:SetWordWrap(true)
-  local copyDropdown = READI:DropDown(data, {
+  Profiler.copyProfile.dropdown = READI:DropDown(data, {
     values = copyList,
     option = nil,
     name = AddonName.."Dropdown_copyProfile",
     region = wrapper,
-    parent = copyProfileLabel,
-    offsetX = -15,
+    parent = Profiler.copyProfile.label,
+    offsetX = -20,
     offsetY = -10,
-    onChange = B2H.Profile.SelectToCopy
   })
 
-  local copyProfileBtn = READI:Button(data, {
+  Profiler.copyProfile.description = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
+  Profiler.copyProfile.description:SetPoint("TOPLEFT", Profiler.copyProfile.dropdown, "BOTTOMLEFT", 20, -5)
+  Profiler.copyProfile.description:SetText(B2H:setTextColor(format(READI:l10n("config.panels.profiles.description.copyProfile", "B2H.L"), READI:l10n("general.labels.buttons.submit")), "white"))
+  Profiler.copyProfile.description:SetJustifyH("LEFT")
+  Profiler.copyProfile.description:SetJustifyV("TOP")
+  Profiler.copyProfile.description:SetWidth(b2h.columnWidth - 20)
+  Profiler.copyProfile.description:SetWordWrap(true)
+
+  Profiler.copyProfile.button = READI:Button(data, {
     name = AddonName.."CopyProfileButton",
     label = READI:l10n("general.labels.buttons.submit"),
     region = wrapper,
-    anchor = "LEFT",
-    parent = copyDropdown,
-    p_anchor = "RIGHT",
+    parent = Profiler.copyProfile.description,
+    p_anchor = "BOTTOMLEFT",
+    offsetY = -10,
     onClick = B2H.Profile.Copy
   })
-
-  local deleteProfileLabel = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormal")
-  deleteProfileLabel:SetPoint("TOPLEFT", copyDropdown, "TOPLEFT", 15, -128)
-  deleteProfileLabel:SetText(B2H:setTextColor(READI:l10n("config.panels.profiles.labels.deleteProfile", "B2H.L"), "b2h_light"))
-  deleteProfileLabel:SetJustifyH("LEFT")
-  deleteProfileLabel:SetJustifyV("TOP")
-  deleteProfileLabel:SetWidth(b2h.columnWidth)
-  deleteProfileLabel:SetWordWrap(true)
-  local deleteDropdown = READI:DropDown(data, {
+  --[[----------------------------------------------------------------------------
+  Delete Profile section
+  ----------------------------------------------------------------------------]]--
+  Profiler.deleteProfile.label = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormal")
+  Profiler.deleteProfile.label:SetPoint("TOPLEFT", Profiler.copyProfile.label, "TOPLEFT", b2h.columnWidth, 0)
+  Profiler.deleteProfile.label:SetText(B2H:setTextColor(READI:l10n("config.panels.profiles.labels.deleteProfile", "B2H.L"), "b2h_light"))
+  Profiler.deleteProfile.label:SetJustifyH("LEFT")
+  Profiler.deleteProfile.label:SetJustifyV("TOP")
+  Profiler.deleteProfile.label:SetWidth(b2h.columnWidth - 20)
+  Profiler.deleteProfile.label:SetWordWrap(true)
+  
+  Profiler.deleteProfile.dropdown = READI:DropDown(data, {
     values = deleteList,
     option = nil,
     name = AddonName.."Dropdown_deleteProfile",
     region = wrapper,
-    parent = deleteProfileLabel,
+    parent = Profiler.deleteProfile.label,
     p_anchor = "BOTTOMLEFT",
-    offsetX = -15,
+    offsetX = -20,
     offsetY = -10,
-    onChange = B2H.Profile.SelectToDelete
   })
-
-  local deleteProfileBtn = READI:Button(data, {
+  Profiler.deleteProfile.description = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
+  Profiler.deleteProfile.description:SetPoint("TOPLEFT", Profiler.deleteProfile.dropdown, "BOTTOMLEFT", 20, -5)
+  Profiler.deleteProfile.description:SetText(B2H:setTextColor(format(READI:l10n("config.panels.profiles.description.deleteProfile", "B2H.L"), READI:l10n("general.labels.buttons.submit")), "white"))
+  Profiler.deleteProfile.description:SetJustifyH("LEFT")
+  Profiler.deleteProfile.description:SetJustifyV("TOP")
+  Profiler.deleteProfile.description:SetWidth(b2h.columnWidth - 20)
+  Profiler.deleteProfile.description:SetWordWrap(true)
+  Profiler.deleteProfile.button = READI:Button(data, {
     name = AddonName.."DeleteProfileButton",
     label = READI:l10n("general.labels.buttons.submit"),
     region = wrapper,
-    anchor = "LEFT",
-    parent = deleteDropdown,
-    p_anchor = "RIGHT",
+    parent = Profiler.deleteProfile.description,
+    p_anchor = "BOTTOMLEFT",
+    offsetY = -10,
     onClick = B2H.Profile.Delete
   })
 
   if _G[AddonName.."DB"].chars[charName].assigned_profile == "global" then
-    selectDropdown:SetValue("global", "Standard")
+    Profiler.activeProfile.dropdown:SetValue("global", READI:l10n("general.commons.default"))
   end
 
   EventRegistry:RegisterCallback("B2H.PROFILE_ACTIVATION_CHANGED", function(evt)
@@ -148,68 +195,104 @@ function B2H:FillProfilesPanel(panel, container, anchorline)
 end
 
 function B2H.Profile:Init()
-  local dd = _G[AddonName.."Dropdown_selectedProfile"]
-  B2H.Profile.selected = dd:GetValue() or _G[AddonName.."DB"].chars[charName].assigned_profile
+  Profiler.activeProfile.selection = Profiler.activeProfile.dropdown:GetValue() or _G[AddonName.."DB"].chars[charName].assigned_profile
 
-  if B2H.Profile.selected == "global" and dd:GetText() == "global" then
-    dd:SetText("Standard")
+  if Profiler.activeProfile.selection == "global" and Profiler.activeProfile.dropdown:GetText() == "global" then
+    Profiler.activeProfile.dropdown:SetText(READI:l10n("general.commons.default"))
   end
 end
-function B2H.Profile:SelectToCopy()
-  local dd = _G[AddonName.."Dropdown_copyProfile"]
-  B2H.Profile.copyThis = dd:GetValue()
-end
 function B2H.Profile:Copy()
-  local __p = B2H.Profile.copyThis
-  local dst = _G[AddonName.."DB"].chars[B2H.Profile.selected]
+  local __selection = Profiler.copyProfile.dropdown:GetValue()
+  local dst = _G[AddonName.."DB"].chars[Profiler.activeProfile.selection]
   
-  if B2H.Profile.selected ==  "global" then
+  if Profiler.activeProfile.selection ==  "global" then
     dst = _G[AddonName.."DB"].global
   end
 
-  if __p then
-    local src = _G[AddonName.."DB"].chars[__p]
-    if __p ==  "global" then
+  if __selection then
+    local src = _G[AddonName.."DB"].chars[__selection]
+    if __selection ==  "global" then
       src = _G[AddonName.."DB"].global
     end  
     for k,v in pairs(src) do
       dst[k] = src[k]
     end
     B2H:UpdateOptions()    
+    Profiler.copyProfile.dropdown:SetValue(nil)
   end
 end
-function B2H.Profile:SelectToDelete()
-  local dd = _G[AddonName.."Dropdown_deleteProfile"]
-  B2H.Profile.deleteThis = dd:GetValue()
-end
 function B2H.Profile:Delete()
-  local __p = B2H.Profile.deleteThis
-  local selection = _G[AddonName.."Dropdown_selectedProfile"]
-  
-  if __p ~= "global" then
-    local src = _G[AddonName.."DB"].chars[__p]
-    if __p == B2H.Profile.selected then
-      if __p == charName then
-        B2H.db = _G[AddonName.."DB"].global
-        selection:SetValue("global", "Standard")
-      else
-        B2H.db = _G[AddonName.."DB"].chars[charName]
-        selection:SetValue(charName)
-      end
+  local __selection = Profiler.deleteProfile.dropdown:GetValue()
+  local function FillPrompt(__p)
+    local promptText = __p:CreateFontString("ARTWORK", nil, "GameFontNormal")
+    promptText:SetText(
+      B2H:setTextColor(format(
+        READI:l10n("config.panels.profiles.dialogues.prompt.delete", "B2H.L"), B2H:setTextColor(__selection, "b2h_light")
+      ), "white")
+    )
+    if __p.title then
+      promptText:SetPoint("TOPLEFT", __p.titleDivider, "BOTTOMLEFT", 20, -5)
+    else
+      promptText:SetPoint("TOPLEFT", __p, "TOPLEFT", 20, -30)
     end
-    _G[AddonName.."DB"].chars[__p] = nil
-    B2H:UpdateOptions()    
+    promptText:SetWidth(__p:GetWidth(-20))
+    promptText:SetJustifyH("LEFT")
+    promptText:SetJustifyV("TOP")
+    promptText:SetWordWrap(true)
+
+    if __p.icon then
+      __p.icon:SetPoint("CENTER", __p, "TOPLEFT", 10,-10)
+      __p.icon:SetFrameStrata("DIALOG")
+      __p.icon:SetFrameLevel(100)
+    end
+  end
+
+  if not __selection then return end
+  local promptName = "DeleteProfilePrompt"
+  local prompt = _G[promptName] or READI:Dialog(data, {
+    name = promptName,
+    title = B2H:setTextColor(READI:l10n("config.panels.profiles.labels.deleteProfile", "B2H.L"), "b2h"),
+    icon = {
+      texture = GetAddOnMetadata(AddonName, "IconTexture"),
+      height = 42,
+      width = 42,
+    },
+    closeOnEsc = true,
+    createHidden = false,
+    onOkay = function()
+      if __selection ~= "global" then
+        local src = _G[AddonName.."DB"].chars[__selection]
+        if __selection == Profiler.activeProfile.selection then
+          if __selection == charName then
+            B2H.db = _G[AddonName.."DB"].global
+            Profiler.activeProfile.dropdown:SetValue("global", READI:l10n("general.commons.default"))
+          else
+            B2H.db = _G[AddonName.."DB"].chars[charName]
+            Profiler.activeProfile.dropdown:SetValue(charName)
+          end
+        end
+        _G[AddonName.."DB"].chars[__selection] = nil
+        B2H:UpdateOptions()    
+      end
+    end,
+    onCancel = function() end,
+    onClose = function()
+      Profiler.deleteProfile.dropdown:SetValue(nil)
+    end
+  })
+  FillPrompt(prompt)
+  if not prompt:IsVisible() then
+    prompt:Show()
   end
 end
 function B2H.Profile:Select()
-  local dd = _G[AddonName.."Dropdown_selectedProfile"]
-  B2H.Profile.selected = dd:GetValue()
-  _G[AddonName.."DB"].chars[charName].assigned_profile = B2H.Profile.selected
+  Profiler.activeProfile.selection = Profiler.activeProfile.dropdown:GetValue()
+  _G[AddonName.."DB"].chars[charName].assigned_profile = Profiler.activeProfile.selection
 
-  if B2H.Profile.selected ==  "global" then
+  if Profiler.activeProfile.selection ==  "global" then
     B2H.db = _G[AddonName.."DB"].global
   else
-    B2H.db = _G[AddonName.."DB"].chars[B2H.Profile.selected]
+    B2H.db = _G[AddonName.."DB"].chars[Profiler.activeProfile.selection]
   end
   B2H:UpdateOptions()    
 end

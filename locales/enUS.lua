@@ -101,12 +101,23 @@ B2H.L.enUS = {
       profiles = {
         title = "Profiles",
         headline = "Character Profiles",
+        subline = "This section allows you to select the currently active storage profile so you can define different settings for different characters which leads to much more flexible configurations.",
         labels = {
           activation = "Activate character specific profiles",
           select = "Select the profile to be used for this Character",
-          copyProfile = "Copy Settings from another profile",
-          deleteProfile = "Delete a profile",
+          copyProfile = "Copy from ...",
+          deleteProfile = "Delete profile",
         },
+        description = {
+          activation = "This checkbox allows you to activate or deactivate character specific storage profiles allowing you to individually configure %s for each of your characters.",
+          copyProfile = "This will copy settings from another profile into the active one when hitting the \"%s\" button.",
+          deleteProfile = "Hit the \"%s\" button to remove an unused or no longer required profile.",
+        },
+        dialogues = {
+          prompt = {
+            delete = "Are you sure you want to delete the profile %s?"
+          }
+        }
       },
     },
   },
