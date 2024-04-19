@@ -102,10 +102,10 @@ B2H.L.enUS = {
         title = "Profiles",
         headline = "Character Profiles",
         labels = {
-          default = "Default profile",
           activation = "Activate character specific profiles",
-          select = "Select a profile to be used for this Character",
-          copyProfile = "Copy Settings from another profile to this character",
+          select = "Select the profile to be used for this Character",
+          copyProfile = "Copy Settings from another profile",
+          deleteProfile = "Delete a profile",
         },
       },
     },

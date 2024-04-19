@@ -66,18 +66,18 @@ function B2H:FillInfoPanel(panel, container, anchorline)
   local libLogo = READI:Icon(data, {
     texture = lib.icon,
     name = format("%s Logo", "readiLIB"),
-    region = container,
+    region = panel,
     width = 16,
     height = 16,
   })
 
-  local libText = container:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
-  libText:SetPoint("BOTTOMRIGHT", container, "BOTTOMRIGHT", -5,5)
+  local libText = panel:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
+  libText:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -5,5)
   libText:SetText(B2H:setTextColor(format("%s v%s", lib.title, lib.version), "white"))
 
   libLogo:SetPoint("RIGHT", libText, "LEFT", -5, 0)
 
-  local powered_by = container:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
+  local powered_by = panel:CreateFontString("ARTWORK", nil, "GameFontNormalSmall")
   powered_by:SetPoint("RIGHT", libLogo, "LEFT", -5,0)
   powered_by:SetText(B2H:setTextColor("powered by:", "white"))
 end
