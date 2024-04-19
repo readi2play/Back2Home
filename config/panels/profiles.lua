@@ -257,6 +257,10 @@ function B2H.Profile:Delete()
       height = 42,
       width = 42,
     },
+    buttonSet = {
+      confirm = READI:l10n("general.labels.buttons.yes"),
+      cancel = READI:l10n("general.labels.buttons.no"),
+    },
     closeOnEsc = true,
     createHidden = false,
     onOkay = function()

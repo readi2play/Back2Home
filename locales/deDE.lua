@@ -101,6 +101,23 @@ B2H.L.deDE = {
       profiles = {
         title = "Profile",
         headline = "Charakter-Profile",
+        subline = "Wähle das aktive Speicher-Profil aus. Auf diese Weise kannst du individuelle Einstellungen für verschiedene Charaktere vornehmen, was eine wesentlich flexiblere Konfiguration ermöglicht.",
+        labels = {
+          activation = "Charakterspezifische Profile aktivieren",
+          select = "Wähle das Profil aus, das für diesen Charakter verwendet werden soll.",
+          copyProfile = "Kopiere von ...",
+          deleteProfile = "Profil löschen",
+        },
+        description = {
+          activation = "Mit dieser Checkbox kannst du die Verwendung charakterspezifischer Profile aktivieren oder deaktivieren. So kannst du %s für jeden deiner Charaktere individuell konfigurieren.",
+          copyProfile = "Kopiere Einstellungen aus einem anderen Profil in das aktive, wenn Du auf „%s“ klickst.",
+          deleteProfile = "Klick auf „%s“, um ein nicht verwendetes oder nicht mehr benötigtes Profil zu löschen.",
+        },
+        dialogues = {
+          prompt = {
+            delete = "Möchtest du das Profil %s wirklich löschen?"
+          }
+        }
       }
     }
 
