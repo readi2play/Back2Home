@@ -127,14 +127,14 @@ function B2H:FillToysPanel(panel, container, anchorline)
     _G[AddonName .. "CheckButton_" .. item.id]:SetChecked(item.active)
   end
 
-
+  
   local btn_Reset = READI:Button(data,
     {
       name = AddonName..READI.Helper.string:Capitalize(data.keyword).."ResetButton",
       region = panel,
       label = READI:l10n("general.labels.buttons.reset"),
       anchor = "BOTTOMLEFT",
-      parent = container,
+      parent = panel,
       offsetY = 20,
       onClick = function()
         EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnReset"))
@@ -155,7 +155,7 @@ function B2H:FillToysPanel(panel, container, anchorline)
       end
     }
   )
-end
+  end
 function B2H.Toys:Update()
   for i,toy in ipairs(B2H.db.toys) do
     if not toy.owned then

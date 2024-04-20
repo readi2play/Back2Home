@@ -136,7 +136,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
         region = panel,
         label = READI:l10n("general.labels.buttons.reset"),
         anchor = "BOTTOMLEFT",
-        parent = container,
+        parent = panel,
         offsetY = 20,
         onClick = function()
           EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnReset"))

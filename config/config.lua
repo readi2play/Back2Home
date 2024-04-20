@@ -34,7 +34,7 @@ function B2H:SetupConfig()
       B2H.config[key].panel, B2H.config[key].container, B2H.config[key].anchorline = READI:OptionPanel(data, {
         name = panelName,
         parent = parentPanel,
-        title = {
+                title = {
           text = titleText,
           color = "b2h"
         }
@@ -58,5 +58,10 @@ end
 function B2H:UpdateOptions()
   B2H.Toys:Update()
   B2H.Keybindings:Update()
+
+  B2H.HSButton:ScaleButton()
+  B2H.HSButton:SetPosition()
+  B2H.HSButton:SetStrata()
+
   B2H.HSButton:Update(true)
 end

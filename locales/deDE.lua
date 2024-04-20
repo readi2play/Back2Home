@@ -39,8 +39,8 @@ B2H.L.deDE = {
         subline = "(Checkboxen für noch nicht gesammelte Spielzeuge sind deaktiviert)",
       },
       fallbacks = {
-        title = "Fallback Items",
-        headline = "Items",
+        title = "Fallbacks",
+        headline = "Alternative Items",
         subline = "Verwende eines der folgend aufgelisteten Items, falls (noch) keine Ruhestein-Spielzeuge gesammelt oder ausgewählt wurden.",
       },
       anchoring = {
@@ -100,7 +100,24 @@ B2H.L.deDE = {
       },
       profiles = {
         title = "Profile",
-        headline = "Profile",
+        headline = "Charakter-Profile",
+        subline = "Wähle das aktive Speicher-Profil aus. Auf diese Weise kannst du individuelle Einstellungen für verschiedene Charaktere vornehmen, was eine wesentlich flexiblere Konfiguration ermöglicht.",
+        labels = {
+          activation = "Charakterspezifische Profile aktivieren",
+          select = "Wähle das Profil aus, das für diesen Charakter verwendet werden soll.",
+          copyProfile = "Kopiere von ...",
+          deleteProfile = "Profil löschen",
+        },
+        description = {
+          activation = "Mit dieser Checkbox kannst du die Verwendung charakterspezifischer Profile aktivieren oder deaktivieren. So kannst du %s für jeden deiner Charaktere individuell konfigurieren.",
+          copyProfile = "Kopiere Einstellungen aus einem anderen Profil in das aktive, wenn Du auf „%s“ klickst.",
+          deleteProfile = "Klick auf „%s“, um ein nicht verwendetes oder nicht mehr benötigtes Profil zu löschen.",
+        },
+        dialogues = {
+          prompt = {
+            delete = "Möchtest du das Profil %s wirklich löschen?"
+          }
+        }
       }
     }
 
