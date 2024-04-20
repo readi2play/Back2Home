@@ -242,11 +242,11 @@ function B2H.Profile:Delete()
       ), "white")
     )
     if __p.title then
-      __p.text:SetPoint("TOPLEFT", __p.titleDivider, "BOTTOMLEFT", 20, -5)
+      __p.text:SetPoint("TOPLEFT", __p.titleDivider, "BOTTOMLEFT", 0, -5)
     else
       __p.text:SetPoint("TOPLEFT", __p, "TOPLEFT", 20, -30)
     end
-    __p.text:SetWidth(__p:GetWidth(-20))
+    __p.text:SetWidth(__p.titleDivider:GetWidth())
     __p.text:SetJustifyH("LEFT")
     __p.text:SetJustifyV("TOP")
     __p.text:SetWordWrap(true)

@@ -21,9 +21,6 @@ B2H.L = B2H.L
 --------------------------------------------------------------------------------
 -- EVENT HANDLERS
 --------------------------------------------------------------------------------
-
--- Custom Events
-
 -- Native Events
 
 function B2H:OnEvent(evt, ...)
@@ -59,7 +56,7 @@ function B2H:PLAYER_ENTERING_WORLD(evt, isLogin, isReload)
 end
 function B2H:PLAYER_LEAVING_WORLD(evt, isLogout, isReload)
   local dbName = AddonName .. "DB"
-  local charName = GetUnitName("player")
+  local charName = format("%s-%s", GetUnitName("player"), GetRealmName())
   _G[dbName.."Chr"] = CopyTable(_G[dbName].chars[charName])
 end
 
