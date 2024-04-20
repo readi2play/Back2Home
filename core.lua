@@ -101,7 +101,7 @@ end
 -- Create the config DB
 function B2H:InitializeDB ()
   local dbName = AddonName .. "DB"
-  local charName = GetUnitName("player")
+  local charName = format("%s-%s", GetUnitName("player"), GetRealmName())
   -- get or create the overall SavedVariables
   _G[dbName] = _G[dbName] or {}
 
