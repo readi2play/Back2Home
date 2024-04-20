@@ -270,7 +270,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
       UIDropDownMenu_SetText(_G[AddonName.."Dropdown_button_strata"], B2H.defaults.anchoring.button_strata)
       CloseDropDownMenus()    
     end,
-    onChange = function() B2H.HSButton:SetStrata() end
+    onChange = function () B2H.HSButton:SetStrata() end
   })
 
   local btn_Reset = READI:Button(data,
