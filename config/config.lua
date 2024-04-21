@@ -55,13 +55,17 @@ function B2H:InitializeOptions()
     end
   end
 end
-function B2H:UpdateOptions()
+function B2H:UpdateOptions(shuffle)
+  if shuffle == nil then
+    shuffle = true
+  end
   B2H.Toys:Update()
+  B2H.Anchoring:Update()
   B2H.Keybindings:Update()
 
   B2H.HSButton:ScaleButton()
   B2H.HSButton:SetPosition()
   B2H.HSButton:SetStrata()
 
-  B2H.HSButton:Update(true)
+  B2H.HSButton:Update(shuffle)
 end

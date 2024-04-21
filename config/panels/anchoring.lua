@@ -8,6 +8,9 @@ data.keyword = "anchoring"
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
+B2H.Anchoring = B2H.Anchoring or {
+  fields = {},
+}
 function B2H:FillAnchoringPanel(panel, container, anchorline)
   local function BuildAnchorGrid(wrapper, cols, option)
     for i,value in ipairs(b2h.anchors) do
@@ -26,7 +29,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
         x = -96
       else
         local btnName = format("%sRadioButton_%s_%s", AddonName, option ,b2h.anchors[i - cols]) 
-        parent = _G[btnName]
+        parent = B2H.Anchoring.fields[btnName]
         p_anchor = "BOTTOMLEFT"
       end
       local btnName = format("%sRadioButton_%s_%s", AddonName, option ,value)
@@ -35,7 +38,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
         highlight = B2H.T.rdl100002,
         active = B2H.T.rdl100003,
       }
-      _G[btnName] = READI:RadioButton(data, {
+      B2H.Anchoring.fields[btnName] = READI:RadioButton(data, {
         name = btnName,
         option = option,
         value = value,
@@ -46,10 +49,10 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
         offsetX = x,
         offsetY = y,
         onClick = function()
-          local rb = _G[btnName]
+          local rb = B2H.Anchoring.fields[btnName]
           for i, val in ipairs(b2h.anchors) do
             local btnName = format("%sRadioButton_%s_%s", AddonName, option, val)
-            local btn = _G[btnName]
+            local btn = B2H.Anchoring.fields[btnName]
             if btn.value ~= rb.value then
               btn:SetChecked(false)
               btn.tex:SetTexture(textures.normal)
@@ -61,14 +64,14 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
           B2H.HSButton:SetPosition()
         end,
         onReset = function()
-          local rb = _G[btnName]
+          local rb = B2H.Anchoring.fields[btnName]
           if B2H.defaults.anchoring[option] == rb.value and not rb:GetChecked() then rb:Click() end
         end
       })
 
       if B2H.db.anchoring[option] == value then
-        _G[btnName]:SetChecked()
-        _G[btnName].tex:SetTexture(textures.active)
+        B2H.Anchoring.fields[btnName]:SetChecked()
+        B2H.Anchoring.fields[btnName].tex:SetTexture(textures.active)
       end    
     end
   end
@@ -113,7 +116,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   positionX_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", 0, -5)
   positionX_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.x", "B2H.L"), "b2h_light"))
 
-  _G[AddonName .. "EditBox_parent_pos_x"] = READI:EditBox(data, {
+  B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"] = READI:EditBox(data, {
     region = container,
     type = "number",
     step = 0.25,
@@ -123,12 +126,12 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     showButtons = true,
     okayForNumber = false,
     onChange = function()
-      local eb = _G[AddonName .. "EditBox_parent_pos_x"]
+      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"]
       B2H.db.anchoring.position_x = eb:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      local eb = _G[AddonName .. "EditBox_parent_pos_x"]
+      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"]
       eb:SetText(B2H.defaults.anchoring.position_x)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
@@ -138,7 +141,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   positionY_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", posColWidth + 20, -5)
   positionY_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.y", "B2H.L"), "b2h_light"))
 
-  _G[AddonName .. "EditBox_parent_pos_y"] = READI:EditBox(data, {
+  B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"] = READI:EditBox(data, {
     region = container,
     type = "number",
     step = 0.25,
@@ -148,12 +151,12 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     showButtons = true,
     okayForNumber = false,
     onChange = function()
-      local eb = _G[AddonName .. "EditBox_parent_pos_y"]
+      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"]
       B2H.db.anchoring.position_y = eb:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      local eb = _G[AddonName .. "EditBox_parent_pos_y"]
+      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"]
       eb:SetText(B2H.defaults.anchoring.position_y)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
@@ -168,7 +171,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   parentFrame_nameTitle:SetPoint("TOPLEFT", parentFrame_sectionTitle, "BOTTOMLEFT", 0, -5)
   parentFrame_nameTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.parent.subline", "B2H.L"), "b2h_light"))
 
-  _G[AddonName .. "EditBox_parent_frame"] = READI:EditBox(data, {
+  B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"] = READI:EditBox(data, {
     region = container,
     type = "text",
     value = B2H.db.anchoring.frame or B2H.defaults.anchoring.frame,
@@ -176,17 +179,17 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     parent = parentFrame_nameTitle,
     showButtons = true,
     onChange = function()
-      local eb = _G[AddonName .. "EditBox_parent_frame"]
+      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]
       B2H.db.anchoring.frame = eb:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      local eb = _G[AddonName .. "EditBox_parent_frame"]
+      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]
       eb:SetText(B2H.defaults.anchoring.frame)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
-  _G[AddonName.."FrameSelectorButton"] = READI:Button(data, {
+  B2H.Anchoring.fields[AddonName.."FrameSelectorButton"] = READI:Button(data, {
     name = AddonName.."FrameSelectorButton",
     region = container,
     label = "",
@@ -194,32 +197,32 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     width = 22,
     height = 22,
     anchor = "LEFT",
-    parent = _G[AddonName.."EditBox_parent_frame"],
+    parent = B2H.Anchoring.fields[AddonName.."EditBox_parent_frame"],
     p_anchor = "RIGHT",
     offsetX = 5,
     onClick = function(self)
-      local field = _G[AddonName .. "EditBox_parent_frame"]
+      local field = B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]
       data.frameName = field:GetText()
       READI:StartFrameSelector(data, B2H.db.anchoring.frame, field)
     end,
   })
-  _G[AddonName.."FrameSelectorButton"].symbol = READI:Icon(data, {
+  B2H.Anchoring.fields[AddonName.."FrameSelectorButton"].symbol = READI:Icon(data, {
     name = AddonName.."FrameSelectorButtonSymbol",
-    region = _G[AddonName.."FrameSelectorButton"],
+    region = B2H.Anchoring.fields[AddonName.."FrameSelectorButton"],
     texture = B2H.T.rdl120001,
     width = 14,
     height = 14
   })
-  _G[AddonName.."FrameSelectorButton"].symbol:SetPoint("CENTER", _G[AddonName.."FrameSelectorButton"], "CENTER", 0, 0)
-  _G[AddonName .. "EditBox_parent_frame"]:SetWidth(b2h.columnWidth - _G[AddonName.."FrameSelectorButton"]:GetWidth() - 10)
+  B2H.Anchoring.fields[AddonName.."FrameSelectorButton"].symbol:SetPoint("CENTER", B2H.Anchoring.fields[AddonName.."FrameSelectorButton"], "CENTER", 0, 0)
+  B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]:SetWidth(b2h.columnWidth - B2H.Anchoring.fields[AddonName.."FrameSelectorButton"]:GetWidth() - 10)
 
   local buttonSizeTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-  buttonSizeTitle:SetPoint("TOPLEFT", _G[AddonName .. "EditBox_parent_pos_x"], "BOTTOMLEFT", 0, -20)
+  buttonSizeTitle:SetPoint("TOPLEFT", B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"], "BOTTOMLEFT", 0, -20)
   buttonSizeTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.button.size.headline", "B2H.L"), "b2h"))
 
-  _G[AddonName.."Slider_button_size"] = READI:Slider(data, {
+  B2H.Anchoring.fields[AddonName.."Slider_button_size"] = READI:Slider(data, {
     region = container,
-    name = "button_size",
+    name = AddonName.."Slider_button_size",
     min = 16,
     max = 64,
     step = 8,
@@ -231,21 +234,21 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     offsetX = 0,
     offsetY = -20,
     onChange = function ()
-      local slider = _G[AddonName.."Slider_button_size"]
+      local slider = B2H.Anchoring.fields[AddonName.."Slider_button_size"]
       B2H.db.anchoring.button_size = slider:GetValue()
       _G[slider.name.."Text"]:SetText(slider:GetValue())
         B2H.HSButton:ScaleButton()
     end,
     onReset = function ()
-      _G[AddonName.."Slider_button_size"]:SetValue(B2H.defaults.anchoring.button_size)
+      B2H.Anchoring.fields[AddonName.."Slider_button_size"]:SetValue(B2H.defaults.anchoring.button_size)
     end
   })
 
   local buttonStrataTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-  buttonStrataTitle:SetPoint("TOPLEFT", _G[AddonName .. "EditBox_parent_frame"], "BOTTOMLEFT", 0, -20)
+  buttonStrataTitle:SetPoint("TOPLEFT", B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"], "BOTTOMLEFT", 0, -20)
   buttonStrataTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.button.strata.headline", "B2H.L"), "b2h"))
 
-  _G[AddonName.."Dropdown_button_strata"] = READI:DropDown(data, {
+  B2H.Anchoring.fields[AddonName.."Dropdown_button_strata"] = READI:DropDown(data, {
     values = {
       "PARENT",
       "BACKGROUND",
@@ -267,7 +270,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     offsetY = -15,
     onReset = function()
       B2H.db.anchoring.button_strata = B2H.defaults.anchoring.button_strata
-      UIDropDownMenu_SetText(_G[AddonName.."Dropdown_button_strata"], B2H.defaults.anchoring.button_strata)
+      UIDropDownMenu_SetText(B2H.Anchoring.fields[AddonName.."Dropdown_button_strata"], B2H.defaults.anchoring.button_strata)
       CloseDropDownMenus()    
     end,
     onChange = function () B2H.HSButton:SetStrata() end
@@ -287,4 +290,21 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
       end
     }
   )
+end
+function B2H.Anchoring:Update()
+  B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"]:SetText( B2H.db.anchoring.position_x)
+  B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"]:SetText( B2H.db.anchoring.position_y)
+  B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]:SetText( B2H.db.anchoring.frame)
+  B2H.Anchoring.fields[AddonName .. "Slider_button_size"]:SetValue( B2H.db.anchoring.button_size)
+  B2H.Anchoring.fields[AddonName .. "Dropdown_button_strata"]:SetValue( B2H.db.anchoring.button_strata)
+
+  for _,val in pairs({"button", "parent"}) do
+    for i, anchor in pairs(b2h.anchors) do
+      local rb = B2H.Anchoring.fields[format("%sRadioButton_%s_%s", AddonName, format("%s_anchor", val), anchor)]
+      if rb.value == B2H.db.anchoring[format("%s_anchor", val)] then
+        rb:Click()
+        break;
+      end
+    end
+  end
 end
