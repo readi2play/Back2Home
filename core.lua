@@ -100,7 +100,9 @@ function B2H:InitializeDB ()
   local dbName = AddonName .. "DB"
   local charName = format("%s-%s", GetUnitName("player"), GetRealmName())
   -- get or create the overall SavedVariables
-  _G[dbName] = _G[dbName] or {}
+  _G[dbName] = _G[dbName] or {
+    use_profiles = false
+  }
 
   -- get or create the global table
   _G[dbName].global = _G[dbName].global or {}
