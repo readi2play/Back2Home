@@ -49,10 +49,8 @@ Button factory for the Back2Home button
       end
 
       if not b2h.id then
-        B2H.HSButton.icon:SetTexture(nil)
-        --[[--------------------------------------------------------------------
+        B2H.HSButton.icon:SetTexture(B2H.T.b2h200001)
         B2H.HSButton:Disable()
-        --------------------------------------------------------------------]]--
         return
       end
       B2H.HSButton:Enable()
