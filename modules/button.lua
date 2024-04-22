@@ -55,17 +55,6 @@ Button factory for the Back2Home button
       end
       B2H.HSButton:Enable()
 
-      local function GetFallbackItemBagSlot(item)
-        for i = 0, NUM_BAG_SLOTS do
-          for j = 1, C_Container.GetContainerNumSlots(i) do
-            if C_Container.GetContainerItemID(i, j) == item.id then
-              return i, j
-            end
-          end
-        end
-        return 0, 0
-      end
-
       --[[----------------------------------------------------------------------
       set the button's tooltip
       ----------------------------------------------------------------------]]--
@@ -73,7 +62,7 @@ Button factory for the Back2Home button
       if not b2h.id then
         b2h.name = activeFallback.label[B2H.Locale]
         b2h.icon = activeFallback.icon
-        B2H.HSButton.tooltip:SetBagItem(GetFallbackItemBagSlot(activeFallback))
+        B2H.HSButton.tooltip:SetBagItem(B2H:GetItemBagSlot(activeFallback.id))
       else
         B2H.HSButton.tooltip:SetToyByItemID(b2h.id)
       end

@@ -13,7 +13,7 @@ B2H.L.deDE = {
         },
         commands = "Chat-Befehle",
         text = [=[
-          Mische deine Hearthstone-Spielzeuge. Entweder durch einen Rechtsklick auf die %1$s-Schaltfläche oder durch Verwendung des folgenden Chat-Befehls
+          Mische deine Hearthstone-Spielzeuge. Entweder durch einen Rechtsklick auf den %1$s-Button oder durch Verwendung des folgenden Chat-Befehls
                     
             %3$s
 
@@ -77,7 +77,8 @@ B2H.L.deDE = {
       keybindings = {
         title = "Tastenbelegungen",
         headline = "Tastenbelegungen",
-        section = "Wähle eine Modifier Taste aus, um deinen %s einfach über %s zu verwenden."
+        section = "Wähle eine Modifier Taste aus, um deinen %s einfach über %s zu verwenden.",
+        section_relic = "Wähle eine Modifier Taste aus, um dein %s einfach über %s zu verwenden.",
       },
       reporting = {
         title = "Debugging & Reporting",

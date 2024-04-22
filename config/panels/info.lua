@@ -58,9 +58,9 @@ function B2H:FillInfoPanel(panel, container, anchorline)
       READI:l10n("config.panels.info.text", "B2H.L"),
       B2H:setTextColor(AddonName, "b2h"),
       B2H:setTextColor(addon.author, "readi"),
-      format("%s %s", B2H:setTextColor("/home|b2h", "b2h"), B2H:setTextColor("shuffle | random | update | mix", "white")),
-      format("%s %s", B2H:setTextColor("/home|b2h", "b2h"), B2H:setTextColor("config | options | settings", "white"))
-    )), "b2h_light")
+      format("%s %s", B2H:setTextColor("/home|b2h", "b2h"), B2H:setTextColor("shuffle | random | update | mix", "b2h_light")),
+      format("%s %s", B2H:setTextColor("/home|b2h", "b2h"), B2H:setTextColor("config | options | settings", "b2h_light"))
+    )), "white")
   )
 
   local libLogo = READI:Icon(data, {

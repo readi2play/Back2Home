@@ -422,9 +422,10 @@ function B2H:InitializeDefaultSettings()
     },
     keybindings = {
       items = {
-        garrison = {
+        {
           id = 110560,
           icon = 1041860,
+          name = "garrison",
           label = {
             deDE = "Garnisonsruhestein",
             enUS = "Garrison Hearthstone",
@@ -438,9 +439,10 @@ function B2H:InitializeDefaultSettings()
           },
           key = "LSHIFT"
         },
-        dalaran = {
+        {
           id = 140192,
           icon = 1444943,
+          name = "dalaran",
           label = {
             deDE = "Dalaranruhestein",
             enUS = "Dalaran Hearthstone",
@@ -454,6 +456,57 @@ function B2H:InitializeDefaultSettings()
           },
           key = "RSHIFT"
         },
+        {
+          id = 128353,
+          icon = 134234,
+          name = "dockyard",
+          label = {
+            deDE = "Kompass des Admirals",
+            enUS = "Admiral's Compass",
+            esES = "Brújula del Almirante",
+            frFR = "Boussole d'amiral",
+            itIT = "Bussola dell'Ammiraglio",
+            ptBR = "Bússola do Almirante",
+            ruRU = "Адмиральский компас",
+            koKR = "제독의 나침반",
+            zhCN = "海军上将的罗盘",
+          },
+          key = "LCTRL"
+        },
+        {
+          name = "relic",
+          horde = {
+            id = 118662,
+            icon = 133283,
+            label = {
+              deDE = "Relikt der Speerspießer",
+              enUS = "Bladespire Relic",
+              esES = "Reliquia Aguja del Filo",
+              frFR = "Relique de Flèchelame",
+              itIT = "Reliquia dei Lamacurva",
+              ptBR = "Relíquia Giralança",
+              ruRU = "Реликвия Камнерогов",
+              koKR = "칼날첨탑 성물",
+              zhCN = "刀塔圣物",
+            },
+          },
+          alliance = {
+            id = 118663,
+            icon = 133316,
+            label = {
+              deDE = "Relikt von Karabor",
+              enUS = "Relic of Karabor",
+              esES = "Reliquia de Karabor",
+              frFR = "Relique de Karabor",
+              itIT = "Reliquia di Karabor",
+              ptBR = "Relíquia de Karabor",
+              ruRU = "Реликвия Карабора",
+              koKR = "카라보르의 성물",
+              zhCN = "卡拉波圣物",
+            },
+          },
+          key = "RCTRL",
+        }
       }
     },
     reporting = {
