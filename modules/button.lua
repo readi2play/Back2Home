@@ -8,7 +8,7 @@ Button factory for the Back2Home button
     ------------------------------------------------------------------------]]--
     B2H.HSButton = B2H.HSButton or CreateFrame("Button", AddonName .. "Button", _G[B2H.db.anchoring.frame], "SecureActionButtonTemplate")
     B2H.HSButton:SetFrameLevel(100)
-    B2H.HSButton:SetHighlightTexture(B2H.T.rdl110004, "ADD")
+    B2H.HSButton:SetHighlightTexture(READI.T.rdl110004, "ADD")
     B2H.HSButton:EnableKeyboard()
 
     --[[------------------------------------------------------------------------
@@ -110,7 +110,7 @@ Button factory for the Back2Home button
     function B2H.HSButton:ScaleButton()
       local btnSize = B2H.db.anchoring.button_size
       B2H.HSButton:SetSize(btnSize, btnSize)
-      B2H.HSButton.mask:SetSize(btnSize * 0.9, btnSize * 0.9)
+      B2H.HSButton.mask:SetSize(btnSize, btnSize)
     end
 
     function B2H.HSButton:SetStrata()
@@ -148,7 +148,7 @@ Button factory for the Back2Home button
     button background positioning
     ------------------------------------------------------------------------]]--
     B2H.HSButton.background:SetAllPoints(B2H.HSButton)
-    B2H.HSButton.background:SetTexture(B2H.T.rdl110005)
+    B2H.HSButton.background:SetTexture(READI.T.rdl110005)
     --[[------------------------------------------------------------------------
     icon texture positioning
     ------------------------------------------------------------------------]]--
@@ -161,13 +161,13 @@ Button factory for the Back2Home button
     --[[------------------------------------------------------------------------
     use the texture id of the "TempPortraitAlphaMask" (130924)
     ------------------------------------------------------------------------]]--
-    B2H.HSButton.mask:SetTexture(130924, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    B2H.HSButton.mask:SetTexture(READI.T.rdl110003, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     B2H.HSButton.icon:AddMaskTexture(B2H.HSButton.mask)
     --[[------------------------------------------------------------------------
     button background positioning
     ------------------------------------------------------------------------]]--
     B2H.HSButton.border:SetAllPoints(B2H.HSButton)
-    B2H.HSButton.border:SetTexture(B2H.T.rdl110001)
+    B2H.HSButton.border:SetTexture(READI.T.rdl110001)
 
     b2h.isLogin = false
     return B2H.HSButton
