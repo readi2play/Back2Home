@@ -77,7 +77,8 @@ B2H.L.enUS = {
       keybindings = {
         title = "Keybindings",
         headline = "Keybindings",
-        section = "Select a modifier key to easily use your %s via %s."
+        section = "Select a modifier key to easily use your %s via %s.",
+        section_relic = "Select a modifier key to easily use your %s via %s.",
       },
       reporting = {
         title = "Debugging & Reporting",

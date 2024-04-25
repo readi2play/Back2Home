@@ -44,12 +44,13 @@ function B2H:ADDON_LOADED(evt, addonName)
   B2H:InitializeDefaultSettings()
   B2H:InitializeDB()
   B2H:SetupConfig()
-  B2H:InitializeOptions()
   B2H:InitializeButton()
   B2H:InitializeKeyBindings()
 end
 
 function B2H:PLAYER_ENTERING_WORLD(evt, isLogin, isReload)
+  B2H.faction, _ = string.lower(UnitFactionGroup("player"))
+  B2H:InitializeOptions()
   B2H.registered = C_ChatInfo.RegisterAddonMessagePrefix(B2H.data.prefix)
   if not B2H.HSButton then return end
   B2H.HSButton:Update(true)
@@ -64,6 +65,21 @@ function B2H:FIRST_FRAME_RENDERED(evt)
   B2H:UpdateOptions()
 end
 
+function B2H:ItemIsToy(id)
+  return C_ToyBox.GetToyInfo(id) ~= nil
+end
+
+function B2H:GetItemBagSlot(id)
+  for i = 0, NUM_BAG_SLOTS do
+    for j = 1, C_Container.GetContainerNumSlots(i) do
+      if C_Container.GetContainerItemID(i, j) == id then
+        return i, j
+      end
+    end
+  end
+  return nil
+end
+
 function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   if InCombatLockdown() then return end
   if not READI.Helper.table:Contains(key, B2H.BoundKeys) then return end
@@ -71,15 +87,25 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   if down > 0 then
     local _,isNotBoundItem = READI.Helper.table:Get(B2H.db.keybindings.items, function(_,v) return v.id == b2h.id end)
     local _,boundItem = READI.Helper.table:Get(B2H.db.keybindings.items, function(_,v) return v.key == key end)
-    if not PlayerHasToy(boundItem.id) then return end
+    if boundItem[B2H.faction] then
+      if not B2H:ItemIsToy(boundItem[B2H.faction].id) and not B2H:GetItemBagSlot(boundItem[B2H.faction].id) then return end
+    else
+      if B2H:ItemIsToy(boundItem.id) and not PlayerHasToy(boundItem.id) then return end
+    end
+
     if isNotBoundItem == nil then
       b2h.restore = {
         id = b2h.id,
         icon = b2h.icon
       }
     end
-    b2h.id = boundItem.id
-    b2h.icon = boundItem.icon
+    if boundItem[B2H.faction] then
+      b2h.id = boundItem[B2H.faction].id
+      b2h.icon = boundItem[B2H.faction].icon
+    else
+      b2h.id = boundItem.id
+      b2h.icon = boundItem.icon
+    end
   else
     b2h.id = b2h.restore.id
     b2h.icon = b2h.restore.icon
@@ -124,7 +150,7 @@ function B2H:InitializeDB ()
     local _ap = _G[dbName].chars[charName].assigned_profile
 
     if _ap ~= "global" then
-      B2H.db = _G[dbName].chars[_ap]
+      B2H.db = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[dbName].chars[_ap])
     end
   end
 

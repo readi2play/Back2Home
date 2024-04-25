@@ -15,7 +15,6 @@ b2h.columnWidth = b2h.windowWidth / b2h.columns - 20
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
 function B2H:SetupConfig()
-
   for i,key in ipairs(configKeys) do
     local FillPanelFunctionName = format("Fill%sPanel", READI.Helper.string:Capitalize(key))
     if B2H[FillPanelFunctionName] then

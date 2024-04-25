@@ -34,9 +34,9 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
       end
       local btnName = format("%sRadioButton_%s_%s", AddonName, option ,value)
       local textures = {
-        normal = B2H.T.rdl100001,
-        highlight = B2H.T.rdl100002,
-        active = B2H.T.rdl100003,
+        normal = READI.T.rdl100001,
+        highlight = READI.T.rdl100002,
+        active = READI.T.rdl100003,
       }
       B2H.Anchoring.fields[btnName] = READI:RadioButton(data, {
         name = btnName,
@@ -94,7 +94,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     subTitle:SetWordWrap(true)
     subTitle:SetWidth(b2h.columnWidth)
     subTitle:SetText(
-      B2H:setTextColor(format(READI:l10n("config.panels.anchoring.anchors."..val..".subline", "B2H.L"), AddonName), "b2h_light")
+      B2H:setTextColor(format(READI:l10n("config.panels.anchoring.anchors."..val..".subline", "B2H.L"), AddonName), "white")
     )
   
     local wrapper = CreateFrame("Frame", format("%s_anchorWrapper", val))
@@ -114,7 +114,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
 
   local positionX_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
   positionX_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", 0, -5)
-  positionX_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.x", "B2H.L"), "b2h_light"))
+  positionX_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.x", "B2H.L"), "white"))
 
   B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"] = READI:EditBox(data, {
     region = container,
@@ -139,7 +139,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
 
   local positionY_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
   positionY_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", posColWidth + 20, -5)
-  positionY_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.y", "B2H.L"), "b2h_light"))
+  positionY_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.y", "B2H.L"), "white"))
 
   B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"] = READI:EditBox(data, {
     region = container,
@@ -169,7 +169,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
 
   local parentFrame_nameTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
   parentFrame_nameTitle:SetPoint("TOPLEFT", parentFrame_sectionTitle, "BOTTOMLEFT", 0, -5)
-  parentFrame_nameTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.parent.subline", "B2H.L"), "b2h_light"))
+  parentFrame_nameTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.parent.subline", "B2H.L"), "white"))
 
   B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"] = READI:EditBox(data, {
     region = container,
@@ -209,7 +209,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   B2H.Anchoring.fields[AddonName.."FrameSelectorButton"].symbol = READI:Icon(data, {
     name = AddonName.."FrameSelectorButtonSymbol",
     region = B2H.Anchoring.fields[AddonName.."FrameSelectorButton"],
-    texture = B2H.T.rdl120001,
+    texture = READI.T.rdl120001,
     width = 14,
     height = 14
   })
