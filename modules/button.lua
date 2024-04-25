@@ -3,6 +3,7 @@ local AddonName, b2h = ...
 Button factory for the Back2Home button
 ----------------------------------------------------------------------------]]--
   local function CreateButton()
+    if InCombatLockdown() then return end
     --[[------------------------------------------------------------------------
     button creation
     ------------------------------------------------------------------------]]--
@@ -78,6 +79,7 @@ Button factory for the Back2Home button
     Retrieve a new random toy itemID
     ------------------------------------------------------------------------]]--
     function B2H.HSButton:Shuffle(src)
+      if InCombatLockdown() then return end
       local rndIdx = #src
       --[[----------------------------------------------------------------------
       retrieve random id
@@ -90,6 +92,7 @@ Button factory for the Back2Home button
     end
 
     function B2H.HSButton:SetPosition()
+      if InCombatLockdown() then return end
       B2H.HSButton:ClearAllPoints()
       B2H.HSButton:SetParent(_G[B2H.db.anchoring.frame])
       B2H.HSButton:SetPoint(B2H.db.anchoring.button_anchor, _G[B2H.db.anchoring.frame], B2H.db.anchoring.parent_anchor,
@@ -97,12 +100,14 @@ Button factory for the Back2Home button
     end
 
     function B2H.HSButton:ScaleButton()
+      if InCombatLockdown() then return end
       local btnSize = B2H.db.anchoring.button_size
       B2H.HSButton:SetSize(btnSize, btnSize)
       B2H.HSButton.mask:SetSize(btnSize, btnSize)
     end
 
     function B2H.HSButton:SetStrata()
+      if InCombatLockdown() then return end
       local btnStrata = B2H.db.anchoring.button_strata
       if btnStrata == "PARENT" then
         local parent = B2H.HSButton:GetParent() 
@@ -166,6 +171,7 @@ Button factory for the Back2Home button
 Inititialize the Back2Home button
 ----------------------------------------------------------------------------]]--
   function B2H:InitializeButton()
+    if InCombatLockdown() then return end
     --[[------------------------------------------------------------------------
     Create the Button and initially set scale, position and strate
     ------------------------------------------------------------------------]]--
@@ -190,6 +196,7 @@ Inititialize the Back2Home button
     the button should listen on
     ------------------------------------------------------------------------]]--
       local function OnEvent(evt, ...)
+        if InCombatLockdown() then return end
         if self[evt] then self[evt](self, evt, ...) end
         B2H.HSButton:Update(true)
       end  
@@ -234,12 +241,14 @@ Inititialize the Back2Home button
       B2H.HSButton:SetScript("OnEnter", OnEnter)
       B2H.HSButton:SetScript("OnLeave", OnLeave)
       B2H.HSButton:SetScript("OnMouseDown", function(self, button)
+        if InCombatLockdown() then return end
         if button ~= "MiddleButton" then return end
         ButtonPosition.origin = {B2H.HSButton:GetPoint(1)}
         self:StartMoving()
         ButtonPosition.dragInit = {B2H.HSButton:GetPoint(1)}
       end)
       B2H.HSButton:SetScript("OnMouseUp", function(self, button)
+        if InCombatLockdown() then return end
         if button ~= "MiddleButton" then return end
 
         ButtonPosition.dragOut = {B2H.HSButton:GetPoint(1)}
