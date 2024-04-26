@@ -8,10 +8,11 @@ data.keyword = "reporting"
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
+B2H.Reporting = B2H.Reporting or {}
 function B2H:FillReportingPanel(panel, container, anchorline)
-  local categories = READI.Helper.table:Keys(B2H.db.reporting)
+  local categories = READI.Helper.table:Keys(B2H.db[data.keyword])
 
-  for category, tbl in pairs(B2H.db.reporting) do
+  for category, tbl in pairs(B2H.db[data.keyword]) do
     local c_idx = READI.Helper.table:Get(categories, function(k,v) return v == category end)
     local c_name = READI.Helper.string:Capitalize(category)
     local c_anchor = "TOPLEFT"
@@ -20,7 +21,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
     local c_x = 0
     local c_y = 0
 
-      if c_idx == 1 then
+    if c_idx == 1 then
       c_anchor_to = "TOPLEFT"
     else
       c_region = _G[categories[c_idx - 1] .. "Section"]
@@ -72,7 +73,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
         ["offsetY"] = y,
         ["onClick"] = function()
           local cb = _G[category.."Option_"..option]
-          B2H.db.reporting[category][option] = cb:GetChecked()
+          B2H.db[data.keyword][category][option] = cb:GetChecked()
         end,
         ["onReset"] = function()
           local cb = _G[category.."Option_"..option]
@@ -92,7 +93,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
       }
       _G[category.."Option_"..option] = READI:CheckBox(data, opts)
       _G[category.."Option_"..option]:SetState()
-      _G[category.."Option_"..option]:SetChecked(B2H.db.reporting[category][option])
+      _G[category.."Option_"..option]:SetChecked(B2H.db[data.keyword][category][option])
     end
 
     local btn_Reset = READI:Button(data,
@@ -104,8 +105,10 @@ function B2H:FillReportingPanel(panel, container, anchorline)
         parent = panel,
         offsetY = 20,
         onClick = function()
-          EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnReset"))
-        end
+          B2H.db[data.keyword] = CopyTable(B2H.defaults[data.keyword])
+          EventRegistry:TriggerEvent(format("%s_%s_RESET", data.prefix, string.upper(data.keyword)))
+          B2H[READI.Helper.string:Capitalize(data.keyword)]:Update()
+          end
       }
     )
     local btn_UnselectAll = READI:Button(data,
@@ -148,5 +151,17 @@ function B2H:FillReportingPanel(panel, container, anchorline)
     --     end
     --   }
     -- )
+  end
+end
+
+function B2H.Reporting:Update()
+  for category, tbl in pairs(B2H.db[data.keyword]) do
+    local c_name = READI.Helper.string:Capitalize(category)
+    for option, active in pairs(tbl) do
+      local cb = _G[AddonName.."CheckBox"..c_name.."_"..option]
+      if (cb:GetChecked() and not active) or (active and not cb:GetChecked()) then
+        cb:Click()
+      end
+    end
   end
 end

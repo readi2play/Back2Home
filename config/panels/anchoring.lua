@@ -285,9 +285,10 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
       parent = panel,
       offsetY = 20,
       onClick = function()
-        EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnReset"))
-        B2H.HSButton:SetPosition()
-      end
+        B2H.db[data.keyword] = CopyTable(B2H.defaults[data.keyword])
+        EventRegistry:TriggerEvent(format("%s_%s_RESET", data.prefix, string.upper(data.keyword)))
+        B2H[READI.Helper.string:Capitalize(data.keyword)]:Update()
+    end
     }
   )
 end

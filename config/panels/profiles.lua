@@ -225,7 +225,8 @@ function B2H:FillProfilesPanel(panel, container, anchorline)
         _G[AddonName.."DB"].chars[charName].assigned_profile = _G[AddonName.."DB"].chars[charName].assigned_profile or "global"
         local __ap = _G[AddonName.."DB"].chars[charName].assigned_profile
         if __ap ~= "global" then
-          B2H.db = _G[AddonName.."DB"].chars[ _G[AddonName.."DB"].chars[charName].assigned_profile ]
+          B2H.db = _G[AddonName.."DB"].chars[ __ap ]
+          Profiler.activeProfile.dropdown:SetValue(__ap)
         else
           Profiler.activeProfile.dropdown:SetValue(Profiler.defaultProfile.val, Profiler.defaultProfile.txt)
         end

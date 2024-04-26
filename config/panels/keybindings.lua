@@ -169,7 +169,9 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
         parent = panel,
         offsetY = 20,
         onClick = function()
-          EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnReset"))
+          B2H.db[data.keyword] = CopyTable(B2H.defaults[data.keyword])
+          EventRegistry:TriggerEvent(format("%s_%s_RESET", data.prefix, string.upper(data.keyword)))
+          B2H[READI.Helper.string:Capitalize(data.keyword)]:Update()
         end
       }
     )
@@ -193,23 +195,23 @@ end
 function B2H.Keybindings:Update()
   for i,toy in ipairs(B2H.db.keybindings.items) do
     local btn = _G[AddonName..READI.Helper.string:Capitalize(data.keyword)..READI.Helper.string:Capitalize(toy.name).."Button"]
-    if not toy.owned then
-      if toy[B2H.faction] then
-        toy.owned = B2H:ItemIsToy(toy[B2H.faction].id) or B2H:GetItemBagSlot(toy[B2H.faction].id)
-        B2H.defaults.keybindings.items[i].owned = toy.owned
-      else
-        toy.owned = (B2H:ItemIsToy(toy.id) and PlayerHasToy(toy.id)) or (B2H:ItemIsToy(toy.id) or B2H:GetItemBagSlot(toy.id))
-        B2H.defaults.keybindings.items[i].owned = toy.owned
-      end  
-      
-      B2H.db.toys[i].active = toy.owned
-      B2H.defaults.toys[i].active = toy.owned
+    if toy[B2H.faction] then
+      toy.owned = (B2H:ItemIsToy(toy[B2H.faction].id) and PlayerHasToy(toy[B2H.faction].id) and B2H:IsUsable(toy[B2H.faction])) or (not B2H:ItemIsToy(toy[B2H.faction].id) and B2H:GetItemBagSlot(toy[B2H.faction].id))
+      B2H.defaults.keybindings.items[i].owned = toy.owned
+    else
+      toy.owned = (B2H:ItemIsToy(toy.id) and PlayerHasToy(toy.id) and B2H:IsUsable(toy)) or (not B2H:ItemIsToy(toy.id) and B2H:GetItemBagSlot(toy.id))
+      B2H.defaults.keybindings.items[i].owned = toy.owned
+    end  
 
-      if toy.owned then
-        btn:Enable()
-      else
-        btn:Disable()
-      end
+    btn:SetText(B2H.defaults.keybindings.items[i].key)
+
+    B2H.db.toys[i].active = toy.owned
+    B2H.defaults.toys[i].active = toy.owned
+
+    if toy.owned then
+      btn:Enable()
+    else
+      btn:Disable()
     end
   end
 end

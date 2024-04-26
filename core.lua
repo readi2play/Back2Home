@@ -85,20 +85,20 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   if not READI.Helper.table:Contains(key, B2H.BoundKeys) then return end
 
   if down > 0 then
-    local _,isNotBoundItem = READI.Helper.table:Get(B2H.db.keybindings.items, function(_,v) return v.id == b2h.id end)
+    b2h.restore = {
+      id = b2h.id,
+      icon = b2h.icon
+    }
+
     local _,boundItem = READI.Helper.table:Get(B2H.db.keybindings.items, function(_,v) return v.key == key end)
     if boundItem[B2H.faction] then
-      if not B2H:ItemIsToy(boundItem[B2H.faction].id) and not B2H:GetItemBagSlot(boundItem[B2H.faction].id) then return end
+      if (not B2H:ItemIsToy(boundItem[B2H.faction].id) and not B2H:GetItemBagSlot(boundItem[B2H.faction].id)) or not
+      (B2H:ItemIsToy(boundItem[B2H.faction].id) and PlayerHasToy(boundItem[B2H.faction].id) and B2H:IsUsable(boundItem[B2H.faction])) then return end
     else
-      if B2H:ItemIsToy(boundItem.id) and not PlayerHasToy(boundItem.id) then return end
+      if (not B2H:ItemIsToy(boundItem.id) and not B2H:GetItemBagSlot(boundItem.id)) or not
+      (B2H:ItemIsToy(boundItem.id) and PlayerHasToy(boundItem.id) and B2H:IsUsable(boundItem)) then return end
     end
 
-    if isNotBoundItem == nil then
-      b2h.restore = {
-        id = b2h.id,
-        icon = b2h.icon
-      }
-    end
     if boundItem[B2H.faction] then
       b2h.id = boundItem[B2H.faction].id
       b2h.icon = boundItem[B2H.faction].icon
@@ -116,9 +116,21 @@ end
 --------------------------------------------------------------------------------
 -- COLOR SCHEME
 --------------------------------------------------------------------------------
-
 function B2H:setTextColor(str, color)
   return READI.Helper.color:Get(color, B2H.Colors, str)
+end
+--------------------------------------------------------------------------------
+-- HELPER
+--------------------------------------------------------------------------------
+function B2H:IsUsable(item)
+  if not item.condition then return true end
+  for key, conditions in pairs(item.condition) do
+    if key == "quests" then
+      return #READI.Helper.table:Filter(conditions, function(v) return C_QuestLog.IsQuestFlaggedCompleted(v) end) > 0
+    end
+  end
+
+  return true
 end
 --------------------------------------------------------------------------------
 -- Create the config DB
@@ -150,8 +162,10 @@ function B2H:InitializeDB ()
     local _ap = _G[dbName].chars[charName].assigned_profile
 
     if _ap ~= "global" then
-      B2H.db = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[dbName].chars[_ap])
+      _G[dbName].chars[_ap] = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[dbName].chars[_ap])
     end
+
+    B2H.db = _G[dbName].chars[_ap]
   end
 
   -- perform a cleanup to remove no longer used keys

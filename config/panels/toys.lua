@@ -69,6 +69,7 @@ function B2H:FillToysPanel(panel, container, anchorline)
       if B2H.IsTesting or (owned and not cb:IsEnabled()) then
         if owned and not cb:IsEnabled() then
           cb:Enable()
+          cb:SetState(owned)
           cb:Click()
         end
         READI.Debug:Notify(
@@ -137,7 +138,10 @@ function B2H:FillToysPanel(panel, container, anchorline)
       parent = panel,
       offsetY = 20,
       onClick = function()
-        EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnReset"))
+        B2H.db[data.keyword] = CopyTable(B2H.defaults[data.keyword])
+        B2H.db.fallbacks = CopyTable(B2H.defaults.fallbacks)
+        EventRegistry:TriggerEvent(format("%s_%s_RESET", data.prefix, string.upper(data.keyword)))
+        B2H[READI.Helper.string:Capitalize(data.keyword)]:Update()
       end
     }
   )
@@ -158,16 +162,30 @@ function B2H:FillToysPanel(panel, container, anchorline)
   end
 function B2H.Toys:Update()
   for i,toy in ipairs(B2H.db.toys) do
-    if not toy.owned then
-      local cb =_G[AddonName .. "CheckButton_" .. toy.id]
-      toy.owned = PlayerHasToy(toy.id)
-      B2H.defaults.toys[i].owned = PlayerHasToy(toy.id)
-      
-      B2H.db.toys[i].active = toy.owned
-      B2H.defaults.toys[i].active = toy.owned
+    local cb =_G[AddonName .. "CheckButton_" .. toy.id]
+    toy.owned = PlayerHasToy(toy.id)
+    B2H.defaults.toys[i].owned = PlayerHasToy(toy.id)
+    
+    B2H.db.toys[i].active = toy.owned
+    B2H.defaults.toys[i].active = toy.owned
 
-      cb:SetState(toy.owned)
-      cb:SetChecked(toy.owned and toy.active)
+    cb:SetState(toy.owned)
+    if toy.owned and toy.active and not cb:GetChecked() then
+      cb:Click()
     end
   end
-end 
+
+  for i,fbItm in ipairs(B2H.db.fallbacks.items) do
+    local cb =_G[AddonName .. "CheckButton_" .. fbItm.id]
+    fbItm.owned = B2H:GetItemBagSlot(fbItm.id)
+    B2H.defaults.fallbacks.items[i].owned = B2H:GetItemBagSlot(fbItm.id)
+    
+    B2H.db.fallbacks.items[i].active = fbItm.owned
+    B2H.defaults.fallbacks.items[i].active = fbItm.owned
+
+    cb:SetState(fbItm.owned)
+    if fbItm.owned and fbItm.active and not cb:GetChecked() then
+      cb:Click()
+    end
+  end
+end

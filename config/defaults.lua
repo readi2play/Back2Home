@@ -426,6 +426,12 @@ function B2H:InitializeDefaultSettings()
           id = 110560,
           icon = 1041860,
           name = "garrison",
+          condition = {
+            quests = {
+              34378,
+              34586
+            }
+          },
           label = {
             deDE = "Garnisonsruhestein",
             enUS = "Garrison Hearthstone",
@@ -443,6 +449,12 @@ function B2H:InitializeDefaultSettings()
           id = 140192,
           icon = 1444943,
           name = "dalaran",
+          condition = {
+            quests = {
+              44184,
+              44663
+            }
+          },
           label = {
             deDE = "Dalaranruhestein",
             enUS = "Dalaran Hearthstone",
