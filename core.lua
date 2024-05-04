@@ -57,8 +57,11 @@ function B2H:PLAYER_ENTERING_WORLD(evt, isLogin, isReload)
 end
 function B2H:PLAYER_LEAVING_WORLD(evt, isLogout, isReload)
   local dbName = AddonName .. "DB"
+  if not _G[dbName].use_profiles then return end 
+
   local charName = format("%s-%s", GetUnitName("player"), GetRealmName())
-  _G[dbName.."Chr"] = CopyTable(_G[dbName].chars[charName])
+
+  _G[dbName.."Chr"] = CopyTable(_G[dbName].chars[charName] or B2H.defaults)
 end
 
 function B2H:FIRST_FRAME_RENDERED(evt)
@@ -92,10 +95,10 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
 
     local _,boundItem = READI.Helper.table:Get(B2H.db.keybindings.items, function(_,v) return v.key == key end)
     if boundItem[B2H.faction] then
-      if (not B2H:ItemIsToy(boundItem[B2H.faction].id) and not B2H:GetItemBagSlot(boundItem[B2H.faction].id)) or not
+      if (not B2H:ItemIsToy(boundItem[B2H.faction].id) and not B2H:GetItemBagSlot(boundItem[B2H.faction].id)) and not
       (B2H:ItemIsToy(boundItem[B2H.faction].id) and PlayerHasToy(boundItem[B2H.faction].id) and B2H:IsUsable(boundItem[B2H.faction])) then return end
     else
-      if (not B2H:ItemIsToy(boundItem.id) and not B2H:GetItemBagSlot(boundItem.id)) or not
+      if (not B2H:ItemIsToy(boundItem.id) and not B2H:GetItemBagSlot(boundItem.id)) and not
       (B2H:ItemIsToy(boundItem.id) and PlayerHasToy(boundItem.id) and B2H:IsUsable(boundItem)) then return end
     end
 

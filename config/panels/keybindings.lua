@@ -203,7 +203,7 @@ function B2H.Keybindings:Update()
       B2H.defaults.keybindings.items[i].owned = toy.owned
     end  
 
-    btn:SetText(B2H.defaults.keybindings.items[i].key)
+    btn:SetText(B2H.db.keybindings.items[i].key)
 
     B2H.db.toys[i].active = toy.owned
     B2H.defaults.toys[i].active = toy.owned
