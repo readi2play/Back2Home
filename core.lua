@@ -4,9 +4,12 @@ local AddonName, b2h = ...
 --------------------------------------------------------------------------------
 B2H = CreateFrame("Frame")
 
-B2H.Colors = CopyTable(READI.Colors)
-B2H.Colors.b2h = "00FAD4"
-B2H.Colors.b2h_light = "9DFFF1"
+B2H.Colors = READI.Helper.table:Merge(
+  CopyTable(READI.Colors), {
+    b2h = "00FAD4",
+    b2h_light = "9DFFF1"
+  }
+)
 
 B2H.data = {
   ["addon"] = "Back2Home",

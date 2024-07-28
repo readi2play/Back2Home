@@ -17,11 +17,14 @@ b2h.columnWidth = b2h.windowWidth / b2h.columns - 20
 function B2H:SetupConfig()
   for i,key in ipairs(configKeys) do
     local FillPanelFunctionName = format("Fill%sPanel", READI.Helper.string:Capitalize(key))
-    if B2H[FillPanelFunctionName] then
+    local panelExists = READI.Helper.functions:Exists("B2H."..FillPanelFunctionName)
+    print(FillPanelFunctionName, panelExists)
+
+    if panelExists then
       B2H.config[key] = B2H.config[key] or {}
-      local panelName = READI:l10n(format("config.panels.%s.title", key), "B2H.L")
+      local panelName = READI:l10n(("config.panels.%s.title"):format(key), "B2H.L")
       local parentPanel = nil
-      local titleText = READI:l10n(format("config.panels.%s.title", key), "B2H.L")
+      local titleText = READI:l10n(("config.panels.%s.title"):format(key), "B2H.L")
   
       if key == "info" then
         panelName = AddonName
@@ -30,15 +33,31 @@ function B2H:SetupConfig()
         parentPanel = AddonName
       end
   
+      --------------------------------------------------------------------------------
       B2H.config[key].panel, B2H.config[key].container, B2H.config[key].anchorline = READI:OptionPanel(data, {
         name = panelName,
         parent = parentPanel,
-                title = {
+        title = {
           text = titleText,
           color = "b2h"
         }
       })
-      InterfaceOptions_AddCategory(B2H.config[key].panel)
+      --------------------------------------------------------------------------------
+  
+      if Settings and Settings.RegisterCanvasLayoutCategory then
+  
+        if parentPanel then
+          local category = Settings.GetCategory(parentPanel)
+          local subcategory = Settings.RegisterCanvasLayoutSubcategory(category, B2H.config[key].panel, panelName)
+        else
+          local category = Settings.RegisterCanvasLayoutCategory(B2H.config[key].panel, AddonName)
+          category.ID = AddonName
+          Settings.RegisterAddOnCategory(category)
+        end
+  
+      else
+        InterfaceOptions_AddCategory(B2H.config[key].panel)
+      end
     end
   end
 end
@@ -47,8 +66,9 @@ end
 --------------------------------------------------------------------------------
 function B2H:InitializeOptions()
   for i,key in ipairs(configKeys) do
-    local panelExists = READI.Helper.table:VerifyDepth(B2H.config, format("%s.panel", key))
     local FillPanelFunctionName = format("Fill%sPanel", READI.Helper.string:Capitalize(key))
+    local panelExists = READI.Helper.functions:Exists("B2H."..FillPanelFunctionName)
+
     if panelExists then
       B2H[FillPanelFunctionName](self, B2H.config[key].panel, B2H.config[key].container, B2H.config[key].anchorline)
     end

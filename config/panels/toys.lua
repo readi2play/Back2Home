@@ -7,7 +7,9 @@ data.keyword = "toys"
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
-B2H.Toys = B2H.Toys or {}
+B2H.Toys = B2H.Toys or {
+  fields = {}
+}
 function B2H:FillToysPanel(panel, container, anchorline)
   local toys_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   toys_sectionTitle:SetPoint("TOPLEFT", anchorline, 0, -20)
@@ -22,8 +24,9 @@ function B2H:FillToysPanel(panel, container, anchorline)
 
   for i,toy in ipairs(B2H.db.toys) do
     local link = C_ToyBox.GetToyLink(toy.id)
+    local fieldName = AddonName .. "CheckButton_" .. toy.id
     local opts = {
-      name = AddonName .. "CheckButton_" .. toy.id,
+      name = fieldName,
       region = container,
       enabled = toy.owned,
       label = toy.label[B2H.Locale],
@@ -60,12 +63,12 @@ function B2H:FillToysPanel(panel, container, anchorline)
       if not cb:GetChecked() then cb:Click() end
     end
 
-    _G[opts.name] = READI:CheckBox(data, opts)
-    _G[opts.name]:SetChecked(toy.owned and toy.active)
+    B2H.Toys.fields[fieldName] = READI:CheckBox(data, opts)
+    B2H.Toys.fields[fieldName]:SetChecked(toy.owned and toy.active)
 
-    _G[opts.name].onNewToy = function(evt)
+    B2H.Toys.fields[fieldName].onNewToy = function(evt)
       local owned = PlayerHasToy(toy.id)
-      local cb = _G[opts.name]
+      local cb = B2H.Toys.fields[fieldName]
       if B2H.IsTesting or (owned and not cb:IsEnabled()) then
         if owned and not cb:IsEnabled() then
           cb:Enable()
@@ -80,7 +83,7 @@ function B2H:FillToysPanel(panel, container, anchorline)
       end
     end
 
-    EventRegistry:RegisterCallback("B2H.TOYS_UPDATED", _G[opts.name].onNewToy)
+    EventRegistry:RegisterCallback("B2H.TOYS_UPDATED", B2H.Toys.fields[fieldName].onNewToy)
     
   end
 
@@ -162,7 +165,8 @@ function B2H:FillToysPanel(panel, container, anchorline)
   end
 function B2H.Toys:Update()
   for i,toy in ipairs(B2H.db.toys) do
-    local cb =_G[AddonName .. "CheckButton_" .. toy.id]
+    local fieldName = AddonName .. "CheckButton_" .. toy.id
+    local cb = B2H.Toys.fields[fieldName]
     toy.owned = PlayerHasToy(toy.id)
     B2H.defaults.toys[i].owned = PlayerHasToy(toy.id)
     
