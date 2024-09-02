@@ -80,6 +80,11 @@ B2H.L.enUS = {
         section = "Select a modifier key to easily use your %s via %s.",
         section_relic = "Select a modifier key to easily use your %s via %s.",
       },
+      events = {
+        title = "Event Listener Settings",
+        headline = "",
+        section = "Select the events the %s Button shall refresh to.",
+      },
       reporting = {
         title = "Debugging & Reporting",
         headline = "",

@@ -188,17 +188,21 @@ Inititialize the Back2Home button
     ----------------------------------------------------------------------------
     register all events that should trigger a shuffle of the button
     ------------------------------------------------------------------------]]--
-      B2H.HSButton:RegisterEvent("ZONE_CHANGED")
-      B2H.HSButton:RegisterEvent("PLAYER_LEVEL_UP")
-      B2H.HSButton:RegisterEvent("NEW_TOY_ADDED")
+      for i,event in ipairs(B2H.db.events) do
+        B2H.HSButton:RegisterEvent(event.name)
+      end
     --[[------------------------------------------------------------------------
     generic event handler so we can implement dedicated methods for each event
     the button should listen on
     ------------------------------------------------------------------------]]--
-      local function OnEvent(evt, ...)
+      local function OnEvent(self, evt, ...)
         if InCombatLockdown() then return end
         if self[evt] then self[evt](self, evt, ...) end
-        B2H.HSButton:Update(true)
+        for i,_e in ipairs(B2H.db.events) do
+          if _e.name == evt and _e.active then
+            B2H.HSButton:Update(true)
+          end
+        end
       end  
     --[[------------------------------------------------------------------------
     handling the mouseover event to show the tooltip of the currently selected

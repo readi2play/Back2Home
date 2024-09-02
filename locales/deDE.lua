@@ -80,6 +80,11 @@ B2H.L.deDE = {
         section = "Wähle eine Modifier Taste aus, um deinen %s einfach über %s zu verwenden.",
         section_relic = "Wähle eine Modifier Taste aus, um dein %s einfach über %s zu verwenden.",
       },
+      events = {
+        title = "Update Einstellungen",
+        headline = "",
+        section = "Wähle die Ereignisse aus, bei denen der %s Button aktualisiert werden soll.",
+      },
       reporting = {
         title = "Debugging & Reporting",
         headline = "",

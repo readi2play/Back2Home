@@ -19,8 +19,10 @@ B2H.data = {
 B2H.Locale = GAME_LOCALE or GetLocale()
 B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
+B2H.ActiveKeys = {}
 
 B2H.L = B2H.L
+
 --------------------------------------------------------------------------------
 -- EVENT HANDLERS
 --------------------------------------------------------------------------------
@@ -89,8 +91,10 @@ end
 function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   if InCombatLockdown() then return end
   if not READI.Helper.table:Contains(key, B2H.BoundKeys) then return end
+  if #B2H.ActiveKeys > 0 and key ~= B2H.ActiveKeys[1] then return end
 
   if down > 0 then
+    table.insert(B2H.ActiveKeys, key)
     b2h.restore = {
       id = b2h.id,
       icon = b2h.icon
@@ -115,6 +119,7 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   else
     b2h.id = b2h.restore.id
     b2h.icon = b2h.restore.icon
+    B2H.ActiveKeys = {}
   end
   B2H.HSButton:Update(false)
 end

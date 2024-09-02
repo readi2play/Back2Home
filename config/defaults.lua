@@ -389,6 +389,22 @@ function B2H:InitializeDefaultSettings()
           koKR = "나루의 길",
           zhCN = "纳鲁之路",
         }
+      }, {
+        active = false,
+        owned = false,
+        id = 228940,
+        icon = 6029030,
+        label = {
+          deDE = "Ruhestein des berüchtigten Faden",
+          enUS = "Notorious Thread's Hearthstone",
+          esES = "Piedra de hogar de hilo infame",
+          frFR = "Pierre de foyer de fil notoire",
+          itIT = "Pietra del Ritorno del Filo Famigerato",
+          ptBR = "Pedra de Regresso do Fio Notório",
+          ruRU = "Камень возвращения отъявленных нитей",
+          koKR = "악명 높은 실톳의 귀환석",
+          zhCN = "恶名丝线炉石",
+        }
       }
     },
     fallbacks = {
@@ -518,8 +534,87 @@ function B2H:InitializeDefaultSettings()
             },
           },
           key = "RCTRL",
+        },
+        {
+          id = 64457,
+          icon = 458240,
+          name = "argus",
+          label = {
+            deDE = "Die Letzte Reliquie von Argus",
+            enUS = "The Last Relic of Argus",
+            esES = "La última reliquia de Argus",
+            frFR = "La dernière relique d'Argus",
+            itIT = "Ultima Reliquia di Argus",
+            ptBR = "A Última Relíquia de Argus",
+            ruRU = "Последняя реликвия Аргуса",
+            koKR = "마지막 아르거스 유물",
+            zhCN = "阿古斯的最后一件圣物",
+          },
+          key = "LALT"
         }
       }
+    },
+    events = {
+      {
+        name = "PLAYER_ENTERING_WORLD",
+        label = {
+          deDE = "Beim Login und beim Betreten/Verlassen von instanzierten Bereichen",
+          enUS = "On login and when entering/leaving instanced areas",
+          esES = "Al iniciar sesión y al entrar o salir de áreas instanciadas",
+          frFR = "Lors de la connexion et lors de l'entrée/sortie des zones instanciées",
+          itIT = "Al momento dell'accesso e quando si entra/esce dalle aree istanziate",
+          ptBR = "No login e ao entrar/sair de áreas instanciadas",
+          ruRU = "При входе в систему и при входе/выходе из инстанс-зон",
+          koKR = "로그인 시 및 인스턴스 영역에 들어가거나 나갈 때",
+          zhCN = "登录时以及进入/离开实例区域时",
+        },
+        active = true
+      },
+      {
+        name = "ZONE_CHANGED",
+        label = {
+          deDE = "Bei Wechsel der Kartenzone",
+          enUS = "Update on zone change",
+          esES = "Actualización sobre el cambio de zona",
+          frFR = "Mise à jour sur le changement de zone",
+          itIT = "Aggiornamento sul cambio di zona",
+          ptBR = "Atualização sobre mudança de zona",
+          ruRU = "Обновление по изменению зоны",
+          koKR = "지역 변경에 대한 업데이트",
+          zhCN = "区域变更更新",
+        },
+        active = true
+      },
+      {
+        name = "PLAYER_LEVEL_UP",
+        label = {
+          deDE = "Beim Levelaufstieg",
+          enUS = "On leveling up",
+          esES = "Sobre subir de nivel",
+          frFR = "À propos de la mise à niveau",
+          itIT = "Sul livellamento",
+          ptBR = "Sobre subir de nível",
+          ruRU = "О повышении уровня",
+          koKR = "레벨업에 관하여",
+          zhCN = "升级",
+        },
+        active = true
+      },
+      {
+        name = "NEW_TOY_ADDED",
+        label = {
+          deDE = "Beim Erhalt eines neuen Spielzeugs",
+          enUS = "When receiving a new toy",
+          esES = "Al recibir un juguete nuevo",
+          frFR = "Lors de la réception d'un nouveau jouet",
+          itIT = "Quando si riceve un nuovo giocattolo",
+          ptBR = "Ao receber um brinquedo novo",
+          ruRU = "При получении новой игрушки",
+          koKR = "새로운 장난감을 받았을 때",
+          zhCN = "当收到一个新玩具时",
+        },
+        active = true
+      },
     },
     reporting = {
       debugging = {

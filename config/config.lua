@@ -2,7 +2,7 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
-local configKeys = {"info", "toys", "fallbacks", "anchoring", "keybindings", "reporting", "profiles"}
+local configKeys = {"info", "toys", "fallbacks", "anchoring", "keybindings", "events", "reporting", "profiles"}
 local data = CopyTable(B2H.data)
 data.keyword = "config"
 B2H.config = {}
@@ -18,7 +18,6 @@ function B2H:SetupConfig()
   for i,key in ipairs(configKeys) do
     local FillPanelFunctionName = format("Fill%sPanel", READI.Helper.string:Capitalize(key))
     local panelExists = READI.Helper.functions:Exists("B2H."..FillPanelFunctionName)
-    print(FillPanelFunctionName, panelExists)
 
     if panelExists then
       B2H.config[key] = B2H.config[key] or {}
