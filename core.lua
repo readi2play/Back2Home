@@ -1,7 +1,7 @@
 local AddonName, b2h = ...
---------------------------------------------------------------------------------
--- ADDON MAIN FRAME AND LOCALIZATION TABLE
---------------------------------------------------------------------------------
+--[[----------------------------------------------------------------------------
+ADDON MAIN FRAME AND LOCALIZATION TABLE
+----------------------------------------------------------------------------]]--
 B2H = CreateFrame("Frame")
 
 B2H.Colors = READI.Helper.table:Merge(
@@ -17,15 +17,15 @@ B2H.data = {
   ["colors"] = B2H.Colors
 }
 B2H.Locale = GAME_LOCALE or GetLocale()
-B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RALT", "RCTRL", "RSHIFT"}
+B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
 B2H.ActiveKeys = {}
 
 B2H.L = B2H.L
 
---------------------------------------------------------------------------------
--- EVENT HANDLERS
---------------------------------------------------------------------------------
+--[[----------------------------------------------------------------------------
+EVENT HANDLERS
+----------------------------------------------------------------------------]]--
 -- Native Events
 
 function B2H:OnEvent(evt, ...)
@@ -124,15 +124,15 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
   B2H.HSButton:Update(false)
 end
 
---------------------------------------------------------------------------------
--- COLOR SCHEME
---------------------------------------------------------------------------------
+--[[----------------------------------------------------------------------------
+COLOR SCHEME
+----------------------------------------------------------------------------]]--
 function B2H:setTextColor(str, color)
   return READI.Helper.color:Get(color, B2H.Colors, str)
 end
---------------------------------------------------------------------------------
--- HELPER
---------------------------------------------------------------------------------
+--[[----------------------------------------------------------------------------
+HELPER
+----------------------------------------------------------------------------]]--
 function B2H:IsUsable(item)
   if not item.condition then return true end
   for key, conditions in pairs(item.condition) do
@@ -143,8 +143,9 @@ function B2H:IsUsable(item)
 
   return true
 end
---------------------------------------------------------------------------------
--- Create the config DB
+--[[----------------------------------------------------------------------------
+Create the config DB
+----------------------------------------------------------------------------]]--
 function B2H:InitializeDB ()
   local dbName = AddonName .. "DB"
   local charName = format("%s-%s", GetUnitName("player"), GetRealmName())
@@ -182,24 +183,25 @@ function B2H:InitializeDB ()
   -- perform a cleanup to remove no longer used keys
   READI.Helper.table:CleanUp(B2H.defaults, B2H.db, "assigned_profile")
 end
---------------------------------------------------------------------------------
--- Initialize key bindings from database
+--[[----------------------------------------------------------------------------
+Initialize key bindings from database
+----------------------------------------------------------------------------]]--
 function B2H:InitializeKeyBindings()
   if #B2H.BoundKeys > 0 then B2H.BoundKeys = {} end
   for k,v in pairs(B2H.db.keybindings.items) do
     table.insert(B2H.BoundKeys, v.key)
   end
 end
---------------------------------------------------------------------------------
+--[[------------------------------------------------------------------------]]--
 _G[AddonName .. '_Options'] = function()
   Settings.OpenToCategory(AddonName)
 end
 -- enable the addon, this is defined in classic/modern
 if type(b2h.Enable) == "function" then B2H:Enable() end
 
---------------------------------------------------------------------------------
--- SLASH COMMANDS
---------------------------------------------------------------------------------
+--[[----------------------------------------------------------------------------
+SLASH COMMANDS
+----------------------------------------------------------------------------]]--
 SLASH_B2HB1 = "/home"
 SLASH_B2HB2 = "/b2h"
 

@@ -22,7 +22,7 @@ Button factory for the Back2Home button
     B2H.HSButton.cooldown = B2H.HSButton.cooldown or CreateFrame("Cooldown", AddonName .. "Cooldown", B2H.HSButton, "CooldownFrameTemplate")
     B2H.HSButton.tooltip = B2H.HSButton.tooltip or CreateFrame("GameTooltip", AddonName .. "Tooltip", UIParent, "GameTooltipTemplate")
     B2H.HSButton.background = B2H.HSButton.background or B2H.HSButton:CreateTexture(AddonName .. "Background", "BACKGROUND")
-    B2H.HSButton.border = B2H.HSButton.border or B2H.HSButton:CreateTexture(AddonName .. "Border", "OVERLAY")
+    B2H.HSButton.border = B2H.HSButton.border or B2H.HSButton:CreateTexture(AddonName .. "Border", "BORDER")
     B2H.HSButton.icon = B2H.HSButton.icon or B2H.HSButton:CreateTexture(AddonName .. "Icon", "ARTWORK")
     B2H.HSButton.mask = B2H.HSButton.mask or B2H.HSButton:CreateMaskTexture()
     --[[------------------------------------------------------------------------
@@ -158,7 +158,7 @@ Button factory for the Back2Home button
     B2H.HSButton.mask:SetTexture(READI.T.rdl110003, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     B2H.HSButton.icon:AddMaskTexture(B2H.HSButton.mask)
     --[[------------------------------------------------------------------------
-    button background positioning
+    button border positioning
     ------------------------------------------------------------------------]]--
     B2H.HSButton.border:SetAllPoints(B2H.HSButton)
     B2H.HSButton.border:SetTexture(READI.T.rdl110001)
