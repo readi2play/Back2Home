@@ -5,11 +5,13 @@ BASICS
   local data = CopyTable(B2H.data)
   data.keyword = "profiles"
   local charName = format("%s-%s", GetUnitName("player"), GetRealmName())
+  local __default = "global"
+  local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 --[[----------------------------------------------------------------------------
 CREATE PROFILES PANEL CONTENT
 ----------------------------------------------------------------------------]]--
 local Profiler = {
-  defaultProfile = {txt = READI:l10n("general.commons.default"), val = "global"},
+  defaultProfile = {txt = READI:l10n("general.commons.default"), val = __default},
   activeProfile = {
     label = "",
     description = "",
@@ -33,7 +35,7 @@ B2H.Profile = B2H.Profile or {
       local __selection = Profiler.activeProfile.dropdown:GetValue()
       _G[AddonName.."DB"].chars[charName].assigned_profile = __selection
     
-      if __selection ==  "global" then
+      if __selection ==  __default then
         B2H.db = _G[AddonName.."DB"].global
       else
         B2H.db = _G[AddonName.."DB"].chars[__selection]
@@ -53,7 +55,7 @@ B2H.Profile = B2H.Profile or {
       ---------------------------------------------------------------------]]--      
         local __active = Profiler.activeProfile.dropdown:GetValue()
         local dst = _G[AddonName.."DB"].global
-        if __active ~=  "global" then
+        if __active ~=  __default then
           dst = _G[AddonName.."DB"].chars[__active]
         end
       --[[---------------------------------------------------------------------
@@ -61,7 +63,7 @@ B2H.Profile = B2H.Profile or {
       selected profile
       ---------------------------------------------------------------------]]--
         local src = _G[AddonName.."DB"].global
-        if __selection ~=  "global" then src = _G[AddonName.."DB"].chars[__selection] end
+        if __selection ~=  __default then src = _G[AddonName.."DB"].chars[__selection] end
       --[[---------------------------------------------------------------------
       manually copy settings from selected source profile to destinated profile
       this cannot be done using CopyTable on the entire profile table because
@@ -115,7 +117,7 @@ B2H.Profile = B2H.Profile or {
       define the frame name of the prompt and reuse the frame if already existent
       create a new dialog frame otherwise
       ----------------------------------------------------------------------]]--
-        local promptName = "DeleteProfilePrompt"
+        local promptName = "B2H_DeleteProfilePrompt"
         local prompt = _G[promptName] or READI:Dialog(data, {
           name = promptName,
           title = B2H:setTextColor(READI:l10n("config.panels.profiles.labels.deleteProfile", "B2H.L"), "b2h"),
@@ -125,41 +127,55 @@ B2H.Profile = B2H.Profile or {
             width = 42,
           },
           buttonSet = {
-            confirm = READI:l10n("general.labels.buttons.yes"),
-            cancel = READI:l10n("general.labels.buttons.no"),
+            {
+              key = "cancel",
+              label = READI:l10n("general.labels.buttons.no"),
+              offsetY = 10,
+              parent = {
+                anchor = READI.ANCHOR_BOTTOMRIGHT,
+              },
+              onClick = function() end
+            },
+            {
+              key = "confirm",
+              label = READI:l10n("general.labels.buttons.yes"),
+              parent = {
+                anchor = READI.ANCHOR_BOTTOMLEFT,
+              },
+              onClick = function()
+                local __selection = Profiler.deleteProfile.dropdown:GetValue()
+                local __active = Profiler.activeProfile.dropdown:GetValue()
+    
+                local src = _G[AddonName.."DB"].chars[__selection]
+                if __selection == __active then
+                  if __selection == charName then
+                    B2H.db = _G[AddonName.."DB"].global
+                    Profiler.activeProfile.dropdown:SetValue(Profiler.defaultProfile.val, Profiler.defaultProfile.txt)
+                  else
+                    B2H.db = _G[AddonName.."DB"].chars[charName]
+                    Profiler.activeProfile.dropdown:SetValue(charName)
+                  end
+                end      
+                local __actIdx = READI.Helper.table:Get(Profiler.activeProfile.dropdown.MenuList, function(k,v) return v == __selection end)
+                table.remove(Profiler.activeProfile.dropdown.MenuList, __actIdx)
+          
+                local __copIdx = READI.Helper.table:Get(Profiler.copyProfile.dropdown.MenuList, function(k,v) return v == __selection end)
+                table.remove(Profiler.copyProfile.dropdown.MenuList, __copIdx)
+          
+                local __delIdx = READI.Helper.table:Get(Profiler.deleteProfile.dropdown.MenuList, function(k,v) return v == __selection end)
+                table.remove(Profiler.deleteProfile.dropdown.MenuList, __delIdx)
+          
+                _G[AddonName.."DB"].chars[__selection] = nil
+                B2H:UpdateOptions()
+              end
+            }
           },
+          allowKeyboard = true,
           closeOnEsc = true,
           createHidden = false,
-          onOkay = function()
-            local __selection = Profiler.deleteProfile.dropdown:GetValue()
-            local __active = Profiler.activeProfile.dropdown:GetValue()
-
-            local src = _G[AddonName.."DB"].chars[__selection]
-            if __selection == __active then
-              if __selection == charName then
-                B2H.db = _G[AddonName.."DB"].global
-                Profiler.activeProfile.dropdown:SetValue(Profiler.defaultProfile.val, Profiler.defaultProfile.txt)
-              else
-                B2H.db = _G[AddonName.."DB"].chars[charName]
-                Profiler.activeProfile.dropdown:SetValue(charName)
-              end
-            end      
-            local __actIdx = READI.Helper.table:Get(Profiler.activeProfile.dropdown.MenuList, function(k,v) return v == __selection end)
-            table.remove(Profiler.activeProfile.dropdown.MenuList, __actIdx)
-      
-            local __copIdx = READI.Helper.table:Get(Profiler.copyProfile.dropdown.MenuList, function(k,v) return v == __selection end)
-            table.remove(Profiler.copyProfile.dropdown.MenuList, __copIdx)
-      
-            local __delIdx = READI.Helper.table:Get(Profiler.deleteProfile.dropdown.MenuList, function(k,v) return v == __selection end)
-            table.remove(Profiler.deleteProfile.dropdown.MenuList, __delIdx)
-      
-            _G[AddonName.."DB"].chars[__selection] = nil
-            B2H:UpdateOptions()
-          end,
-          onCancel = function() end,
           onClose = function()
             Profiler.deleteProfile.dropdown:SetValue(nil)
-          end
+          end,
         })
       --[[----------------------------------------------------------------------
       calling the filler function and handling when to show the prompt
@@ -222,9 +238,9 @@ function B2H:FillProfilesPanel(panel, container, anchorline)
       B2H.db = _G[AddonName.."DB"].global
       if activated then
         _G[AddonName.."DB"].chars[charName] = _G[AddonName.."DB"].chars[charName] or CopyTable(B2H.defaults)
-        _G[AddonName.."DB"].chars[charName].assigned_profile = _G[AddonName.."DB"].chars[charName].assigned_profile or "global"
+        _G[AddonName.."DB"].chars[charName].assigned_profile = _G[AddonName.."DB"].chars[charName].assigned_profile or __default
         local __ap = _G[AddonName.."DB"].chars[charName].assigned_profile
-        if __ap ~= "global" then
+        if __ap ~= __default then
           B2H.db = _G[AddonName.."DB"].chars[ __ap ]
           Profiler.activeProfile.dropdown:SetValue(__ap)
         else
@@ -242,7 +258,7 @@ function B2H:FillProfilesPanel(panel, container, anchorline)
   --[[----------------------------------------------------------------------------
   Active Profile section
   ----------------------------------------------------------------------------]]--
-    Profiler.activeProfile.list = READI.Helper.table:Keys(_G[AddonName.."DB"].chars)
+    Profiler.activeProfile.list = READI.Helper.table:Filter(READI.Helper.table:Keys(_G[AddonName.."DB"].chars), function(val) return val ~= __default end)
     table.insert(Profiler.activeProfile.list, 1, Profiler.defaultProfile)
     --------------------------------------------------------------------------------
     Profiler.activeProfile.label = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormal")
@@ -309,7 +325,7 @@ function B2H:FillProfilesPanel(panel, container, anchorline)
   --[[----------------------------------------------------------------------------
   Delete Profile section
   ----------------------------------------------------------------------------]]--
-    Profiler.deleteProfile.list = READI.Helper.table:Keys(_G[AddonName.."DB"].chars)
+    Profiler.deleteProfile.list = READI.Helper.table:Filter(READI.Helper.table:Keys(_G[AddonName.."DB"].chars), function(val) return val ~= __default end)
     --------------------------------------------------------------------------------
     Profiler.deleteProfile.label = wrapper:CreateFontString("ARTWORK", nil, "GameFontNormal")
     Profiler.deleteProfile.label:SetPoint("TOPLEFT", Profiler.copyProfile.label, "TOPLEFT", b2h.columnWidth, 0)

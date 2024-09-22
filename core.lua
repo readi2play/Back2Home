@@ -175,6 +175,8 @@ function B2H:InitializeDB ()
 
     if _ap ~= "global" then
       _G[dbName].chars[_ap] = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[dbName].chars[_ap])
+    else
+      _G[dbName].chars[_ap] = _G[dbName].global
     end
 
     B2H.db = _G[dbName].chars[_ap]
