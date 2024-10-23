@@ -11,6 +11,12 @@ data.keyword = "anchoring"
 B2H.Anchoring = B2H.Anchoring or {
   fields = {},
 }
+local _posXname = format("%s_%sEditBox_parent_pos_x", data.prefix, "SettingsPanel")
+local _posYname = format("%s_%sEditBox_parent_pos_y", data.prefix, "SettingsPanel")
+local _parentName = format("%s_%sEditBox_parent_frame", data.prefix, "SettingsPanel" )
+local _sizeName = format("%s_%sSlider_button_size", data.prefix, "SettingsPanel")
+local _strataName = format("%s_%sDropdown_button_strata", data.prefix, "SettingsPanel")
+
 function B2H:FillAnchoringPanel(panel, container, anchorline)
   local function BuildAnchorGrid(wrapper, cols, option)
     for i,value in ipairs(b2h.anchors) do
@@ -116,7 +122,8 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   positionX_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", 0, -5)
   positionX_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.x", "B2H.L"), "white"))
 
-  B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"] = READI:EditBox(data, {
+  B2H.Anchoring.fields[_posXname] = READI:EditBox(data, {
+    name = _posXname,
     region = container,
     type = "number",
     step = 0.25,
@@ -126,13 +133,11 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     showButtons = true,
     okayForNumber = false,
     onChange = function()
-      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"]
-      B2H.db.anchoring.position_x = eb:GetText()
+      B2H.db.anchoring.position_x = self:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"]
-      eb:SetText(B2H.defaults.anchoring.position_x)
+      self:SetText(B2H.defaults.anchoring.position_x)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
@@ -141,7 +146,8 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   positionY_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", posColWidth + 20, -5)
   positionY_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.y", "B2H.L"), "white"))
 
-  B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"] = READI:EditBox(data, {
+  B2H.Anchoring.fields[_posYname] = READI:EditBox(data, {
+    name = _posYname,
     region = container,
     type = "number",
     step = 0.25,
@@ -151,13 +157,11 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     showButtons = true,
     okayForNumber = false,
     onChange = function()
-      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"]
-      B2H.db.anchoring.position_y = eb:GetText()
+      B2H.db.anchoring.position_y = self:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"]
-      eb:SetText(B2H.defaults.anchoring.position_y)
+      self:SetText(B2H.defaults.anchoring.position_y)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
@@ -171,7 +175,8 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   parentFrame_nameTitle:SetPoint("TOPLEFT", parentFrame_sectionTitle, "BOTTOMLEFT", 0, -5)
   parentFrame_nameTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.parent.subline", "B2H.L"), "white"))
 
-  B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"] = READI:EditBox(data, {
+  B2H.Anchoring.fields[_parentName] = READI:EditBox(data, {
+    name = _parentName,
     region = container,
     type = "text",
     value = B2H.db.anchoring.frame or B2H.defaults.anchoring.frame,
@@ -179,50 +184,48 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     parent = parentFrame_nameTitle,
     showButtons = true,
     onChange = function()
-      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]
-      B2H.db.anchoring.frame = eb:GetText()
+      B2H.db.anchoring.frame = self:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      local eb = B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]
-      eb:SetText(B2H.defaults.anchoring.frame)
+      self:SetText(B2H.defaults.anchoring.frame)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
-  B2H.Anchoring.fields[AddonName.."FrameSelectorButton"] = READI:Button(data, {
-    name = AddonName.."FrameSelectorButton",
+  B2H.Anchoring.fields[_parentName.."FrameSelectorButton"] = READI:Button(data, {
+    name = _parentName.."FrameSelectorButton",
     region = container,
     label = "",
     tooltip = READI:l10n("general.tooltips.buttons.frameSelector"),
     width = 22,
     height = 22,
     anchor = "LEFT",
-    parent = B2H.Anchoring.fields[AddonName.."EditBox_parent_frame"],
+    parent = B2H.Anchoring.fields[_parentName],
     p_anchor = "RIGHT",
     offsetX = 5,
     onClick = function(self)
-      local field = B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]
+      local field = B2H.Anchoring.fields[_parentName]
       data.frameName = field:GetText()
       READI:StartFrameSelector(data, B2H.db.anchoring.frame, field)
     end,
   })
-  B2H.Anchoring.fields[AddonName.."FrameSelectorButton"].symbol = READI:Icon(data, {
+  B2H.Anchoring.fields[_parentName.."FrameSelectorButton"].symbol = READI:Icon(data, {
     name = AddonName.."FrameSelectorButtonSymbol",
-    region = B2H.Anchoring.fields[AddonName.."FrameSelectorButton"],
+    region = B2H.Anchoring.fields[_parentName.."FrameSelectorButton"],
     texture = READI.T.rdl120001,
     width = 14,
     height = 14
   })
-  B2H.Anchoring.fields[AddonName.."FrameSelectorButton"].symbol:SetPoint("CENTER", B2H.Anchoring.fields[AddonName.."FrameSelectorButton"], "CENTER", 0, 0)
-  B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]:SetWidth(b2h.columnWidth - B2H.Anchoring.fields[AddonName.."FrameSelectorButton"]:GetWidth() - 10)
+  B2H.Anchoring.fields[_parentName.."FrameSelectorButton"].symbol:SetPoint("CENTER", B2H.Anchoring.fields[_parentName.."FrameSelectorButton"], "CENTER", 0, 0)
+  B2H.Anchoring.fields[_parentName]:SetWidth(b2h.columnWidth - B2H.Anchoring.fields[_parentName.."FrameSelectorButton"]:GetWidth() - 10)
 
   local buttonSizeTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-  buttonSizeTitle:SetPoint("TOPLEFT", B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"], "BOTTOMLEFT", 0, -20)
+  buttonSizeTitle:SetPoint("TOPLEFT", B2H.Anchoring.fields[_posXname], "BOTTOMLEFT", 0, -20)
   buttonSizeTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.button.size.headline", "B2H.L"), "b2h"))
 
-  B2H.Anchoring.fields[AddonName.."Slider_button_size"] = READI:Slider(data, {
+  B2H.Anchoring.fields[_sizeName] = READI:Slider(data, {
     region = container,
-    name = AddonName.."Slider_button_size",
+    name = _sizeName,
     min = 16,
     max = 64,
     step = 8,
@@ -234,21 +237,21 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     offsetX = 0,
     offsetY = -20,
     onChange = function ()
-      local slider = B2H.Anchoring.fields[AddonName.."Slider_button_size"]
+      local slider = B2H.Anchoring.fields[_sizeName]
       B2H.db.anchoring.button_size = slider:GetValue()
       _G[slider.name.."Text"]:SetText(slider:GetValue())
         B2H.HSButton:ScaleButton()
     end,
     onReset = function ()
-      B2H.Anchoring.fields[AddonName.."Slider_button_size"]:SetValue(B2H.defaults.anchoring.button_size)
+      B2H.Anchoring.fields[_sizeName]:SetValue(B2H.defaults.anchoring.button_size)
     end
   })
 
   local buttonStrataTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-  buttonStrataTitle:SetPoint("TOPLEFT", B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"], "BOTTOMLEFT", 0, -20)
+  buttonStrataTitle:SetPoint("TOPLEFT", B2H.Anchoring.fields[_parentName], "BOTTOMLEFT", 0, -20)
   buttonStrataTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.button.strata.headline", "B2H.L"), "b2h"))
 
-  B2H.Anchoring.fields[AddonName.."Dropdown_button_strata"] = READI:DropDown(data, {
+  B2H.Anchoring.fields[_strataName] = READI:DropDown(data, {
     values = {
       "PARENT",
       "BACKGROUND",
@@ -262,7 +265,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     },
     storage = "B2H.db.anchoring",
     option = "button_strata",
-    name = AddonName.."Dropdown_button_strata",
+    name = _strataName,
     region = container,
     width = b2h.columnWidth - 20,
     parent = buttonStrataTitle,
@@ -270,7 +273,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     offsetY = -15,
     onReset = function()
       B2H.db.anchoring.button_strata = B2H.defaults.anchoring.button_strata
-      UIDropDownMenu_SetText(B2H.Anchoring.fields[AddonName.."Dropdown_button_strata"], B2H.defaults.anchoring.button_strata)
+      UIDropDownMenu_SetText(B2H.Anchoring.fields[_strataName], B2H.defaults.anchoring.button_strata)
       CloseDropDownMenus()    
     end,
     onChange = function () B2H.HSButton:SetStrata() end
@@ -293,11 +296,11 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   )
 end
 function B2H.Anchoring:Update()
-  B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_x"]:SetText( B2H.db.anchoring.position_x)
-  B2H.Anchoring.fields[AddonName .. "EditBox_parent_pos_y"]:SetText( B2H.db.anchoring.position_y)
-  B2H.Anchoring.fields[AddonName .. "EditBox_parent_frame"]:SetText( B2H.db.anchoring.frame)
-  B2H.Anchoring.fields[AddonName .. "Slider_button_size"]:SetValue( B2H.db.anchoring.button_size)
-  B2H.Anchoring.fields[AddonName .. "Dropdown_button_strata"]:SetValue( B2H.db.anchoring.button_strata)
+  B2H.Anchoring.fields[_posXname]:SetText( B2H.db.anchoring.position_x)
+  B2H.Anchoring.fields[_posYname]:SetText( B2H.db.anchoring.position_y)
+  B2H.Anchoring.fields[_parentName]:SetText( B2H.db.anchoring.frame)
+  B2H.Anchoring.fields[_sizeName]:SetValue( B2H.db.anchoring.button_size)
+  B2H.Anchoring.fields[_strataName]:SetValue( B2H.db.anchoring.button_strata)
 
   for _,val in pairs({"button", "parent"}) do
     for i, anchor in pairs(b2h.anchors) do
