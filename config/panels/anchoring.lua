@@ -133,11 +133,11 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     showButtons = true,
     okayForNumber = false,
     onChange = function()
-      B2H.db.anchoring.position_x = self:GetText()
+      B2H.db.anchoring.position_x = B2H.Anchoring.fields[_posXname]:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      self:SetText(B2H.defaults.anchoring.position_x)
+      B2H.Anchoring.fields[_posXname]:SetText(B2H.defaults.anchoring.position_x)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
@@ -157,11 +157,11 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     showButtons = true,
     okayForNumber = false,
     onChange = function()
-      B2H.db.anchoring.position_y = self:GetText()
+      B2H.db.anchoring.position_y = B2H.Anchoring.fields[_posYname]:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      self:SetText(B2H.defaults.anchoring.position_y)
+      B2H.Anchoring.fields[_posYname]:SetText(B2H.defaults.anchoring.position_y)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
@@ -184,11 +184,11 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     parent = parentFrame_nameTitle,
     showButtons = true,
     onChange = function()
-      B2H.db.anchoring.frame = self:GetText()
+      B2H.db.anchoring.frame = B2H.Anchoring.fields[_parentName]:GetText()
       B2H.HSButton:SetPosition()
     end,
     onReset = function()
-      self:SetText(B2H.defaults.anchoring.frame)
+      B2H.Anchoring.fields[_parentName]:SetText(B2H.defaults.anchoring.frame)
       EventRegistry:TriggerEvent(format("%s.%s.%s", data.prefix, data.keyword, "OnChange"))
     end
   })
@@ -226,7 +226,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   B2H.Anchoring.fields[_sizeName] = READI:Slider(data, {
     region = container,
     name = _sizeName,
-    min = 16,
+    min = 24,
     max = 64,
     step = 8,
     value = B2H.db.anchoring.button_size or B2H.defaults.anchoring.button_size,

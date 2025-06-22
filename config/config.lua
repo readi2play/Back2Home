@@ -74,9 +74,7 @@ function B2H:InitializeOptions()
   end
 end
 function B2H:UpdateOptions(shuffle)
-  if shuffle == nil then
-    shuffle = true
-  end
+  if shuffle == nil then shuffle = true end
   B2H.Toys:Update()
   B2H.Anchoring:Update()
   B2H.Keybindings:Update()

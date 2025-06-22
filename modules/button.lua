@@ -25,6 +25,7 @@ Button factory for the Back2Home button
     B2H.HSButton.border = B2H.HSButton.border or B2H.HSButton:CreateTexture(AddonName .. "Border", "BORDER")
     B2H.HSButton.icon = B2H.HSButton.icon or B2H.HSButton:CreateTexture(AddonName .. "Icon", "ARTWORK")
     B2H.HSButton.mask = B2H.HSButton.mask or B2H.HSButton:CreateMaskTexture()
+    B2H.HSButton.charges = B2H.HSButton.charges or B2H.HSButton:CreateFontString(RD.ARTWORK, nil, "GameFontHighlight")
     --[[------------------------------------------------------------------------
     METHODS ---
     This function updates the button's icon, tooltip and cooldown
@@ -66,14 +67,17 @@ Button factory for the Back2Home button
         B2H.HSButton.tooltip:SetBagItem(B2H:GetItemBagSlot(activeFallback.id))
       else
         B2H.HSButton.tooltip:SetToyByItemID(b2h.id)
+        b2h.name = C_Item.GetItemNameByID(b2h.id)
+        b2h.icon = C_Item.GetItemIconByID(b2h.id)
       end
 
+      b2h.spellName, b2h.spellID = C_Item.GetItemSpell(b2h.id or activeFallback.id)
       B2H.HSButton.icon:SetTexture(b2h.icon)
-
-      B2H.HSButton:SetAttribute("macrotext", "/use item:" .. b2h.id)
+      B2H.HSButton:SetAttribute("item", b2h.name)
 
       local start, duration = GetItemCooldown(b2h.id)
       B2H.HSButton.cooldown:SetCooldown(start, duration)
+      B2H.HSButton.cooldown:Show()
     end
     --[[------------------------------------------------------------------------
     Retrieve a new random toy itemID
@@ -126,17 +130,19 @@ Button factory for the Back2Home button
     button action configuration
     ------------------------------------------------------------------------]]--
     B2H.HSButton:RegisterForClicks("LeftButtonDown", "RightButtonDown")
-    B2H.HSButton:SetAttribute("type", "macro")
+    B2H.HSButton:SetAttribute("type", "item")
+    B2H.HSButton:SetAttribute("type2", "macro")
     if b2h.id then
-      B2H.HSButton:SetAttribute("macrotext", "/use item:" .. b2h.id)
+      B2H.HSButton:SetAttribute("item", b2h.name)
     end
-    B2H.HSButton:SetAttribute("macrotext2", "/run Back2HomeButton:Update(true)")
+    B2H.HSButton:SetAttribute("macrotext", "/run Back2HomeButton:Update(true)")
     --[[------------------------------------------------------------------------
     cooldown positioning
     ------------------------------------------------------------------------]]--
     B2H.HSButton.cooldown:SetAllPoints(B2H.HSButton.icon)
+    B2H.HSButton.cooldown:SetUseCircularEdge(true)
     B2H.HSButton.cooldown:SetDrawSwipe(false)
-    B2H.HSButton.cooldown:SetDrawEdge(false)
+    B2H.HSButton.cooldown:SetDrawEdge(true)
 
     --[[------------------------------------------------------------------------
     button background positioning
@@ -191,18 +197,19 @@ Inititialize the Back2Home button
       for i,event in ipairs(B2H.db.events) do
         B2H.HSButton:RegisterEvent(event.name)
       end
+      B2H.HSButton:RegisterEvent("SPELL_UPDATE_COOLDOWN")
     --[[------------------------------------------------------------------------
     generic event handler so we can implement dedicated methods for each event
     the button should listen on
     ------------------------------------------------------------------------]]--
       local function OnEvent(self, evt, ...)
+        local start, duration = GetItemCooldown(b2h.id)
+        B2H.HSButton.cooldown:SetCooldown(start, duration)
+        B2H.HSButton.cooldown:Show()
         if InCombatLockdown() then return end
+        if evt == "SPELL_UPDATE_COOLDOWN" then return end
         if self[evt] then self[evt](self, evt, ...) end
-        for i,_e in ipairs(B2H.db.events) do
-          if _e.name == evt and _e.active then
-            B2H.HSButton:Update(true)
-          end
-        end
+        B2H.HSButton:Update(true)
       end  
     --[[------------------------------------------------------------------------
     handling the mouseover event to show the tooltip of the currently selected
@@ -222,14 +229,6 @@ Inititialize the Back2Home button
         if B2H.HSButton.tooltip then
           B2H.HSButton.tooltip:Hide()
         end
-      end
-    --[[------------------------------------------------------------------------
-    handling the click event to either shuffle the button (right click) or use
-    the currently selected hearthstone toy or fallback item (left click)
-    ------------------------------------------------------------------------]]--
-      local function OnClick(self, clicked, down, ...)
-        local start, duration = GetItemCooldown(b2h.id)
-        B2H.HSButton.cooldown:SetCooldown(start, duration)
       end
     --[[------------------------------------------------------------------------
     shuffle the button when a new toy is learned
