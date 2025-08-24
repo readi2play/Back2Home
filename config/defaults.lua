@@ -481,6 +481,57 @@ function B2H:InitializeDefaultSettings()
           koKR = "재배치 모듈",
           zhCN = "重部署模块",
         }
+      }, {
+        active = false,
+        owned = false,
+        id = 142542,
+        icon = 1529351,
+        label = {
+          deDE = "Foliant des Stadtportals",
+          enUS = "Tome of Town Portal",
+          esES = "Tomo de portal a la ciudad",
+          esMX = "Tomo del portal del pueblo",
+          frFR = "Tome de Portail de retour en ville",
+          itIT = "Tomo del Portale Cittadino",
+          ptBR = "Tomo de Portal da Cidade",
+          ruRU = "Фолиант возвращения",
+          koKR = "마을 차원문 마법서",
+          zhCN = "城镇传送之书",
+        }
+      }, {
+        active = false,
+        owned = false,
+        id = 245970,
+        icon = 133469,
+        label = {
+          deDE = "Expressruhestein des P.O.S.T.-Meisters",
+          enUS = "P.O.S.T. Master's Express Hearthstone",
+          esES = "Piedra de hogar exprés del jefe de correos",
+          esMX = "Piedra de hogar de Jefe de C.A.R.T.A. exprés",
+          frFR = "Pierre de foyer expresse du maître de P.O.S.T.E.",
+          itIT = "Pietra del Ritorno Espressa del Direttore della P.O.S.T.A.",
+          ptBR = "Pedra de Regresso Expresso do Chefe do C.O.R.R.E.I.O.",
+          ruRU = "Скорый камень возвращения ПОЧТ-мейстера",
+          koKR = "우.정.국.장.의 급행 귀환석",
+          zhCN = "P.O.S.T.总管的特快炉石",
+        }
+      }, {
+        active = false,
+        owned = false,
+        id = 246565,
+        icon = 5852174,
+        label = {
+          deDE = "Kosmischer Ruhestein",
+          enUS = "Cosmic Hearthstone",
+          esES = "Piedra de hogar cósmica",
+          esMX = "Piedra de hogar cósmica",
+          frFR = "Pierre de foyer cosmique",
+          itIT = "Pietra del Ritorno Cosmica",
+          ptBR = "Pedra de Regresso Cósmica",
+          ruRU = "Космический камень возвращения",
+          koKR = "우주의 귀환석",
+          zhCN = "星瀚炉石",
+        }
       }
     },
     fallbacks = {
