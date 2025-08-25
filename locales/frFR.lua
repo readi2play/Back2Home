@@ -1,6 +1,4 @@
-local _, b2h = ...
+-- closure to make sure only the relevant language is uses
+if (GAME_LOCALE or GetLocale()) ~= "frFR" then return end
 
-B2H.L = B2H.L or {}
-B2H.L.frFR = {
-  
-}
+local L = B2H.L

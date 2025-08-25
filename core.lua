@@ -1,4 +1,7 @@
 local AddonName, b2h = ...
+
+
+
 --[[----------------------------------------------------------------------------
 ADDON MAIN FRAME AND LOCALIZATION TABLE
 ----------------------------------------------------------------------------]]--
@@ -17,11 +20,11 @@ B2H.data = {
   ["colors"] = B2H.Colors
 }
 B2H.Locale = GAME_LOCALE or GetLocale()
+B2H.L = {}
+
 B2H.KeysToBind = {"LALT", "LCTRL", "LSHIFT", "RCTRL", "RSHIFT"}
 B2H.BoundKeys = {}
 B2H.ActiveKeys = {}
-
-B2H.L = B2H.L
 
 --[[----------------------------------------------------------------------------
 EVENT HANDLERS
@@ -38,7 +41,6 @@ B2H:SetScript("OnEvent", B2H.OnEvent)
 B2H:RegisterEvent("ADDON_LOADED")
 B2H:RegisterEvent("CHAT_MSG_ADDON")
 B2H:RegisterEvent("PLAYER_ENTERING_WORLD")
-B2H:RegisterEvent("PLAYER_LEAVING_WORLD")
 B2H:RegisterEvent("MODIFIER_STATE_CHANGED")
 B2H:RegisterEvent("FIRST_FRAME_RENDERED")
 
@@ -59,14 +61,6 @@ function B2H:PLAYER_ENTERING_WORLD(evt, isLogin, isReload)
   B2H.registered = C_ChatInfo.RegisterAddonMessagePrefix(B2H.data.prefix)
   if not B2H.HSButton then return end
   B2H.HSButton:Update(true)
-end
-function B2H:PLAYER_LEAVING_WORLD(evt, isLogout, isReload)
-  local dbName = AddonName .. "DB"
-  if not _G[dbName].use_profiles then return end 
-
-  local charName = format("%s-%s", GetUnitName("player"), GetRealmName())
-
-  _G[dbName.."Chr"] = CopyTable(_G[dbName].chars[charName] or B2H.defaults)
 end
 
 function B2H:FIRST_FRAME_RENDERED(evt)
@@ -148,39 +142,17 @@ Create the config DB
 ----------------------------------------------------------------------------]]--
 function B2H:InitializeDB ()
   local dbName = AddonName .. "DB"
-  local charName = format("%s-%s", GetUnitName("player"), GetRealmName())
+
   -- get or create the overall SavedVariables
-  _G[dbName] = _G[dbName] or {
-    use_profiles = false
-  }
+  _G[dbName] = _G[dbName] or {}
 
-  -- get or create the global table
-  _G[dbName].global = _G[dbName].global or {}
-  READI.Helper.table:Move(B2H.defaults, _G[dbName], _G[dbName].global)
-  if not next(_G[dbName].global) then
-    _G[dbName].global = CopyTable(B2H.defaults)
+  if not next(_G[dbName]) then
+    _G[dbName] = CopyTable(B2H.defaults)
   else
-    _G[dbName].global = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[dbName].global)
+    _G[dbName] = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[dbName])
   end
 
-  B2H.db = _G[dbName].global
-
-  -- get or create the character specific table
-  _G[dbName].chars = _G[dbName].chars or {}
-  if _G[dbName].use_profiles then
-    _G[dbName].chars[charName] = _G[dbName].chars[charName] or CopyTable(B2H.defaults)
-    
-    _G[dbName].chars[charName].assigned_profile = _G[dbName].chars[charName].assigned_profile or charName
-    local _ap = _G[dbName].chars[charName].assigned_profile
-
-    if _ap ~= "global" then
-      _G[dbName].chars[_ap] = READI.Helper.table:Merge({}, CopyTable(B2H.defaults), _G[dbName].chars[_ap])
-    else
-      _G[dbName].chars[_ap] = _G[dbName].global
-    end
-
-    B2H.db = _G[dbName].chars[_ap]
-  end
+  B2H.db = _G[dbName]
 
   -- perform a cleanup to remove no longer used keys
   READI.Helper.table:CleanUp(B2H.defaults, B2H.db, "assigned_profile")
@@ -205,24 +177,23 @@ if type(b2h.Enable) == "function" then B2H:Enable() end
 SLASH COMMANDS
 ----------------------------------------------------------------------------]]--
 SLASH_B2HB1 = "/home"
-SLASH_B2HB2 = "/b2h"
 
 local function InfoCommandHandler()
   print([=[ 
     |cFF00FAD4Shuffle:|r
-      |cFF9DFFF1/home | /b2h|r shuffle | random | update | mix
+      |cFF9DFFF1/home|r shuffle
     |cFF00FAD4Config:|r
-      |cFF9DFFF1/home | /b2h|r config | options | settings
+      |cFF9DFFF1/home|r config
     |cFF00FAD4Help:|r
-      |cFF9DFFF1/home | /b2h|r help
+      |cFF9DFFF1/home|r help
   ]=])
 end
 -- define the corresponding slash command handlers
 SlashCmdList.B2HB = function(msg, editBox)
   msg = string.lower(msg)
   local infoKeywords = {"", "help"}
-  local shuffleKeywords = {"shuffle", "random", "update", "mix"}
-  local configKeywords = {"config", "options", "settings"}
+  local shuffleKeywords = {"shuffle"}
+  local configKeywords = {"config"}
   if READI.Helper.table:Contains(msg, shuffleKeywords) then
     B2H.HSButton:Update(true)
   elseif READI.Helper.table:Contains(msg, configKeywords) then

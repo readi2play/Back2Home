@@ -9,7 +9,20 @@ data.keyword = "reporting"
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
 B2H.Reporting = B2H.Reporting or {}
-function B2H:FillReportingPanel(panel, container, anchorline)
+B2H.Reporting.panel, B2H.Reporting.container, B2H.Reporting.anchorline = READI:OptionPanel(data, {
+  name = B2H.L["Reporting"],
+  parent = AddonName,
+  title = {
+    text = B2H.L["Reporting"],
+    color = "b2h"
+  }
+})
+--------------------------------------------------------------------------------
+
+function B2H.Reporting:Initialize(panel, container, anchorline)
+  local panel, container, anchorline = B2H.Reporting.panel, B2H.Reporting.container, B2H.Reporting.anchorline
+  local category = Settings.RegisterCanvasLayoutSubcategory(Settings.GetCategory(AddonName), B2H.Reporting.panel, B2H.L[READI.Helper.string:Capitalize(data.keyword)])
+  Settings.RegisterAddOnCategory(category)
   local categories = READI.Helper.table:Keys(B2H.db[data.keyword])
 
   for category, tbl in pairs(B2H.db[data.keyword]) do
@@ -36,7 +49,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
     
     _G[category.."SectionTitle"] = _G[category.."Section"]:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
     _G[category.."SectionTitle"]:SetPoint("TOPLEFT", _G[category.."Section"], "TOPLEFT", 0, -20)
-    _G[category.."SectionTitle"]:SetText(B2H:setTextColor(READI:l10n(format("config.panels.reporting.sections.%s", category), "B2H.L"), "b2h"))
+    _G[category.."SectionTitle"]:SetText(B2H:setTextColor(B2H.L[READI.Helper.string:Capitalize(category)], "b2h"))
     
     local options = READI.Helper.table:Keys(tbl)
     local rows = ceil(#options / b2h.columns)
@@ -65,7 +78,7 @@ function B2H:FillReportingPanel(panel, container, anchorline)
       local opts = {
         ["name"] = AddonName.."CheckBox"..c_name.."_"..option,
         ["region"] = container,
-        ["label"] = READI:l10n(format("config.panels.reporting.%s.%s", category, option), "B2H.L"),
+        ["label"] = B2H.L["Enable "..category.." for "..option],
         ["anchor"] = anchor,
         ["parent"] = parent,
         ["p_anchor"] = p_anchor,

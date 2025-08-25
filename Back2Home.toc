@@ -1,11 +1,21 @@
-## Interface: 110007, 110100, 110105, 110107, 110200
+## Interface: 110007, 110100, 110105, 110107, 110200, 110205, 120000
 ## Title: Back2Home by |cFF78B064readi2play|r 
 ## Notes: Use a random hearthstone toy from out of your toybox whenever you want to return to your home base.
 ## IconTexture: Interface\AddOns\Back2Home\media\b2h_logo.tga
-## Version: 1.3.2
+## Version: 2.0.1
 ## Author: |cFF78B064readi2play|r
+## Category-enUS: Collections
+## Category-deDE: Kriegsmeutesammlungen
+## Category-esES: Colecciones de banda guerrera
+## Category-esMX: Colecciones de tropa
+## Category-frFR: Collections du bataillon
+## Category-itIT: Collezioni della Brigata
+## Category-koKR: 전투부대 수집품
+## Category-ptBR: Coleções do Bando de Guerra
+## Category-ruRU: Коллекции отряда
+## Category-zhCN: 战团藏品
+## Category-zhTW: 戰隊收藏
 ## SavedVariables: Back2HomeDB
-## SavedVariablesPerCharacter: Back2HomeDBChr
 ## AddonCompartmentFunc: Back2Home_Options
 ## Dependencies: readiLIB
 
@@ -13,22 +23,30 @@
 
 # core files
 core.lua
+locales.xml
 
 # localization
-locales/deDE.lua
 locales/enUS.lua
+locales/deDE.lua
+locales/esES.lua
+locales/esMX.lua
 locales/frFR.lua
+locales/itIT.lua
+locales/koKR.lua
+locales/ptBR.lua
+locales/ruRU.lua
+locales/zhCN.lua
+locales/zhTW.lua
 
 # config and panels
 config/defaults.lua
 config/config.lua
 config/panels/info.lua
-config/panels/toys.lua
+config/panels/items.lua
 config/panels/anchoring.lua
 config/panels/keybindings.lua
 config/panels/events.lua
 config/panels/reporting.lua
-config/panels/profiles.lua
 
 # modules
 modules/button.lua

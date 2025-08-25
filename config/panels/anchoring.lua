@@ -11,13 +11,27 @@ data.keyword = "anchoring"
 B2H.Anchoring = B2H.Anchoring or {
   fields = {},
 }
+--------------------------------------------------------------------------------
+B2H.Anchoring.panel, B2H.Anchoring.container, B2H.Anchoring.anchorline = READI:OptionPanel(data, {
+  name = B2H.L["Anchoring"],
+  parent = AddonName,
+  title = {
+    text = B2H.L["Anchoring"],
+    color = "b2h"
+  }
+})
+--------------------------------------------------------------------------------
 local _posXname = format("%s_%sEditBox_parent_pos_x", data.prefix, "SettingsPanel")
 local _posYname = format("%s_%sEditBox_parent_pos_y", data.prefix, "SettingsPanel")
 local _parentName = format("%s_%sEditBox_parent_frame", data.prefix, "SettingsPanel" )
 local _sizeName = format("%s_%sSlider_button_size", data.prefix, "SettingsPanel")
 local _strataName = format("%s_%sDropdown_button_strata", data.prefix, "SettingsPanel")
 
-function B2H:FillAnchoringPanel(panel, container, anchorline)
+function B2H.Anchoring:Initialize()
+  local panel, container, anchorline = B2H.Anchoring.panel, B2H.Anchoring.container, B2H.Anchoring.anchorline
+  local category = Settings.RegisterCanvasLayoutSubcategory(Settings.GetCategory(AddonName), B2H.Anchoring.panel, B2H.L[READI.Helper.string:Capitalize(data.keyword)])
+  Settings.RegisterAddOnCategory(category)
+
   local function BuildAnchorGrid(wrapper, cols, option)
     for i,value in ipairs(b2h.anchors) do
       local parent = wrapper
@@ -91,7 +105,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
 
     local title = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
     title:SetPoint("TOPLEFT", anchorline, offsetX, -20)
-    title:SetText(B2H:setTextColor(format(READI:l10n("config.panels.anchoring.anchors."..val..".headline", "B2H.L"), AddonName), "b2h"))
+    title:SetText(B2H:setTextColor(format(B2H.L[READI.Helper.string:Capitalize(val) .. " Anchor"], AddonName), "b2h"))
 
     local subTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
     subTitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
@@ -99,9 +113,14 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
     subTitle:SetJustifyV("TOP")
     subTitle:SetWordWrap(true)
     subTitle:SetWidth(b2h.columnWidth)
-    subTitle:SetText(
-      B2H:setTextColor(format(READI:l10n("config.panels.anchoring.anchors."..val..".subline", "B2H.L"), AddonName), "white")
-    )
+    if val == "button" then
+      local txt = format(B2H.L["Select the anchor point of the %s Button that should be aligned to its parent frame."],READI.Helper.color:Get("b2h", B2H.Colors, AddonName))
+      subTitle:SetText(READI.Helper.color:Get("white", nil, txt))
+    else
+      subTitle:SetText(
+        READI.Helper.color:Get("white", nil, format(B2H.L["Select the parent frame's anchor point the %s Button should be anchored to."], READI.Helper.color:Get("b2h", B2H.Colors, AddonName)))
+      )
+    end
   
     local wrapper = CreateFrame("Frame", format("%s_anchorWrapper", val))
     wrapper:SetPoint("TOPLEFT", subTitle, "BOTTOMLEFT", 0, -10)
@@ -113,14 +132,14 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
 
   local position_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   position_sectionTitle:SetPoint("TOPLEFT", _G["button_anchorWrapper"], "BOTTOMLEFT", 0, -20)
-  position_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.headline", "B2H.L"), "b2h"))
+  position_sectionTitle:SetText(B2H:setTextColor(B2H.L["Position Offset"], "b2h"))
 
   local position_cols = 2
   local posColWidth = b2h.columnWidth / position_cols - 20
 
   local positionX_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
   positionX_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", 0, -5)
-  positionX_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.x", "B2H.L"), "white"))
+  positionX_sectionTitle:SetText(B2H:setTextColor(B2H.L["X-Offset"], "white"))
 
   B2H.Anchoring.fields[_posXname] = READI:EditBox(data, {
     name = _posXname,
@@ -144,7 +163,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
 
   local positionY_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
   positionY_sectionTitle:SetPoint("TOPLEFT", position_sectionTitle, "BOTTOMLEFT", posColWidth + 20, -5)
-  positionY_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.offset.y", "B2H.L"), "white"))
+  positionY_sectionTitle:SetText(B2H:setTextColor(B2H.L["Y-Offset"], "white"))
 
   B2H.Anchoring.fields[_posYname] = READI:EditBox(data, {
     name = _posYname,
@@ -169,11 +188,11 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
   -- define the parent related fields
   local parentFrame_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   parentFrame_sectionTitle:SetPoint("TOPLEFT", _G["parent_anchorWrapper"], "BOTTOMLEFT", 0, -20)
-  parentFrame_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.parent.headline", "B2H.L"), "b2h"))
+  parentFrame_sectionTitle:SetText(B2H:setTextColor(B2H.L["Parent Frame"], "b2h"))
 
   local parentFrame_nameTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlight")
   parentFrame_nameTitle:SetPoint("TOPLEFT", parentFrame_sectionTitle, "BOTTOMLEFT", 0, -5)
-  parentFrame_nameTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.parent.subline", "B2H.L"), "white"))
+  parentFrame_nameTitle:SetText(B2H:setTextColor(B2H.L["Enter the name of the parent frame"], "white"))
 
   B2H.Anchoring.fields[_parentName] = READI:EditBox(data, {
     name = _parentName,
@@ -221,7 +240,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
 
   local buttonSizeTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   buttonSizeTitle:SetPoint("TOPLEFT", B2H.Anchoring.fields[_posXname], "BOTTOMLEFT", 0, -20)
-  buttonSizeTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.button.size.headline", "B2H.L"), "b2h"))
+  buttonSizeTitle:SetText(B2H:setTextColor(B2H.L["Button Size"], "b2h"))
 
   B2H.Anchoring.fields[_sizeName] = READI:Slider(data, {
     region = container,
@@ -249,7 +268,7 @@ function B2H:FillAnchoringPanel(panel, container, anchorline)
 
   local buttonStrataTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
   buttonStrataTitle:SetPoint("TOPLEFT", B2H.Anchoring.fields[_parentName], "BOTTOMLEFT", 0, -20)
-  buttonStrataTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.anchoring.button.strata.headline", "B2H.L"), "b2h"))
+  buttonStrataTitle:SetText(B2H:setTextColor(B2H.L["Button Strata"], "b2h"))
 
   B2H.Anchoring.fields[_strataName] = READI:DropDown(data, {
     values = {

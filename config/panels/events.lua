@@ -8,65 +8,38 @@ data.keyword = "events"
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
 B2H.Events = B2H.Events or {
-  fields = {}
+  fields = {},
+  list = {"PLAYER_ENTERING_WORLD", "ZONE_CHANGED", "PLAYER_LEVEL_UP", "NEW_TOY_ADDED"}
 }
+--------------------------------------------------------------------------------
+B2H.Events.panel, B2H.Events.container, B2H.Events.anchorline = READI:OptionPanel(data, {
+  name = B2H.L["Events"],
+  parent = AddonName,
+  title = {
+    text = B2H.L["Events"],
+    color = "b2h"
+  }
+})
+--------------------------------------------------------------------------------
 
-function B2H:FillEventsPanel(panel, container, anchorline)
-  local events_sectionTitle = container:CreateFontString("ARTWORK", nil, "GameFontHighlightLarge")
-  events_sectionTitle:SetPoint("TOPLEFT", anchorline, 0, -20)
-  events_sectionTitle:SetText(B2H:setTextColor(READI:l10n("config.panels.events.headline", "B2H.L"), "b2h"))
+function B2H.Events:Initialize()
 
-  local events_sectionSubTitle = container:CreateFontString("ARTWORK", nil, "GameFontNormal")
-  events_sectionSubTitle:SetPoint("TOPLEFT", events_sectionTitle, "BOTTOMLEFT", 0, -5)
-  events_sectionSubTitle:SetText(B2H:setTextColor(format(READI:l10n("config.panels.events.section", "B2H.L"), AddonName), "b2h_light"))
+  local category, layout = Settings.RegisterVerticalLayoutSubcategory(Settings.GetCategory(AddonName), B2H.L[READI.Helper.string:Capitalize(data.keyword)])
+  Settings.RegisterAddOnCategory(category)
 
-  local numRows = #B2H.db.events / b2h.columns
-  local lastEvent = B2H.db.events[#B2H.db.events]
+  layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(B2H:setTextColor(format(B2H.L["Select the events the %s Button shall refresh to."], B2H:setTextColor(AddonName, "b2h")), "b2h")))
 
-  for i,event in ipairs(B2H.db.events) do
-    local fieldName = AddonName .. "CheckButton_" .. event.name
-    local opts = {
-      name = fieldName,
-      region = container,
-      enabled = true,
-      label = event.label[B2H.Locale],
-      parent = events_sectionSubTitle,
-      p_anchor = "BOTTOMLEFT",
-      offsetY = 0,
-      offsetX = 0,
-      width = b2h.columnWidth - 18
-    }
+  for i,event in ipairs(B2H.Events.list) do
+    local name = B2H:setTextColor(B2H.L[event], "white")
+    local variable = "B2H_RefreshOn"..event
 
-    if i == 1 then
-      opts.offsetY = -10
-    elseif i > 1 and i <= b2h.columns then
-      opts.p_anchor = "TOPLEFT"
-      opts.parent = _G[AddonName .. "CheckButton_" .. B2H.db.events[i - 1].name]
-      opts.offsetX = b2h.columnWidth + 20
-    else
-      opts.parent = _G[AddonName .. "CheckButton_" .. B2H.db.events[i - b2h.columns].name]
-    end
-    opts.onClick = function()
-      local cb = _G[opts.name]
-      B2H.db.events[i].active = cb:GetChecked()
-    end
-    opts.onReset = function()
-      local cb = _G[opts.name]
-      if B2H.defaults.events[i].active and not cb:GetChecked() then
-        cb:Click()
-      end
-    end
-    opts.onClear = function()
-      local cb = _G[opts.name]
-      if cb:GetChecked() then cb:Click() end
-    end
-    opts.onSelectAll = function()
-      local cb = _G[opts.name]
-      if not cb:GetChecked() then cb:Click() end
-    end
-
-    B2H.Events.fields[fieldName] = READI:CheckBox(data, opts)
-    B2H.Events.fields[fieldName]:SetChecked(event.active)
+    local variableKey = event
+    local variableTbl = B2H.db.events
+    local defaultValue = B2H.defaults.events[event]
+    
+    local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
+    local tooltip = B2H:setTextColor(format(B2H.L["When activated %s will %s."], B2H:setTextColor(AddonName, "b2h"), READI.Helper.string:DecapitalizeFirst(B2H.L[event])), "white")
+    table.insert(B2H.Events.fields, Settings.CreateCheckbox(category, setting, tooltip))
   end
 
 end

@@ -2,10 +2,10 @@
 -- BASICS
 --------------------------------------------------------------------------------
 local AddonName, b2h = ...
-local configKeys = {"info", "toys", "fallbacks", "anchoring", "keybindings", "events", "reporting", "profiles"}
+local configKeys = {"info", "items", "anchoring", "keybindings", "events", "reporting"}
 local data = CopyTable(B2H.data)
 data.keyword = "config"
-B2H.config = {}
+B2H.config = B2H.config or {}
 
 
 b2h.windowWidth = SettingsPanel.Container:GetWidth()
@@ -15,15 +15,20 @@ b2h.columnWidth = b2h.windowWidth / b2h.columns - 20
 -- OPTIONS PANEL CREATION
 --------------------------------------------------------------------------------
 function B2H:SetupConfig()
+  local category = Settings.RegisterCanvasLayoutCategory(B2H.Info.panel, B2H:setTextColor(AddonName, "b2h"))
+  category.ID = AddonName
+  Settings.RegisterAddOnCategory(category)
+
+  --[[
   for i,key in ipairs(configKeys) do
     local FillPanelFunctionName = format("Fill%sPanel", READI.Helper.string:Capitalize(key))
     local panelExists = READI.Helper.functions:Exists("B2H."..FillPanelFunctionName)
 
     if panelExists then
       B2H.config[key] = B2H.config[key] or {}
-      local panelName = READI:l10n(("config.panels.%s.title"):format(key), "B2H.L")
+      local panelName = B2H.L[READI.Helper.string:Capitalize(key)]
       local parentPanel = nil
-      local titleText = READI:l10n(("config.panels.%s.title"):format(key), "B2H.L")
+      local titleText = B2H.L[READI.Helper.string:Capitalize(key)]
   
       if key == "info" then
         panelName = AddonName
@@ -47,9 +52,14 @@ function B2H:SetupConfig()
   
         if parentPanel then
           local category = Settings.GetCategory(parentPanel)
-          local subcategory = Settings.RegisterCanvasLayoutSubcategory(category, B2H.config[key].panel, panelName)
+          local subcategory = nil
+          if key == "toys" or key == "fallbacks" then
+            subcategory = Settings.RegisterVerticalLayoutSubcategory(category, B2H:setTextColor(panelName, "b2h_light"))
+          else
+            subcategory = Settings.RegisterCanvasLayoutSubcategory(category, B2H.config[key].panel, panelName)
+          end
         else
-          local category = Settings.RegisterCanvasLayoutCategory(B2H.config[key].panel, AddonName)
+          local category = Settings.RegisterCanvasLayoutCategory(B2H.config[key].panel, B2H:setTextColor(AddonName, "b2h"))
           category.ID = AddonName
           Settings.RegisterAddOnCategory(category)
         end
@@ -59,25 +69,28 @@ function B2H:SetupConfig()
       end
     end
   end
+  ]]--
 end
 --------------------------------------------------------------------------------
 -- OPTIONS PANEL INITIALIZATION
 --------------------------------------------------------------------------------
 function B2H:InitializeOptions()
   for i,key in ipairs(configKeys) do
-    local FillPanelFunctionName = format("Fill%sPanel", READI.Helper.string:Capitalize(key))
-    local panelExists = READI.Helper.functions:Exists("B2H."..FillPanelFunctionName)
-
-    if panelExists then
-      B2H[FillPanelFunctionName](self, B2H.config[key].panel, B2H.config[key].container, B2H.config[key].anchorline)
+    local category = READI.Helper.string:Capitalize(key)
+    if B2H[category] and B2H[category].Initialize then
+      B2H[category].Initialize(self)
     end
   end
 end
 function B2H:UpdateOptions(shuffle)
   if shuffle == nil then shuffle = true end
-  B2H.Toys:Update()
-  B2H.Anchoring:Update()
-  B2H.Keybindings:Update()
+
+  for i,key in ipairs(configKeys) do
+    local category = READI.Helper.string:Capitalize(key)
+    if B2H[category] and B2H[category].Update then
+      B2H[category].Update()
+    end
+  end
 
   B2H.HSButton:ScaleButton()
   B2H.HSButton:SetPosition()

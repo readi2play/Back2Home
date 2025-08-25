@@ -8,8 +8,22 @@ data.keyword = "keybindings"
 -- CREATE KEYBINDINGS PANEL CONTENT
 --------------------------------------------------------------------------------
 B2H.Keybindings = B2H.Keybindings or {}
+--------------------------------------------------------------------------------
+B2H.Keybindings.panel, B2H.Keybindings.container, B2H.Keybindings.anchorline = READI:OptionPanel(data, {
+  name = B2H.L["Keybindings"],
+  parent = AddonName,
+  title = {
+    text = B2H.L["Keybindings"],
+    color = "b2h"
+  }
+})
+--------------------------------------------------------------------------------
 
-function B2H:FillKeybindingsPanel(panel, container, anchorline)
+function B2H.Keybindings:Initialize(panel, container, anchorline)
+  local panel, container, anchorline = B2H.Keybindings.panel, B2H.Keybindings.container, B2H.Keybindings.anchorline
+  local category = Settings.RegisterCanvasLayoutSubcategory(Settings.GetCategory(AddonName), B2H.Keybindings.panel, B2H.L[READI.Helper.string:Capitalize(data.keyword)])
+  Settings.RegisterAddOnCategory(category)
+
   local itemKeys = {}
   for _,itm in pairs(B2H.db[data.keyword].items) do itemKeys[#itemKeys+1] = itm.name end
 
@@ -18,7 +32,7 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
     local name = ""
     local label = B2H:setTextColor(NOT_BOUND, "grey")
     local enable = true
-    local additionalText = READI:l10n("reporting.information.toys.notCollected", "B2H.L")
+    local additionalText = B2H.L["You don't have this toy collected yet."]
     local anchor = "TOPLEFT"
     local region = anchorline
     local anchor_to = "BOTTOMLEFT"
@@ -67,10 +81,8 @@ function B2H:FillKeybindingsPanel(panel, container, anchorline)
     _G[itmKey.."SectionSubtext"]:SetJustifyV("TOP")
     _G[itmKey.."SectionSubtext"]:SetWidth(b2h.columnWidth)
     _G[itmKey.."SectionSubtext"]:SetWordWrap(true)
-    local subText = READI:l10n("config.panels.keybindings.section", "B2H.L")
-    if itmKey == "relic" then
-      subText = READI:l10n("config.panels.keybindings.section_relic", "B2H.L")
-    end
+    local subText = B2H.L["Select a modifier key to easily use %s via %s."]
+
     _G[itmKey.."SectionSubtext"]:SetText(
       B2H:setTextColor(
         format(
@@ -205,8 +217,8 @@ function B2H.Keybindings:Update()
 
     btn:SetText(B2H.db.keybindings.items[i].key)
 
-    B2H.db.toys[i].active = toy.owned
-    B2H.defaults.toys[i].active = toy.owned
+    -- B2H.db.items[i] = toy.owned
+    -- B2H.defaults.items[i] = toy.owned
 
     if toy.owned then
       btn:Enable()
