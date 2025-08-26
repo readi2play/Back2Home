@@ -57,14 +57,14 @@ end
 
 function B2H:PLAYER_ENTERING_WORLD(evt, isLogin, isReload)
   B2H.faction, _ = string.lower(UnitFactionGroup("player"))
-  B2H:InitializeOptions()
   B2H.registered = C_ChatInfo.RegisterAddonMessagePrefix(B2H.data.prefix)
   if not B2H.HSButton then return end
   B2H.HSButton:Update(true)
 end
 
 function B2H:FIRST_FRAME_RENDERED(evt)
-  B2H:UpdateOptions()
+  B2H:InitializeOptions()
+  -- B2H:UpdateOptions()
 end
 
 function B2H:ItemIsToy(id)
