@@ -25,6 +25,13 @@ function B2H.Items:Initialize()
   local category, layout = Settings.RegisterVerticalLayoutSubcategory(Settings.GetCategory(AddonName), B2H.L[READI.Helper.string:Capitalize(data.keyword)])
   Settings.RegisterAddOnCategory(category)
 
+  local function ResetSettings()
+    for _,cb in ipairs(B2H.Items.fields) do
+      local settings = cb:GetSetting()
+      setting:ApplyValue(setting:GetDefaultValue())
+    end
+  end
+
   layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(B2H:setTextColor(B2H.L["Included Hearthstone Toys"], "b2h")))
 
   for _,itemID in ipairs(B2H.Items.list) do

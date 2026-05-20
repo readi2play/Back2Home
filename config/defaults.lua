@@ -35,7 +35,10 @@ function B2H:InitializeDefaultSettings()
       [235016] = false,
       [142542] = false,
       [245970] = false,
-      [246565] = false
+      [246565] = false,
+      [265100] = false,
+      [263933] = false,
+      [257736] = false,
     },
     fallbacks = {
       [6948] = true

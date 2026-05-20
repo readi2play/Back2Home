@@ -123,8 +123,10 @@ Button factory for the Back2Home button
       if InCombatLockdown() then return end
       local btnStrata = B2H.db.anchoring.button_strata
       if btnStrata == "PARENT" then
-        local parent = B2H.HSButton:GetParent() 
-        B2H.HSButton:SetFrameStrata(parent:GetFrameStrata())
+        local parent = B2H.HSButton:GetParent()
+        if parent then 
+          B2H.HSButton:SetFrameStrata(parent:GetFrameStrata())
+        end
       else
         B2H.HSButton:SetFrameStrata(btnStrata)
       end

@@ -43,6 +43,8 @@ B2H:RegisterEvent("CHAT_MSG_ADDON")
 B2H:RegisterEvent("PLAYER_ENTERING_WORLD")
 B2H:RegisterEvent("MODIFIER_STATE_CHANGED")
 B2H:RegisterEvent("FIRST_FRAME_RENDERED")
+B2H:RegisterEvent("SETTINGS_LOADED")
+B2H:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 function B2H:ADDON_LOADED(evt, addonName)
   if addonName ~= AddonName then return end
@@ -64,7 +66,11 @@ end
 
 function B2H:FIRST_FRAME_RENDERED(evt)
   B2H:InitializeOptions()
-  -- B2H:UpdateOptions()
+  B2H.HSButton:Update()
+end
+
+function B2H:SETTINGS_LOADED(evt)
+  SettingsPanel.Container.SettingsList.Header.DefaultsButton:Hide()
 end
 
 function B2H:ItemIsToy(id)
@@ -110,12 +116,23 @@ function B2H:MODIFIER_STATE_CHANGED(evt, key, down)
       b2h.id = boundItem.id
       b2h.icon = boundItem.icon
     end
-  else
+  elseif b2h.restore then
     b2h.id = b2h.restore.id
     b2h.icon = b2h.restore.icon
     B2H.ActiveKeys = {}
   end
   B2H.HSButton:Update(false)
+end
+
+function B2H:PLAYER_REGEN_ENABLED()
+  if b2h.restore then
+    b2h.id = b2h.restore.id
+    b2h.icon = b2h.restore.icon
+    B2H.ActiveKeys = {}
+    B2H.HSButton:Update(false)
+  else
+    B2H.HSButton:Update(true)
+  end
 end
 
 --[[----------------------------------------------------------------------------
